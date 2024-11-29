@@ -1,0 +1,142 @@
+// import React, { Fragment, useState } from "react";
+import { useState, type FC } from "react";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  LinearProgress,
+  Stack,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  type Theme,
+} from "@mui/material";
+import { useIsFetching } from "@tanstack/react-query";
+
+import NotificationIcon from "components/icons/NotificationIcon";
+import { useMeStore, userInitials } from "components/stores/MeStore";
+
+import NotificationDrawer from "./Drawers/NotificationDrawer";
+import UserDrawer from "./Drawers/UserDrawer";
+
+const Topbar: FC<{}> = () => {
+  const isMobile = useMediaQuery<Theme>((theme) =>
+    theme.breakpoints.down("md"),
+  );
+  const isFetching = useIsFetching();
+
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
+    useState<boolean>(false);
+  const toggleNotificationDrawer = () =>
+    setIsNotificationDrawerOpen((prev) => !prev);
+
+  const [isUserDrawerOpen, setIsUserDrawerOpen] = useState<boolean>(false);
+  const toggleUserDrawer = () => setIsUserDrawerOpen((prev) => !prev);
+
+  const name = useMeStore((s) => s.me?.name);
+  const firstName = useMeStore((s) => s.me?.firstName);
+  const initials = userInitials(name);
+
+  return (
+    <AppBar
+      color="inherit"
+      position={isMobile ? "fixed" : "sticky"}
+      elevation={0}
+      sx={{
+        borderTop: "none",
+        borderRight: "none",
+        borderLeft: "none",
+        mt: -0.5,
+        borderRadius: 0,
+        bgcolor: "primary.dark",
+      }}
+    >
+      <Toolbar disableGutters>
+        <Box
+          sx={{
+            mt: 1,
+            // ml: isMobile ? 1 : 3,
+            mr: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Stack direction="row" alignItems="center">
+            {/* Notifications */}
+            <Box>
+              <IconButton
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: "#DC7C65",
+                  color: "#FFF",
+                }}
+                onClick={toggleNotificationDrawer}
+              >
+                <NotificationIcon
+                  sx={{
+                    fill: "#FFF",
+                  }}
+                />
+              </IconButton>
+              <NotificationDrawer
+                isOpen={isNotificationDrawerOpen}
+                onClose={toggleNotificationDrawer}
+              />
+            </Box>
+
+            {/* User */}
+            <Box>
+              <Button
+                sx={{
+                  boxShadow: "none",
+                  textTransform: "none",
+                  px: 2,
+                  pl: 1.5,
+                  py: 1,
+                  ":hover": {
+                    backgroundColor: (theme) => theme.palette.primary.dark,
+                  },
+                }}
+                onClick={toggleUserDrawer}
+                data-cy="user-drawer-button"
+              >
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                  <Avatar
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      backgroundColor: "#FFF",
+                      color: "primary.dark",
+                      fontSize: Math.min(30, 38 / initials.length),
+                      fontWeight: 600,
+                    }}
+                    variant="circular"
+                  >
+                    {initials.toUpperCase()}
+                  </Avatar>
+
+                  <Typography fontWeight={400} fontSize={16} color="#FFF">
+                    Hey <b>{firstName}</b>
+                  </Typography>
+                </Stack>
+              </Button>
+              <UserDrawer
+                isOpen={isUserDrawerOpen}
+                onClose={toggleUserDrawer}
+              />
+            </Box>
+          </Stack>
+        </Box>
+      </Toolbar>
+      {isFetching ? <LinearProgress color="primary" /> : <Box height="4px" />}
+    </AppBar>
+  );
+};
+
+export default Topbar;

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ascend</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=DM+Sans:400,500,600"
+      rel="stylesheet"
+    />
+    <!-- SPLASH SCREEN-->
+    <link
+      rel="stylesheet"
+      id="layout-styles-anchor"
+      href="/src/assets/splash-screen.css"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <!--  Setup `default`, `es2015`, `es2016`, `es2017`, and `Intl` polyfills from https://cdn.polyfill.io/v3/url-builder/ -->
+  </head>
+  <!-- <body id="kt_body" direction="rtl" dir="rtl" style="direction: rtl">  RTL version body -->
+  <!-- Standard version of body -->
+  <body id="kt_body">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script>
+      window.global = window;
+    </script>
+    <script type="module" src="/src/index.tsx"></script>
+
+    <div id="splash-screen" class="kt-splash-screen">
+      <!-- <img src="%PUBLIC_URL%/media/logos/logo.svg" alt="" /> -->
+      <div class="linear-activity">
+        <div class="indeterminate"></div>
+      </div>
+    </div>
+    <div id="layout-portal"></div>
+  </body>
+</html>

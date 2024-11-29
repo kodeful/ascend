@@ -1,0 +1,11 @@
+{
+  "eslint.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "i18n-ally.displayLanguage": "en",
+  "i18n-ally.localesPaths": ["src/translations"],
+  "i18n-ally.keystyle": "flat",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.eol": "\n"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ascend",
+  "version": "1.0.0",
+  "scripts": {
+    "local": "npm run local:client & npm run local:server",
+    "local:client": "cd ./client && npm run dev",
+    "local:server": "cd ./server && npm run serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
