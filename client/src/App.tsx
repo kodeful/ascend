@@ -3,11 +3,12 @@ import { createBrowserHistory } from "history";
 import ChatAiPage from "pages/chat-ai/ChatAiPage";
 import DataPage from "pages/data/DataPage";
 import HomePage from "pages/home/HomePage";
+import LearnerDetailsPage from "pages/learner/details/LearnerDetailsPage";
 import ReportPage from "pages/report/ReportPage";
-import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
+// import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
 import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
+import SettingsConnectionsPage from "pages/settings/connections/SettingsConnectionsPage";
 import SettingsGroupSettingsPage from "pages/settings/group-settings/SettingsGroupSettingsPage";
-import SettingsPage from "pages/settings/SettingsPage";
 import SignInPage from "pages/sign-in/SignInPage";
 import { Redirect, Switch } from "react-router-dom";
 
@@ -23,7 +24,7 @@ const App = () => {
     <Providers history={history}>
       <Switch>
         <AuthRoute exact component={SignInPage} path="/sign-in" />
-        <AuthRoute exact component={ResetPasswordPage} path="/reset-password" />
+        {/* <AuthRoute exact component={ResetPasswordPage} path="/reset-password" /> */}
 
         {/* CONTROLLERS */}
         <PrivateRoute exact component={HomePage} path="/home" />
@@ -33,25 +34,34 @@ const App = () => {
 
         <PrivateRoute
           exact
+          component={LearnerDetailsPage}
+          path="/learner/:learnerId"
+        />
+
+        <PrivateRoute
+          exact
           component={SettingsAccountPage}
           path="/settings/account"
+          shrinked
         />
         <PrivateRoute
           exact
           component={SettingsGroupSettingsPage}
           path="/settings/group-settings"
+          shrinked
         />
         <PrivateRoute
           exact
-          component={SettingsPage}
+          component={SettingsConnectionsPage}
           path="/settings/connections"
+          shrinked
         />
-        <PrivateRoute
+        {/* <PrivateRoute
           exact
           component={SettingsPage}
           path="/settings/notification-settings"
-        />
-        <PrivateRoute exact component={SettingsPage} path="/settings/support" />
+        /> */}
+        {/* <PrivateRoute exact component={SettingsPage} path="/settings/support" /> */}
 
         {/* REDIRECT */}
         <Redirect from="/settings" to="/settings/account" />

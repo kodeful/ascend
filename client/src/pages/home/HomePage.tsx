@@ -6,7 +6,6 @@ import HomeGroupActivity from "./components/HomeGroupActivity/HomeGroupActivity"
 import HomeGroupDeltaChange from "./components/HomeGroupDeltaChange/HomeGroupDeltaChange";
 import HomeGroupTrust from "./components/HomeGroupTrust/HomeGroupTrust";
 import HomeLearners from "./components/HomeLearners";
-import HomeProgressStatistics from "./components/HomeProgressStatistics/HomeProgressStatistics";
 import HomeRecentReportsDataGrid from "./components/HomeRecentReports/HomeRecentReportsDataGrid";
 
 const HomePage = () => {
@@ -54,10 +53,9 @@ const HomePage = () => {
         <Grid item xs={4}>
           <Box position="sticky" top={10}>
             <Typography variant="h5" color="#4D4D4D">
-              Learners Overview
+              Learners
             </Typography>
 
-            {/* Learners Overview */}
             <Grid container pt={1} spacing={2}>
               <Grid item xs={12}>
                 <HomeLearners />
@@ -65,9 +63,9 @@ const HomePage = () => {
               <Grid item xs={12}>
                 <HomeGroupActivity />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <HomeProgressStatistics />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         </Grid>

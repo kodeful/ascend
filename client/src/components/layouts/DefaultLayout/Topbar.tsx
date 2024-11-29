@@ -5,7 +5,6 @@ import {
   Avatar,
   Box,
   Button,
-  IconButton,
   LinearProgress,
   Stack,
   Toolbar,
@@ -15,10 +14,8 @@ import {
 } from "@mui/material";
 import { useIsFetching } from "@tanstack/react-query";
 
-import NotificationIcon from "components/icons/NotificationIcon";
 import { useMeStore, userInitials } from "components/stores/MeStore";
 
-import NotificationDrawer from "./Drawers/NotificationDrawer";
 import UserDrawer from "./Drawers/UserDrawer";
 
 const Topbar: FC<{}> = () => {
@@ -27,10 +24,10 @@ const Topbar: FC<{}> = () => {
   );
   const isFetching = useIsFetching();
 
-  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
-    useState<boolean>(false);
-  const toggleNotificationDrawer = () =>
-    setIsNotificationDrawerOpen((prev) => !prev);
+  // const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
+  //   useState<boolean>(false);
+  // const toggleNotificationDrawer = () =>
+  //   setIsNotificationDrawerOpen((prev) => !prev);
 
   const [isUserDrawerOpen, setIsUserDrawerOpen] = useState<boolean>(false);
   const toggleUserDrawer = () => setIsUserDrawerOpen((prev) => !prev);
@@ -68,7 +65,7 @@ const Topbar: FC<{}> = () => {
         >
           <Stack direction="row" alignItems="center">
             {/* Notifications */}
-            <Box>
+            {/* <Box>
               <IconButton
                 sx={{
                   width: 36,
@@ -88,7 +85,7 @@ const Topbar: FC<{}> = () => {
                 isOpen={isNotificationDrawerOpen}
                 onClose={toggleNotificationDrawer}
               />
-            </Box>
+            </Box> */}
 
             {/* User */}
             <Box>
@@ -111,9 +108,10 @@ const Topbar: FC<{}> = () => {
                     sx={{
                       width: 36,
                       height: 36,
-                      backgroundColor: "#FFF",
-                      color: "primary.dark",
-                      fontSize: Math.min(30, 38 / initials.length),
+                      backgroundColor: "primary.main",
+                      color: "#FFF",
+                      border: "2px solid #FFF",
+                      fontSize: Math.min(30, 35 / initials.length),
                       fontWeight: 600,
                     }}
                     variant="circular"

@@ -1,5 +1,4 @@
-import { Dashboard as DashboardIcon } from "@mui/icons-material";
-import { Box, Divider, MenuList, Stack } from "@mui/material";
+import { Divider, MenuList, Stack } from "@mui/material";
 
 import ChatIcon from "components/icons/ChatIcon";
 import DataIcon from "components/icons/DataIcon";
@@ -58,11 +57,11 @@ const sidebarMenuListBottom: SidebarMenuListChild = [
   },
 ];
 
-interface Props {
+interface SidebarMenuProps {
   onClose?: () => void;
 }
 
-const SidebarMenu = ({ onClose }: Props) => {
+const SidebarMenu = ({ onClose }: SidebarMenuProps) => {
   return (
     <MenuList
       sx={{

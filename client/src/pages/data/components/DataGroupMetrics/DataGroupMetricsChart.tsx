@@ -87,11 +87,6 @@ const DataGroupMetricsChart: FC<DataGroupMetricsChartProps> = ({ height }) => {
             textOutline: "none",
           },
         },
-        // states: {
-        //   inactive: {
-        //     opacity: 1, // Keep the colors uniform
-        //   },
-        // },
       },
     ],
   };

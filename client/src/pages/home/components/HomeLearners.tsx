@@ -1,11 +1,22 @@
 import React from "react";
 import { TrendingDown, TrendingUp } from "@mui/icons-material";
-import { Avatar, Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  ButtonBase,
+  Divider,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 import Counter from "components/Counter/Counter";
 import { userInitials } from "components/stores/MeStore";
 
 const HomeLearners = () => {
+  const history = useHistory();
+
   const learners = [
     {
       name: "Julia Oquendo",
@@ -36,10 +47,15 @@ const HomeLearners = () => {
           const initials = userInitials(learner.name);
           return (
             <Stack
+              component={ButtonBase}
+              textAlign="left"
               direction="row"
               alignItems="center"
               justifyContent="space-between"
               width="100%"
+              onClick={() => {
+                history.push("/learner/id");
+              }}
             >
               <Stack direction="row" py={1.5} spacing={1}>
                 <Avatar

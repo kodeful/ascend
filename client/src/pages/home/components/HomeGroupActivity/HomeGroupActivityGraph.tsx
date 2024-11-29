@@ -22,7 +22,7 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
     },
     xAxis: {
       categories: ["M", "T", "W", "T", "F", "S", "S"],
-      crosshair: true,
+      crosshair: false,
       lineWidth: 0,
     },
     yAxis: {
@@ -35,15 +35,7 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
         enabled: false,
       },
     },
-    tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-      pointFormat:
-        '<tr><td style="color:{series.color};padding:0">Value: </td>' +
-        '<td style="padding:0"><b>{point.y}</b></td></tr>',
-      footerFormat: "</table>",
-      shared: true,
-      useHTML: true,
-    },
+
     plotOptions: {
       column: {
         pointPadding: 0,
@@ -58,8 +50,8 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
       {
         type: "column",
         name: "Data",
-        data: [5, 10, 8, 4, 6, 2, 2], // Data for the bars
-        color: "#AEAC95", // Gray color for the bars
+        data: [5, 10, 8, 4, 6, 2, 2],
+        color: "#AEAC95",
       },
     ],
   };

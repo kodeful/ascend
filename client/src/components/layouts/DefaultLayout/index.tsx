@@ -1,4 +1,4 @@
-import React, { useState, type FC } from "react";
+import React, { type FC } from "react";
 import { Box, useMediaQuery, type Theme } from "@mui/material";
 
 import ScrollTopProvider from "components/providers/ScrollTopProvider";
@@ -7,17 +7,20 @@ import type { WithChildren } from "utils/types";
 import Sidebar from "./Sidebar/Sidebar";
 import Topbar from "./Topbar";
 
-const DefaultLayout: FC<WithChildren<{}>> = ({ children }) => {
+interface DefaultLayoutProps {
+  shrinked: boolean;
+}
+
+const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
+  shrinked,
+  children,
+}) => {
   const isMobile = useMediaQuery<Theme>((theme) =>
     theme.breakpoints.down("md"),
   );
 
-  const [isDesktopDrawerShrinked, setIsDesktopDrawerShrinked] =
-    useState<boolean>(false);
-  const toggleDesktopDrawer = () => setIsDesktopDrawerShrinked((prev) => !prev);
-
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false);
-  const toggleMobileDrawer = () => setIsMobileDrawerOpen((prev) => !prev);
+  const isDesktopDrawerShrinked = shrinked;
+  // const [isDesktopDrawerShrinked] = useState<boolean>(shrinked);
 
   return (
     <ScrollTopProvider>
@@ -33,12 +36,7 @@ const DefaultLayout: FC<WithChildren<{}>> = ({ children }) => {
         width="100vw"
       >
         <Box gridArea="sidebar">
-          <Sidebar
-            isMobileDrawerOpen={isMobileDrawerOpen}
-            toggleMobileDrawer={toggleMobileDrawer}
-            isDesktopDrawerShrinked={isDesktopDrawerShrinked}
-            toggleDesktopDrawer={toggleDesktopDrawer}
-          />
+          <Sidebar isDesktopDrawerShrinked={isDesktopDrawerShrinked} />
         </Box>
 
         <Box gridArea="topbar">

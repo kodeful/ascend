@@ -23,7 +23,7 @@ const HomeGroupTrustGraph: FC<HomeGroupTrustGraphProps> = ({ height }) => {
     xAxis: {
       lineWidth: 0,
       categories: ["Criteria 1"],
-      //   crosshair: false,
+
       labels: {
         enabled: false,
       },
@@ -37,6 +37,7 @@ const HomeGroupTrustGraph: FC<HomeGroupTrustGraphProps> = ({ height }) => {
       title: {
         text: "", // Y-axis title
       },
+
       labels: {
         enabled: false,
       },

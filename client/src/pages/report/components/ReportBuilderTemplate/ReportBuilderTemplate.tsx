@@ -1,5 +1,7 @@
 import React, { type FC } from "react";
-import { Box, ButtonBase, Paper, Stack, Typography } from "@mui/material";
+import { alpha, ButtonBase, Paper, Stack, Typography } from "@mui/material";
+
+import PageIcon from "components/icons/PageIcon";
 
 interface ReportBuilderTemplateProps {
   title: string;
@@ -17,10 +19,18 @@ const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({ title }) => {
         width: "100%",
         textAlign: "left",
         alignItems: "flex-start",
+        "&:hover .page-icon": {
+          width: 30,
+          height: 30,
+          bottom: -13,
+          right: 4,
+          boxShadow: (theme) =>
+            `0px 4px 4px ${alpha(theme.palette.primary.main, 0.25)}`,
+        },
       }}
     >
       <Stack width="100%" height={20} bgcolor="#E1D7CB" position="relative">
-        <Box
+        <Stack
           position="absolute"
           width={24}
           height={24}
@@ -28,7 +38,24 @@ const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({ title }) => {
           bottom={-10}
           bgcolor="primary.main"
           borderRadius="50%"
-        ></Box>
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          className="page-icon"
+          sx={{
+            transition: "width 100ms, height 100ms, bottom 100ms, right 100ms",
+          }}
+        >
+          <PageIcon
+            sx={{
+              mt: -0.1,
+              width: 16,
+              "& path": {
+                fill: "#fff",
+              },
+            }}
+          />
+        </Stack>
       </Stack>
 
       <Stack

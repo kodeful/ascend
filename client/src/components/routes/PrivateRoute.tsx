@@ -7,12 +7,14 @@ import { useMeStore } from "components/stores/MeStore";
 import type { WithChildren } from "utils/types";
 
 interface PrivateRouteProps extends RouteProps {
+  shrinked?: boolean;
   // requiredPermissions?: PermissionsType[];
   // requiredRole?: FilterPortalUsersDataRole[];
   layout?: ({ children }: WithChildren<unknown>) => any;
 }
 
 const PrivateRoute: FC<PrivateRouteProps> = ({
+  shrinked = false,
   // requiredPermissions = [],
   // requiredRole = [],
   layout: Layout = DefaultLayout,
@@ -51,7 +53,7 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
   if (me) {
     // if (hasRole(requiredRole)) {
     return (
-      <Layout>
+      <Layout shrinked={shrinked}>
         <Route {...rest} />
       </Layout>
     );

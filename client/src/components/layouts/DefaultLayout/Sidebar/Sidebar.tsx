@@ -1,22 +1,13 @@
 import React, { type FC } from "react";
-import { Box, Stack, useMediaQuery, type Theme } from "@mui/material";
+import { Stack, useMediaQuery, type Theme } from "@mui/material";
 
 import DesktopSidebarDrawer from "./DesktopSidebarDrawer";
-import MobileSidebarDrawer from "./MobileSidebarDrawer";
 
 type SidebarProps = {
-  isMobileDrawerOpen: boolean;
-  toggleMobileDrawer: () => void;
   isDesktopDrawerShrinked: boolean;
-  toggleDesktopDrawer: () => void;
 };
 
-const Sidebar: FC<SidebarProps> = ({
-  isMobileDrawerOpen,
-  toggleMobileDrawer,
-  isDesktopDrawerShrinked,
-  toggleDesktopDrawer,
-}) => {
+const Sidebar: FC<SidebarProps> = ({ isDesktopDrawerShrinked }) => {
   const isMobile = useMediaQuery<Theme>((theme) =>
     theme.breakpoints.down("md"),
   );
@@ -51,7 +42,6 @@ const Sidebar: FC<SidebarProps> = ({
           wideDrawerWidth={wideDrawerWidth}
           menuDrawerWidth={menuDrawerWidth}
           isDesktopDrawerShrinked={isDesktopDrawerShrinked}
-          toggleDesktopDrawer={toggleDesktopDrawer}
         />
       )}
     </Stack>

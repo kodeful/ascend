@@ -1,17 +1,75 @@
 import { type FC } from "react";
-import { Avatar, Drawer, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  ButtonBase,
+  Divider,
+  Drawer,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import AccountIMG from "assets/imgs/user-drawer/account.png";
+import GroupIMG from "assets/imgs/user-drawer/group.png";
+import dayjs from "dayjs";
+import { useHistory } from "react-router-dom";
 
+import AscendIcon from "components/icons/AscendIcon";
 import CloseIcon from "components/icons/CloseIcon";
+import ConnectionIcon from "components/icons/ConnectionIcon";
+import LogoutIcon from "components/icons/LogoutIcon";
+import SettingsIcon from "components/icons/SettingsIcon";
+import SupportIcon from "components/icons/SupportIcon";
 import { useMeStore, userInitials } from "components/stores/MeStore";
 
-// import { useHistory } from "react-router";
+import type { SidebarMenuListChild } from "../Sidebar/SidebarMenu/SidebarMenu";
+import UserDrawerMenuItem from "./UserDrawerMenuItem";
 
 type UserDrawerProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+const menuListTop: SidebarMenuListChild = [
+  {
+    icon: <SettingsIcon />,
+    text: "Settings",
+    link: "/settings",
+  },
+  {
+    icon: <ConnectionIcon />,
+    text: "Connections",
+    link: "/settings/connections",
+  },
+  // {
+  //   icon: <NotificationIcon />,
+  //   text: "Notification settings",
+  //   link: "/settings/notification-settings",
+  // },
+  {
+    icon: <SupportIcon />,
+    text: "Support",
+    link: "/settings/support",
+  },
+];
+
+const menuListBottom: SidebarMenuListChild = [
+  {
+    icon: <AscendIcon />,
+    text: "About Ascend",
+    link: "/settings/support",
+  },
+  {
+    icon: <LogoutIcon />,
+    text: "Logout",
+    link: "",
+  },
+];
+
 const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
+  const history = useHistory();
+
   const firstName = useMeStore((s) => s.me?.firstName);
   const name = useMeStore((s) => s.me?.name);
   const initials = userInitials(name);
@@ -84,6 +142,105 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
           Facilitator
         </Typography>
       </Stack>
+
+      <Grid container spacing={2} mt={0.5}>
+        <Grid item xs={6}>
+          <Paper
+            component={ButtonBase}
+            sx={{
+              p: 2,
+              flexDirection: "column",
+              textAlign: "left",
+              alignItems: "flex-start",
+            }}
+            onClick={() => {
+              history.push("/settings/account");
+              onClose();
+            }}
+          >
+            <Box component="img" src={AccountIMG} />
+            <Typography fontSize={16} fontWeight={600} color="#4D4D4D" mt={1}>
+              Edit account
+            </Typography>
+            <Typography fontSize={14} color="#808080">
+              Edit your account data, password, name, and more
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={6}>
+          <Paper
+            component={ButtonBase}
+            sx={{
+              p: 2,
+              flexDirection: "column",
+              textAlign: "left",
+              alignItems: "flex-start",
+            }}
+            onClick={() => {
+              history.push("/settings/group-settings");
+              onClose();
+            }}
+          >
+            <Box component="img" src={GroupIMG} />
+            <Typography fontSize={16} fontWeight={600} color="#4D4D4D" mt={1}>
+              Edit group
+            </Typography>
+            <Typography fontSize={14} color="#808080">
+              Add, edit or delete learners from the analytics
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, px: 1.5 }}>
+            <Stack
+              direction="column"
+              divider={<Divider sx={{ mx: 0.5, my: "4px!important" }} />}
+            >
+              {menuListTop.map(({ icon, text, link }) => {
+                return (
+                  <UserDrawerMenuItem
+                    key={link}
+                    icon={icon}
+                    text={text}
+                    link={link}
+                    onClick={onClose}
+                  />
+                );
+              })}
+            </Stack>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, px: 1.5 }}>
+            <Stack
+              direction="column"
+              divider={<Divider sx={{ mx: 0.5, my: "4px!important" }} />}
+            >
+              {menuListBottom.map(({ icon, text, link }) => {
+                return (
+                  <UserDrawerMenuItem
+                    key={link}
+                    icon={icon}
+                    text={text}
+                    link={link}
+                    onClick={onClose}
+                  />
+                );
+              })}
+            </Stack>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      <Typography
+        fontSize={12}
+        fontWeight={700}
+        color="#FFF"
+        mt={1}
+        textAlign="center"
+      >
+        Ascend {dayjs().year()} © All rights reserved
+      </Typography>
     </Drawer>
   );
 };

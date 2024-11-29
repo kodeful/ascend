@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import Home3EyesViewReport from "pages/home/components/Home3EyesViewReport/Home3EyesViewReport";
 import HomeGroupTrust from "pages/home/components/HomeGroupTrust/HomeGroupTrust";
 import HomeLearners from "pages/home/components/HomeLearners";
 
 import DataGroupMetrics from "./components/DataGroupMetrics/DataGroupMetrics";
+import DataLuminaGroupEvaluation from "./components/DataLumina/DataLuminaGroupEvaluation";
 
 const DataPage = () => {
   return (
@@ -44,11 +45,7 @@ const DataPage = () => {
           {/* Lumina */}
           <Grid container pt={1} spacing={2}>
             <Grid item xs={12}>
-              <Paper
-                sx={{
-                  height: 352,
-                }}
-              ></Paper>
+              <DataLuminaGroupEvaluation />
             </Grid>
           </Grid>
         </Grid>
@@ -65,11 +62,10 @@ const DataPage = () => {
               </Grid>
             </Grid>
 
-            <Typography variant="h5" color="#4D4D4D" mt={3}>
+            {/* <Typography variant="h5" color="#4D4D4D" mt={3}>
               ROI Calculator
             </Typography>
 
-            {/* ROI Calcualtor */}
             <Grid container pt={1} spacing={2}>
               <Grid item xs={12}>
                 <Paper
@@ -78,7 +74,7 @@ const DataPage = () => {
                   }}
                 ></Paper>
               </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Grid>
       </Grid>

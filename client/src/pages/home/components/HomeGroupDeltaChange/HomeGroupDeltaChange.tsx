@@ -17,6 +17,7 @@ const HomeGroupDeltaChange = () => {
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
         Showing Group Delta Change
       </Typography>
+
       <HomeGroupDeltaChangeGraph height={240} />
 
       <Stack direction="row" alignItems="center" spacing={1}>

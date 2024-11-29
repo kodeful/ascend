@@ -1,18 +1,5 @@
-import React, { useState, type FC } from "react";
-import {
-  KeyboardDoubleArrowLeft as KeyboardDoubleArrowLeftIcon,
-  KeyboardDoubleArrowRight as KeyboardDoubleArrowRightIcon,
-} from "@mui/icons-material";
-import {
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  Stack,
-  Toolbar,
-} from "@mui/material";
-// import Logo from "assets/icons/logo.png";
-import { Link } from "react-router-dom";
+import { type FC } from "react";
+import { Divider, Drawer, Stack, Toolbar } from "@mui/material";
 
 import AscendIcon from "components/icons/AscendIcon";
 import AscendTextIcon from "components/icons/AscendTextIcon";
@@ -23,47 +10,30 @@ interface DesktopSidebarDrawerProps {
   wideDrawerWidth: number;
   menuDrawerWidth: number;
   isDesktopDrawerShrinked: boolean;
-  toggleDesktopDrawer: () => void;
 }
 
 const DesktopSidebarDrawer: FC<DesktopSidebarDrawerProps> = ({
-  wideDrawerWidth,
   menuDrawerWidth,
   isDesktopDrawerShrinked,
-  toggleDesktopDrawer,
 }) => {
-  const [isMouseOver, setIsMouseOver] = useState<boolean>(false);
-
   return (
     <Drawer
       variant="permanent"
       sx={{
         "& .MuiDrawer-paper": {
-          width:
-            isDesktopDrawerShrinked && isMouseOver
-              ? wideDrawerWidth
-              : menuDrawerWidth,
-          transition: "width 0.1s ease-out",
+          width: menuDrawerWidth,
+          // transition: "width 0.1s ease-out",
           overflow: "hidden",
           border: "none",
           borderRadius: 0,
         },
       }}
     >
-      <Stack
-        direction="column"
-        overflow="hidden"
-        sx={{ height: "100%" }}
-        onMouseEnter={() => setIsMouseOver(true)}
-        onMouseLeave={() => setIsMouseOver(false)}
-      >
+      <Stack direction="column" overflow="hidden" sx={{ height: "100%" }}>
         <Toolbar
           sx={{
             display: "flex",
-            justifyContent:
-              !isDesktopDrawerShrinked || isMouseOver
-                ? "space-between"
-                : "center",
+            justifyContent: "flex-start",
             alignItems: "center",
             bgcolor: "primary.dark",
           }}
@@ -81,49 +51,19 @@ const DesktopSidebarDrawer: FC<DesktopSidebarDrawerProps> = ({
               <AscendIcon />
             </Stack>
 
-            <AscendTextIcon
-              sx={{
-                width: 80,
-                height: 16,
+            {!isDesktopDrawerShrinked && (
+              <AscendTextIcon
+                sx={{
+                  width: 80,
+                  height: 16,
 
-                "& path": {
-                  fill: "#FFF",
-                },
-              }}
-            />
+                  "& path": {
+                    fill: "#FFF",
+                  },
+                }}
+              />
+            )}
           </Stack>
-          {/* {(!isDesktopDrawerShrinked || isMouseOver) && (
-            <Box sx={{ pl: 2 }}>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="center"
-                component={Link}
-                to="/home"
-              >
-                <img
-                  alt="Logo"
-                  style={{
-                    height: 40,
-                    width: 40,
-                    objectFit: "contain",
-                    objectPosition: "0 50%",
-                  }}
-                  src={Logo}
-                />
-              </Stack>
-            </Box>
-          )} */}
-
-          {/* <Box sx={{ px: 1 }}>
-            <IconButton color="primary" onClick={toggleDesktopDrawer}>
-              {isDesktopDrawerShrinked ? (
-                <KeyboardDoubleArrowRightIcon />
-              ) : (
-                <KeyboardDoubleArrowLeftIcon />
-              )}
-            </IconButton>
-          </Box> */}
         </Toolbar>
         <Divider />
         <SidebarMenu />

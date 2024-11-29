@@ -3,8 +3,9 @@ import { Divider, MenuList, Stack } from "@mui/material";
 
 import AccountIcon from "components/icons/AccountIcon";
 import AscendIcon from "components/icons/AscendIcon";
-import HomeIcon from "components/icons/HomeIcon";
-import NotificationIcon from "components/icons/NotificationIcon";
+import ConnectionIcon from "components/icons/ConnectionIcon";
+// import NotificationIcon from "components/icons/NotificationIcon";
+import SupportIcon from "components/icons/SupportIcon";
 import type { SidebarMenuListChild } from "components/layouts/DefaultLayout/Sidebar/SidebarMenu/SidebarMenu";
 import SidebarMenuItem from "components/layouts/DefaultLayout/Sidebar/SidebarMenu/SidebarMenuItem";
 
@@ -20,17 +21,17 @@ const sidebarMenuList: SidebarMenuListChild = [
     link: "/settings/group-settings",
   },
   {
-    icon: <HomeIcon />,
+    icon: <ConnectionIcon />,
     text: "Connections",
     link: "/settings/connections",
   },
+  // {
+  //   icon: <NotificationIcon />,
+  //   text: "Notification settings",
+  //   link: "/settings/notification-settings",
+  // },
   {
-    icon: <NotificationIcon />,
-    text: "Notification settings",
-    link: "/settings/notification-settings",
-  },
-  {
-    icon: <HomeIcon />,
+    icon: <SupportIcon />,
     text: "Support",
     link: "/settings/support",
   },
