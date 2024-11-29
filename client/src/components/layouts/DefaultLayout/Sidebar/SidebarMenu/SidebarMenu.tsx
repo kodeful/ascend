@@ -1,5 +1,5 @@
 import { Dashboard as DashboardIcon } from "@mui/icons-material";
-import { Box, Divider, MenuList, Stack,  } from "@mui/material";
+import { Box, Divider, MenuList, Stack } from "@mui/material";
 
 import ChatIcon from "components/icons/ChatIcon";
 import DataIcon from "components/icons/DataIcon";
