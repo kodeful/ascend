@@ -114,6 +114,11 @@ const defaultThemeOptions: ThemeOptions = {
         margin: "dense",
         size: "small",
       },
+      styleOverrides: {
+        root: {
+          marginTop: "2px",
+        },
+      },
     },
     MuiFormHelperText: {
       defaultProps: {

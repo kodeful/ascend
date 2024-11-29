@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Typography, type TextFieldProps } from "@mui/material";
+import { Box, TextField, Typography, type TextFieldProps } from "@mui/material";
 import { useField } from "formik";
 
 import FieldErrorFeedbackFormatter from "components/forms/FieldErrorFeedbackFormatter";
@@ -21,7 +21,7 @@ const FormikTextField = ({ label, name, helperText, ...rest }: Props) => {
   }
 
   return (
-    <>
+    <Box>
       {label && (
         <Typography
           color="#0F172A"
@@ -41,7 +41,7 @@ const FormikTextField = ({ label, name, helperText, ...rest }: Props) => {
         {...field}
         {...rest}
       />
-    </>
+    </Box>
   );
 };
 
