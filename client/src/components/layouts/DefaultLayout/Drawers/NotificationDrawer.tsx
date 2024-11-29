@@ -1,7 +1,8 @@
 import { useMemo, type FC } from "react";
-import { Close } from "@mui/icons-material";
 import { Box, Drawer, Paper, Stack, Typography } from "@mui/material";
 import AlertNotificationIMG from "assets/imgs/notifications/alert-notification.jpeg";
+
+import CloseIcon from "components/icons/CloseIcon";
 
 // import { useHistory } from "react-router";
 
@@ -69,8 +70,11 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
       data-cy="user-drawer"
     >
       <Stack height={70} justifyContent="center">
-        <Close
-          sx={{ cursor: "pointer", fontSize: 30, color: "#FFF" }}
+        <CloseIcon
+          sx={{
+            cursor: "pointer",
+            "& svg path": { stroke: "#FFF" },
+          }}
           onClick={() => onClose()}
         />
       </Stack>

@@ -1,20 +1,8 @@
 import { type FC } from "react";
-import { ListItemAvatar } from "@material-ui/core";
-import {
-  Close,
-  ManageAccounts as ManageAccountsIcon,
-} from "@mui/icons-material";
-import {
-  Avatar,
-  Button,
-  Divider,
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Drawer, Stack, Typography } from "@mui/material";
+
+import CloseIcon from "components/icons/CloseIcon";
+import { useMeStore, userInitials } from "components/stores/MeStore";
 
 // import { useHistory } from "react-router";
 
@@ -24,7 +12,9 @@ type UserDrawerProps = {
 };
 
 const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
-  // const history = useHistory();
+  const firstName = useMeStore((s) => s.me?.firstName);
+  const name = useMeStore((s) => s.me?.name);
+  const initials = userInitials(name);
 
   return (
     <Drawer
@@ -55,10 +45,44 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
       data-cy="user-drawer"
     >
       <Stack height={70} justifyContent="center">
-        <Close
-          sx={{ cursor: "pointer", fontSize: 30, color: "#FFF" }}
+        <CloseIcon
+          sx={{
+            cursor: "pointer",
+            "& svg path": { stroke: "#FFF" },
+          }}
           onClick={() => onClose()}
         />
+      </Stack>
+
+      <Stack direction="column" alignItems="center">
+        <Avatar
+          sx={{
+            width: 80,
+            height: 80,
+            // backgroundColor: "#FFF",
+            // color: "primary.dark",
+            bgcolor: "primary.main",
+            color: "#FFF",
+            border: "2px solid #FFF",
+            fontSize: Math.min(40, 60 / initials.length),
+            fontWeight: 600,
+          }}
+          variant="circular"
+        >
+          {initials.toUpperCase()}
+        </Avatar>
+
+        <Typography fontSize={22} fontWeight={600} color="#FFF" mt={1}>
+          {firstName}
+        </Typography>
+        <Typography
+          fontSize={16}
+          fontWeight={600}
+          color="#FFE4B0"
+          lineHeight={1}
+        >
+          Facilitator
+        </Typography>
       </Stack>
     </Drawer>
   );

@@ -13,7 +13,6 @@
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier . --check",
     "format:fix": "npm run format -- --write",
-    "prepare": "husky install",
     "test:staged": "cross-env CI=true craco test --findRelatedTests",
     "eject": "craco eject",
     "sync-sort-translations": "node src/utils/translations/syncSortTranslations.js",
