@@ -1,5 +1,6 @@
 import { map, split } from "lodash";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 // import { PermissionsType } from "./permissions";
 
@@ -19,12 +20,24 @@ const ME_INITIAL_STATE: MeState = {
   me: null,
 };
 
-const useMeStore = create<MeState & MeActions>((set, _get) => ({
-  ...ME_INITIAL_STATE,
-  setToken: (token) => set({ token }),
-  setMe: (me) => set({ me }),
-  reset: () => set(ME_INITIAL_STATE),
-}));
+const useMeStore = create<MeState & MeActions>()(
+  persist(
+    (set, _get) => ({
+      ...ME_INITIAL_STATE,
+      setToken: (token: string) => set({ token }),
+      setMe: (me: any) => set({ me }),
+      reset: () => set(ME_INITIAL_STATE),
+    }),
+    {
+      name: "me-store",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        token: state.token,
+        me: state.me,
+      }),
+    },
+  ),
+);
 
 // for debugging
 // useMeStore.subscribe(console.log);

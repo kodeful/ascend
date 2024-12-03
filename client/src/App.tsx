@@ -4,6 +4,7 @@ import ChatAiPage from "pages/chat-ai/ChatAiPage";
 import DataPage from "pages/data/DataPage";
 import HomePage from "pages/home/HomePage";
 import LearnerDetailsPage from "pages/learner/details/LearnerDetailsPage";
+import CreateReportPage from "pages/report/create/CreateReportPage";
 import ReportPage from "pages/report/ReportPage";
 // import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
 import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
@@ -30,6 +31,12 @@ const App = () => {
         <PrivateRoute exact component={HomePage} path="/home" />
         <PrivateRoute exact component={DataPage} path="/data" />
         <PrivateRoute exact component={ReportPage} path="/report" />
+        <PrivateRoute
+          exact
+          component={CreateReportPage}
+          path="/report/create"
+          shrinked
+        />
         <PrivateRoute exact component={ChatAiPage} path="/chat-ai" />
 
         <PrivateRoute

@@ -3,6 +3,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
 
 import FormikTextField from "components/forms/FormikTextField";
+import { openModal } from "components/modals/ModalsStore";
 
 import SettingsPageLayout from "../SettingsPageLayout";
 import GroupUsersDataGrid from "./components/GroupUsersDataGrid";
@@ -55,6 +56,9 @@ const SettingsGroupSettingsPage = () => {
                       minHeight: "auto",
                       height: "auto",
                       fontSize: 14,
+                    }}
+                    onClick={() => {
+                      openModal("add-user");
                     }}
                   >
                     Add User

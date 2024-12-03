@@ -24,7 +24,9 @@ const UserDrawerMenuItem: FC<SidebarMenuItemsProps> = ({
         },
       }}
       onClick={() => {
-        history.push(link);
+        if (link) {
+          history.push(link);
+        }
         onClick?.();
       }}
       selected={false}

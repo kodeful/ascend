@@ -21,7 +21,11 @@ const FormikTextField = ({ label, name, helperText, ...rest }: Props) => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        opacity: rest.disabled ? 0.5 : 1,
+      }}
+    >
       {label && (
         <Typography
           color="#0F172A"

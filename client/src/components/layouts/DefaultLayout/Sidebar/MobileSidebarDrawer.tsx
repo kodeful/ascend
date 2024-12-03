@@ -50,7 +50,7 @@ const MobileSidebarDrawer: FC<MobileSidebarDrawerProps> = ({
         </Box>
       </Toolbar>
       <Divider />
-      <SidebarMenu onClose={toggleMobileDrawer} />
+      <SidebarMenu />
     </Drawer>
   );
 };

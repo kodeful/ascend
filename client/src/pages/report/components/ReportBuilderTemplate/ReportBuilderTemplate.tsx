@@ -1,5 +1,6 @@
 import React, { type FC } from "react";
 import { alpha, ButtonBase, Paper, Stack, Typography } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 import PageIcon from "components/icons/PageIcon";
 
@@ -8,6 +9,8 @@ interface ReportBuilderTemplateProps {
 }
 
 const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({ title }) => {
+  const history = useHistory();
+
   return (
     <Paper
       component={ButtonBase}
@@ -28,6 +31,7 @@ const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({ title }) => {
             `0px 4px 4px ${alpha(theme.palette.primary.main, 0.25)}`,
         },
       }}
+      onClick={() => history.push("/report/create")}
     >
       <Stack width="100%" height={20} bgcolor="#E1D7CB" position="relative">
         <Stack

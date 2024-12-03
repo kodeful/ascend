@@ -5,7 +5,7 @@ import { useHistory, useLocation } from "react-router-dom";
 export interface SidebarMenuItemsProps {
   icon: JSX.Element;
   text: string | JSX.Element;
-  link: string;
+  link?: string;
   onClick?: () => void;
   colors?: {
     active: string;
@@ -25,12 +25,14 @@ const SidebarMenuItem = ({
   const history = useHistory();
   const { pathname } = useLocation();
 
-  const isSelected = pathname.includes(link);
+  const isSelected = Boolean(link && pathname.includes(link));
 
   return (
     <MenuItem
       onClick={() => {
-        history.push(link);
+        if (link) {
+          history.push(link);
+        }
         onClick && onClick();
       }}
       sx={{

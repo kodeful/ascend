@@ -59,69 +59,82 @@ const FormikAutocomplete = <
     options.find((option) => option.value === field.value) ?? null;
 
   return (
-    <Autocomplete
-      size={size}
-      options={options}
-      onChange={async (_e, value) => {
-        helpers.setValue(value !== null ? value.value : null);
-      }}
-      // couldn't satisfy typescript, but 99.9% will work.
-      // @ts-expect-error
-      value={autocompleteValue}
-      onBlur={field.onBlur}
-      loading={loading}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          name={field.name}
-          label={label}
-          error={meta.touched && !!meta.error}
-          helperText={
-            meta.touched && meta.error ? (
-              <FieldErrorFeedbackFormatter error={meta.error} />
-            ) : (
-              helperText
-            )
-          }
-          size={size}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-          {...TextFieldProps}
-        />
+    <Box>
+      {label && (
+        <Typography
+          color="#0F172A"
+          fontSize={14}
+          fontWeight={500}
+          textAlign="left"
+        >
+          {label}
+        </Typography>
       )}
-      renderOption={(props, option) => {
-        return (
-          <Box component="li" {...props} key={option.value}>
-            <Typography
-              sx={{
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-              }}
-            >
-              {option.label}
-            </Typography>
-          </Box>
-        );
-      }}
-      sx={{
-        "& .MuiAutocomplete-groupLabel": {
-          backgroundColor: alpha(theme.palette.primary.main, 0.6),
-        },
 
-        ...rest.sx,
-      }}
-      {...rest}
-    />
+      <Autocomplete
+        size={size}
+        options={options}
+        onChange={async (_e, value) => {
+          helpers.setValue(value !== null ? value.value : null);
+        }}
+        // couldn't satisfy typescript, but 99.9% will work.
+        // @ts-expect-error
+        value={autocompleteValue}
+        onBlur={field.onBlur}
+        loading={loading}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            name={field.name}
+            label=""
+            error={meta.touched && !!meta.error}
+            helperText={
+              meta.touched && meta.error ? (
+                <FieldErrorFeedbackFormatter error={meta.error} />
+              ) : (
+                helperText
+              )
+            }
+            size={size}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+            {...TextFieldProps}
+          />
+        )}
+        renderOption={(props, option) => {
+          return (
+            <Box component="li" {...props} key={option.value}>
+              <Typography
+                sx={{
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                }}
+              >
+                {option.label}
+              </Typography>
+            </Box>
+          );
+        }}
+        sx={{
+          "& .MuiAutocomplete-groupLabel": {
+            backgroundColor: alpha(theme.palette.primary.main, 0.6),
+          },
+
+          ...rest.sx,
+        }}
+        {...rest}
+      />
+    </Box>
   );
 };
 

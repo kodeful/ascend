@@ -6,6 +6,7 @@ import HomeIcon from "components/icons/HomeIcon";
 import LogoutIcon from "components/icons/LogoutIcon";
 import ReportIcon from "components/icons/ReportIcon";
 import SettingsIcon from "components/icons/SettingsIcon";
+import { openModal } from "components/modals/ModalsStore";
 
 // import { FormattedMessage } from "react-intl";
 
@@ -53,15 +54,17 @@ const sidebarMenuListBottom: SidebarMenuListChild = [
   {
     icon: <LogoutIcon />,
     text: "Logout",
-    link: "/logout",
+    onClick: () => {
+      openModal("logout");
+    },
   },
 ];
 
-interface SidebarMenuProps {
-  onClose?: () => void;
-}
+// interface SidebarMenuProps {
+//   onClose?: () => void;
+// }
 
-const SidebarMenu = ({ onClose }: SidebarMenuProps) => {
+const SidebarMenu = () => {
   return (
     <MenuList
       sx={{
@@ -86,14 +89,14 @@ const SidebarMenu = ({ onClose }: SidebarMenuProps) => {
         overflow="hidden"
       >
         <Stack flex={1}>
-          {sidebarMenuList.map(({ icon, text, link }) => {
+          {sidebarMenuList.map(({ icon, text, link, onClick }) => {
             return (
               <SidebarMenuItem
                 key={link}
                 icon={icon}
                 text={text}
                 link={link}
-                onClick={onClose}
+                onClick={onClick}
               />
             );
           })}
@@ -102,14 +105,14 @@ const SidebarMenu = ({ onClose }: SidebarMenuProps) => {
         <Divider sx={{ mx: 2, my: 1.5 }} />
 
         <Stack>
-          {sidebarMenuListBottom.map(({ icon, text, link }) => {
+          {sidebarMenuListBottom.map(({ icon, text, link, onClick }) => {
             return (
               <SidebarMenuItem
                 key={link}
                 icon={icon}
                 text={text}
                 link={link}
-                onClick={onClose}
+                onClick={onClick}
               />
             );
           })}

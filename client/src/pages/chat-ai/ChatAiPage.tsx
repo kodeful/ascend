@@ -1,5 +1,7 @@
 import React from "react";
-import { Grid, Paper, Stack, Typography } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
+
+import Chat from "./components/Chat";
 
 const ChatAiPage = () => {
   return (
@@ -16,7 +18,7 @@ const ChatAiPage = () => {
 
       <Grid container spacing={2} mt={2} height="100%">
         <Grid item xs={8}>
-          <Paper sx={{ height: "100%" }}></Paper>
+          <Chat />
         </Grid>
         <Grid item xs={4}>
           <Typography variant="h5" color="#4D4D4D">

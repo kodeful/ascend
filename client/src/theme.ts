@@ -149,11 +149,11 @@ const defaultThemeOptions: ThemeOptions = {
         root: {
           backgroundColor: "#fff",
           "&.Mui-disabled": {
-            backgroundColor: "#f9f8f5",
+            backgroundColor: "#fff",
           },
         },
         input: {
-          fontSize: 16,
+          fontSize: 14,
           "&::placeholder": {
             color: "#646C60",
             opacity: 0.5,
@@ -206,7 +206,14 @@ const defaultThemeOptions: ThemeOptions = {
     MuiDialog: {
       defaultProps: {
         fullWidth: true,
-        maxWidth: "sm",
+        maxWidth: "xs",
+      },
+      styleOverrides: {
+        paper: {
+          padding: 24,
+          border: "1px solid #CBD5E1",
+          borderRadius: 15,
+        },
       },
     },
     MuiTooltip: {
@@ -233,7 +240,23 @@ const defaultThemeOptions: ThemeOptions = {
       styleOverrides: {
         paper: {
           marginTop: "2px",
-          border: "1px solid #C5C3C5",
+          border: "1px solid #CBD5E1",
+          borderRadius: "6px",
+          fontSize: 14,
+        },
+        listbox: {
+          paddingTop: 5,
+          paddingBottom: 5,
+        },
+        noOptions: {
+          paddingTop: 10,
+          paddingBottom: 10,
+          color: "#94A3B8",
+        },
+        option: {
+          "& .MuiTypography-root": {
+            fontSize: 14,
+          },
         },
       },
     },

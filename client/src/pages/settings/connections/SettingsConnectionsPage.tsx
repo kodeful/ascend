@@ -1,14 +1,29 @@
 import React from "react";
 import { Box, ButtonBase, Paper, Stack, Typography } from "@mui/material";
 import ExcelIMG from "assets/imgs/connections/excel.png";
+import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
+import LearnDashIMG from "assets/imgs/connections/learn-dash.png";
 import LuminaIMG from "assets/imgs/connections/lumina.png";
+import MoodleIMG from "assets/imgs/connections/moodle.png";
 
 import SettingsPageLayout from "../SettingsPageLayout";
 
 const connectApps = [
   {
+    img: LearnDashIMG,
+    title: "LearnDash LMS",
+  },
+  {
+    img: MoodleIMG,
+    title: "Moodle LMS",
+  },
+  {
     img: LuminaIMG,
     title: "Lumina",
+  },
+  {
+    img: GoogleSheetsIMG,
+    title: "Google Form",
   },
 ];
 const importData = [
@@ -38,7 +53,7 @@ const SettingsConnectionsPage = () => {
             Connect apps
           </Typography>
 
-          <Stack direction="row">
+          <Stack direction="row" gap={2} flexWrap="wrap">
             {connectApps.map((app) => (
               <Paper
                 component={ButtonBase}
@@ -80,7 +95,7 @@ const SettingsConnectionsPage = () => {
             Import data
           </Typography>
 
-          <Stack direction="row">
+          <Stack direction="row" gap={2} flexWrap="wrap">
             {importData.map((app) => (
               <Paper
                 component={ButtonBase}

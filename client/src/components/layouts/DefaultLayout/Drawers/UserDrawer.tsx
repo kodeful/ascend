@@ -21,6 +21,7 @@ import ConnectionIcon from "components/icons/ConnectionIcon";
 import LogoutIcon from "components/icons/LogoutIcon";
 import SettingsIcon from "components/icons/SettingsIcon";
 import SupportIcon from "components/icons/SupportIcon";
+import { openModal } from "components/modals/ModalsStore";
 import { useMeStore, userInitials } from "components/stores/MeStore";
 
 import type { SidebarMenuListChild } from "../Sidebar/SidebarMenu/SidebarMenu";
@@ -63,7 +64,9 @@ const menuListBottom: SidebarMenuListChild = [
   {
     icon: <LogoutIcon />,
     text: "Logout",
-    link: "",
+    onClick: () => {
+      openModal("logout");
+    },
   },
 ];
 
@@ -196,14 +199,14 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
               direction="column"
               divider={<Divider sx={{ mx: 0.5, my: "4px!important" }} />}
             >
-              {menuListTop.map(({ icon, text, link }) => {
+              {menuListTop.map(({ icon, text, link, onClick }) => {
                 return (
                   <UserDrawerMenuItem
                     key={link}
                     icon={icon}
                     text={text}
                     link={link}
-                    onClick={onClose}
+                    onClick={onClick}
                   />
                 );
               })}
@@ -216,14 +219,14 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
               direction="column"
               divider={<Divider sx={{ mx: 0.5, my: "4px!important" }} />}
             >
-              {menuListBottom.map(({ icon, text, link }) => {
+              {menuListBottom.map(({ icon, text, link, onClick }) => {
                 return (
                   <UserDrawerMenuItem
                     key={link}
                     icon={icon}
                     text={text}
                     link={link}
-                    onClick={onClose}
+                    onClick={onClick}
                   />
                 );
               })}
