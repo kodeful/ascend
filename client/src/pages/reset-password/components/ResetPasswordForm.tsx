@@ -13,7 +13,6 @@ const ResetPasswordForm = () => {
     initialValues: {
       email: "",
     },
-
     validationSchema: yup.object({
       email: yup.string().email().required(),
     }),

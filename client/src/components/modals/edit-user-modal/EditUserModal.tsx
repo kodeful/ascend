@@ -4,6 +4,7 @@ import { Button, Dialog, Divider, Grid, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { Form, FormikProvider, useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
+import * as yup from "yup";
 
 import type { User } from "api/generated/models";
 import { useUserControllerUpdateUser } from "api/generated/user/user";
@@ -30,6 +31,13 @@ const EditUserModal: FC<EditUserModalProps> = ({
       phone: user?.phone || "",
       username: user?.username || "",
     },
+    validationSchema: yup.object({
+      email: yup.string().email().required(),
+      firstName: yup.string().required(),
+      lastName: yup.string().required(),
+      phone: yup.string().optional(),
+      username: yup.string().required(),
+    }),
     enableReinitialize: true,
     onSubmit: async (values) => {
       await updateUser({

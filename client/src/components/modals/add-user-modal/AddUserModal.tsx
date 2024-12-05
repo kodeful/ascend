@@ -12,6 +12,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { Form, FormikProvider, useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
+import * as yup from "yup";
 
 import { UserRole } from "api/generated/models";
 import { useUserControllerCreateUser } from "api/generated/user/user";
@@ -38,6 +39,19 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
       password: "",
       confirmPassword: "",
     },
+    validationSchema: yup.object({
+      email: yup.string().email().required(),
+      firstName: yup.string().required(),
+      lastName: yup.string().required(),
+      phone: yup.string().optional(),
+      username: yup.string().required(),
+      role: yup.string().nullable().required(),
+      password: yup.string().required().min(8),
+      confirmPassword: yup
+        .string()
+        .oneOf([yup.ref("password")], "Passwords must match")
+        .required(),
+    }),
     onSubmit: async (values) => {
       createUser({
         data: {

@@ -1,11 +1,17 @@
 import React from "react";
-import { Box, Button, Stack } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Box, Stack } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { Form, FormikProvider, useFormik } from "formik";
+import { enqueueSnackbar } from "notistack";
 
+import { useUserControllerUpdateMe } from "api/generated/user/user";
 import FormikTextField from "components/forms/FormikTextField";
 import { useMeStore } from "components/stores/MeStore";
 
 const SettingsAccountInfoForm = () => {
+  const queryClient = useQueryClient();
+
   const formik = useFormik({
     initialValues: {
       username: useMeStore.getState().me?.username || "",
@@ -13,8 +19,26 @@ const SettingsAccountInfoForm = () => {
       lastName: useMeStore.getState().me?.lastName || "",
       email: useMeStore.getState().me?.email || "",
     },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await updateMe({
+        data: {
+          email: values.email,
+          firstName: values.firstName,
+          lastName: values.lastName,
+        },
+      });
+    },
+  });
+
+  const { mutateAsync: updateMe, isLoading } = useUserControllerUpdateMe({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["me"]);
+
+        enqueueSnackbar("Account updated successfully", {
+          variant: "success",
+        });
+      },
     },
   });
 
@@ -28,7 +52,7 @@ const SettingsAccountInfoForm = () => {
           <FormikTextField name="email" label="Email" />
 
           <Box textAlign="right" pt={1}>
-            <Button
+            <LoadingButton
               type="submit"
               variant="contained"
               sx={{
@@ -38,9 +62,10 @@ const SettingsAccountInfoForm = () => {
                 fontSize: 14,
                 minWidth: 80,
               }}
+              loading={isLoading}
             >
               Save
-            </Button>
+            </LoadingButton>
           </Box>
         </Stack>
       </Form>

@@ -12,6 +12,8 @@ export * from "./filterUsersResponse";
 export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./meResponse";
+export * from "./updateMeBody";
+export * from "./updateMeChangePasswordBody";
 export * from "./updateUserBody";
 export * from "./user";
 export * from "./userControllerFilterUsersParams";

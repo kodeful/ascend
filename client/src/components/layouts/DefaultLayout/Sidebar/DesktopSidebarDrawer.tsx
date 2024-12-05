@@ -7,7 +7,6 @@ import AscendTextIcon from "components/icons/AscendTextIcon";
 import SidebarMenu from "./SidebarMenu/SidebarMenu";
 
 interface DesktopSidebarDrawerProps {
-  wideDrawerWidth: number;
   menuDrawerWidth: number;
   isDesktopDrawerShrinked: boolean;
 }
@@ -66,7 +65,7 @@ const DesktopSidebarDrawer: FC<DesktopSidebarDrawerProps> = ({
           </Stack>
         </Toolbar>
         <Divider />
-        <SidebarMenu />
+        <SidebarMenu expanded={!isDesktopDrawerShrinked} />
       </Stack>
     </Drawer>
   );

@@ -22,6 +22,8 @@ import type {
   CreateUserBody,
   FilterUsersResponse,
   MeResponse,
+  UpdateMeBody,
+  UpdateMeChangePasswordBody,
   UpdateUserBody,
   UserControllerFilterUsersParams,
 } from ".././models";
@@ -92,6 +94,152 @@ export function useUserControllerMe<
   return query;
 }
 
+/**
+ * @summary Update me
+ */
+export const userControllerUpdateMe = (updateMeBody?: UpdateMeBody) => {
+  return axiosInstance<unknown>({
+    url: `/user/me`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: updateMeBody,
+  });
+};
+
+export const getUserControllerUpdateMeMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerUpdateMe>>,
+    TError,
+    { data: UpdateMeBody },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof userControllerUpdateMe>>,
+  TError,
+  { data: UpdateMeBody },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof userControllerUpdateMe>>,
+    { data: UpdateMeBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return userControllerUpdateMe(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerUpdateMeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof userControllerUpdateMe>>
+>;
+export type UserControllerUpdateMeMutationBody = UpdateMeBody;
+export type UserControllerUpdateMeMutationError = unknown;
+
+/**
+ * @summary Update me
+ */
+export const useUserControllerUpdateMe = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerUpdateMe>>,
+    TError,
+    { data: UpdateMeBody },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof userControllerUpdateMe>>,
+  TError,
+  { data: UpdateMeBody },
+  TContext
+> => {
+  const mutationOptions = getUserControllerUpdateMeMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Update me change password
+ */
+export const userControllerUpdateMeChangePassword = (
+  updateMeChangePasswordBody?: UpdateMeChangePasswordBody,
+) => {
+  return axiosInstance<unknown>({
+    url: `/user/me/change-password`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: updateMeChangePasswordBody,
+  });
+};
+
+export const getUserControllerUpdateMeChangePasswordMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerUpdateMeChangePassword>>,
+    TError,
+    { data: UpdateMeChangePasswordBody },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof userControllerUpdateMeChangePassword>>,
+  TError,
+  { data: UpdateMeChangePasswordBody },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof userControllerUpdateMeChangePassword>>,
+    { data: UpdateMeChangePasswordBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return userControllerUpdateMeChangePassword(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerUpdateMeChangePasswordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof userControllerUpdateMeChangePassword>>
+>;
+export type UserControllerUpdateMeChangePasswordMutationBody =
+  UpdateMeChangePasswordBody;
+export type UserControllerUpdateMeChangePasswordMutationError = unknown;
+
+/**
+ * @summary Update me change password
+ */
+export const useUserControllerUpdateMeChangePassword = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerUpdateMeChangePassword>>,
+    TError,
+    { data: UpdateMeChangePasswordBody },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof userControllerUpdateMeChangePassword>>,
+  TError,
+  { data: UpdateMeChangePasswordBody },
+  TContext
+> => {
+  const mutationOptions =
+    getUserControllerUpdateMeChangePasswordMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * @summary Filter users
  */

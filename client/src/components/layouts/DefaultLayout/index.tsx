@@ -1,4 +1,4 @@
-import React, { type FC } from "react";
+import React, { useMemo, type FC } from "react";
 import { Box, useMediaQuery, type Theme } from "@mui/material";
 
 import ScrollTopProvider from "components/providers/ScrollTopProvider";
@@ -19,7 +19,10 @@ const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
     theme.breakpoints.down("lg"),
   );
 
-  const isDesktopDrawerShrinked = isTablet || shrinked;
+  const isDesktopDrawerShrinked = useMemo(
+    () => isTablet || shrinked,
+    [isTablet, shrinked],
+  );
 
   return (
     <ScrollTopProvider>

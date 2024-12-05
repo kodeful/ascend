@@ -29,6 +29,7 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
 
   const { data: currentUserResponse } = useUserControllerMe({
     query: {
+      queryKey: ["me"],
       enabled: Boolean(token),
       onError: (err: AxiosError) => {
         if (err.response?.status === 404) {

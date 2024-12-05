@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { Divider, MenuList, Stack } from "@mui/material";
 
 import ChatIcon from "components/icons/ChatIcon";
@@ -60,11 +61,12 @@ const sidebarMenuListBottom: SidebarMenuListChild = [
   },
 ];
 
-// interface SidebarMenuProps {
-//   onClose?: () => void;
-// }
+interface SidebarMenuProps {
+  expanded: boolean;
+  //   onClose?: () => void;
+}
 
-const SidebarMenu = () => {
+const SidebarMenu: FC<SidebarMenuProps> = ({ expanded }) => {
   return (
     <MenuList
       sx={{
@@ -97,6 +99,7 @@ const SidebarMenu = () => {
                 text={text}
                 link={link}
                 onClick={onClick}
+                tooltip={!expanded}
               />
             );
           })}
@@ -113,6 +116,7 @@ const SidebarMenu = () => {
                 text={text}
                 link={link}
                 onClick={onClick}
+                tooltip={!expanded}
               />
             );
           })}

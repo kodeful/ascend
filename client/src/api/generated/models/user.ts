@@ -12,7 +12,7 @@ export interface User {
   _id: string;
   email: string;
   firstName: string;
-  fullName: string;
+  fullName?: string;
   lastName: string;
   /** @pattern ^[0-9a-fA-F]{24}$ */
   organisation: string;

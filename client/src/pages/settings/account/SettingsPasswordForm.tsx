@@ -1,7 +1,10 @@
 import React from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Box, Stack, Typography } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
+import { enqueueSnackbar } from "notistack";
 
+import { useUserControllerUpdateMeChangePassword } from "api/generated/user/user";
 import FormikTextField from "components/forms/FormikTextField";
 
 const SettingsPasswordForm = () => {
@@ -10,10 +13,30 @@ const SettingsPasswordForm = () => {
       currentPassword: "",
       newPassword: "",
     },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await changePassword({
+        data: {
+          oldPassword: values.currentPassword,
+          newPassword: values.newPassword,
+        },
+      });
     },
   });
+
+  const { resetForm } = formik;
+
+  const { mutateAsync: changePassword, isLoading } =
+    useUserControllerUpdateMeChangePassword({
+      mutation: {
+        onSuccess: async () => {
+          enqueueSnackbar("Password updated successfully", {
+            variant: "success",
+          });
+
+          resetForm();
+        },
+      },
+    });
 
   return (
     <FormikProvider value={formik}>
@@ -55,7 +78,7 @@ const SettingsPasswordForm = () => {
             </Box>
 
             <Box>
-              <Button
+              <LoadingButton
                 type="submit"
                 variant="contained"
                 sx={{
@@ -65,9 +88,10 @@ const SettingsPasswordForm = () => {
                   fontSize: 14,
                   minWidth: 80,
                 }}
+                loading={isLoading}
               >
                 Save
-              </Button>
+              </LoadingButton>
             </Box>
           </Stack>
         </Stack>

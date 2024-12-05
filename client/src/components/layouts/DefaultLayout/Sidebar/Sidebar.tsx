@@ -39,7 +39,6 @@ const Sidebar: FC<SidebarProps> = ({ isDesktopDrawerShrinked }) => {
 
       {!isMobile && (
         <DesktopSidebarDrawer
-          wideDrawerWidth={wideDrawerWidth}
           menuDrawerWidth={menuDrawerWidth}
           isDesktopDrawerShrinked={isDesktopDrawerShrinked}
         />
