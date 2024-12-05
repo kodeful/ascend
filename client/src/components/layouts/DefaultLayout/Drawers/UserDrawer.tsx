@@ -74,7 +74,7 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
   const history = useHistory();
 
   const firstName = useMeStore((s) => s.me?.firstName);
-  const name = useMeStore((s) => [s.me?.firstName, s.me?.lastName].join(" "));
+  const name = useMeStore((s) => s.me?.fullName);
   const role = useMeStore((s) => s.me?.role);
   const initials = userInitials(name);
 

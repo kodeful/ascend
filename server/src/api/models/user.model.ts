@@ -1,4 +1,4 @@
-import { Ref, getModelForClass, prop } from '@typegoose/typegoose';
+import { Ref, getModelForClass, pre, prop } from '@typegoose/typegoose';
 import { Expose, Transform } from 'class-transformer';
 import {
   IsEmail,
@@ -20,6 +20,19 @@ export enum UserRole {
   FACILITATOR = 'Facilitator',
 }
 
+@pre<User>('save', async function () {
+  this.fullName = [this.firstName, this.lastName].join(' ');
+})
+@pre<User>('findOneAndUpdate', async function () {
+  //@ts-expect-error
+  let user = await this.model.findOne(this.getQuery()).lean();
+  if (!user) return;
+  //@ts-expect-error
+  user = { ...user, ...this._update };
+
+  //@ts-expect-error
+  this._update.fullName = [user.firstName, user.lastName].join(' ');
+})
 export class User extends Document {
   @Expose()
   @IsMongoId()
@@ -46,6 +59,12 @@ export class User extends Document {
   @IsString()
   @prop({ type: String, required: true })
   public lastName: string;
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @prop({ type: String })
+  public fullName: string;
 
   @Expose()
   @IsEmail()

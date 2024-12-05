@@ -1,47 +1,77 @@
 import React, { useMemo } from "react";
-import { Typography } from "@mui/material";
+import { ChevronRight } from "@mui/icons-material";
+import { ButtonBase, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 
+import { useUserControllerFilterUsers } from "api/generated/user/user";
 import DataGrid from "components/DataGrid/DataGrid";
+import { openModal } from "components/modals/ModalsStore";
 
 const GroupUsersDataGrid = () => {
+  const { data: users, isLoading } = useUserControllerFilterUsers(
+    {
+      limit: -1,
+    },
+    {
+      query: {
+        queryKey: ["users"],
+      },
+    },
+  );
+
   const columns = useMemo<GridColDef<any, any>[]>(
     () => [
       {
         field: "username",
         headerName: "Username",
-        // headerAlign: "center",
-        // type: "boolean",
-        // width: 120,
-        // editable: true,
         flex: 1,
       },
       {
-        field: "name",
+        field: "fullName",
         headerName: "Name",
-        // headerAlign: "center",
-        // type: "boolean",
-        // width: 120,
-        // editable: true,
         flex: 1,
       },
       {
         field: "role",
         headerName: "Role",
-        // headerAlign: "center",
-        // type: "boolean",
-        // width: 120,
-        // editable: true,
         flex: 1,
       },
       {
         field: "email",
         headerName: "Email",
-        // headerAlign: "center",
-        // type: "boolean",
-        // width: 120,
-        // editable: true,
         flex: 1,
+      },
+      {
+        field: "actions",
+        headerName: "",
+        width: 100,
+        align: "right",
+        renderCell: ({ row }) => (
+          <ButtonBase
+            sx={{
+              border: "1px solid #CBD5E1",
+              padding: "5px 6px 5px 12px",
+              borderRadius: "20px",
+              backgroundColor: "#FFFFFF",
+              mt: -0.4,
+            }}
+            onClick={() => {
+              openModal("edit-user", {
+                user: row,
+              });
+            }}
+          >
+            <Typography fontSize={12} fontWeight={600} color="#535851">
+              Edit
+            </Typography>
+            <ChevronRight
+              sx={{
+                fontSize: 16,
+                color: "#94a3b8",
+              }}
+            />
+          </ButtonBase>
+        ),
       },
     ],
     [],
@@ -51,22 +81,8 @@ const GroupUsersDataGrid = () => {
     <>
       <DataGrid
         columns={columns}
-        rows={[
-          {
-            id: 1,
-            username: "johndoe",
-            name: "John Doe",
-            role: "Admin",
-            email: "",
-          },
-          {
-            id: 2,
-            username: "johndoe",
-            name: "John Doe",
-            role: "Admin",
-            email: "",
-          },
-        ]}
+        loading={isLoading}
+        rows={users?.data || []}
       />
 
       <Typography
@@ -77,7 +93,8 @@ const GroupUsersDataGrid = () => {
           opacity: 0.5,
         }}
       >
-        Showing <b>8</b> of <b>8</b> users
+        Showing <b>{users?.data?.length}</b> of {/* @ts-expect-error */}
+        <b>{users?.meta?.pagination?.totalResults}</b> users
       </Typography>
     </>
   );

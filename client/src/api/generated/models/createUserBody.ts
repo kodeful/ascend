@@ -5,19 +5,14 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { UserRole } from "./userRole";
+import type { CreateUserBodyRole } from "./createUserBodyRole";
 
-export interface User {
-  /** @pattern ^[0-9a-fA-F]{24}$ */
-  _id: string;
+export interface CreateUserBody {
   email: string;
   firstName: string;
-  fullName: string;
   lastName: string;
-  /** @pattern ^[0-9a-fA-F]{24}$ */
-  organisation: string;
   password: string;
   phone?: string;
-  role: UserRole;
+  role: CreateUserBodyRole;
   username: string;
 }

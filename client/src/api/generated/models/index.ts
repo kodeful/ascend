@@ -6,8 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from "./createUserBody";
+export * from "./createUserBodyRole";
+export * from "./filterUsersResponse";
 export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./meResponse";
+export * from "./updateUserBody";
 export * from "./user";
+export * from "./userControllerFilterUsersParams";
 export * from "./userRole";

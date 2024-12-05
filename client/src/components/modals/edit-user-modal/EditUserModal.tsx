@@ -1,53 +1,45 @@
 import { type FC } from "react";
-import { InfoOutlined } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import {
-  Button,
-  Dialog,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Dialog, Divider, Grid, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { Form, FormikProvider, useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
 
-import { UserRole } from "api/generated/models";
-import { useUserControllerCreateUser } from "api/generated/user/user";
-import FormikAutocomplete, {
-  valueOptions,
-} from "components/forms/FormikAutocomplete";
+import type { User } from "api/generated/models";
+import { useUserControllerUpdateUser } from "api/generated/user/user";
 import FormikTextField from "components/forms/FormikTextField";
 
 import type { ModalProps } from "../ModalProps";
 
-type AddUserModalProps = ModalProps;
+type EditUserModalProps = ModalProps & {
+  user: User;
+};
 
-const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
+const EditUserModal: FC<EditUserModalProps> = ({
+  visible,
+  handleClose,
+  user,
+}) => {
   const queryClient = useQueryClient();
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      firstName: "",
-      lastName: "",
-      phone: "",
-      username: "",
-      role: null,
-      password: "",
-      confirmPassword: "",
+      email: user?.email || "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      phone: user?.phone || "",
+      username: user?.username || "",
     },
+    enableReinitialize: true,
     onSubmit: async (values) => {
-      createUser({
+      await updateUser({
+        userId: user?._id,
         data: {
           email: values.email,
           firstName: values.firstName,
           lastName: values.lastName,
           phone: values.phone,
           username: values.username,
-          role: values.role as unknown as UserRole,
-          password: values.password,
         },
       });
     },
@@ -55,13 +47,12 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
 
   const { resetForm } = formik;
 
-  const { mutateAsync: createUser, isLoading } = useUserControllerCreateUser({
+  const { mutateAsync: updateUser, isLoading } = useUserControllerUpdateUser({
     mutation: {
       onSuccess: async () => {
         await queryClient.invalidateQueries(["users"]);
 
-        enqueueSnackbar("User created successfully", { variant: "success" });
-        resetForm();
+        enqueueSnackbar("User updated successfully", { variant: "success" });
         handleClose();
       },
     },
@@ -70,7 +61,7 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
   return (
     <Dialog open={visible} onClose={handleClose} maxWidth="sm">
       <Typography fontSize={18} fontWeight={600} mb={1} color="#0F172A">
-        Add User
+        Edit User: {user?.fullName}
       </Typography>
 
       <FormikProvider value={formik}>
@@ -98,26 +89,6 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
             Account info
           </Typography>
           <FormikTextField name="username" label="Username" />
-          <FormikAutocomplete
-            name="role"
-            label="User Type"
-            options={valueOptions(Object.keys(UserRole))}
-          />
-          <FormikTextField name="password" label="Password" type="password" />
-          <FormikTextField
-            name="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            // helperText="Add the first password to send it to the user email. Later we recommend the user can change it for a new one."
-          />
-
-          <Stack direction="row" alignItems="center" spacing={1} mt={1}>
-            <InfoOutlined sx={{ fontSize: 18 }} />
-            <Typography fontSize={12} color="#60646C">
-              Add the first password to send it to the user email. Later we
-              recommend the user can change it for a new one.
-            </Typography>
-          </Stack>
 
           <Divider sx={{ my: 2 }} />
 
@@ -141,12 +112,12 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
             </Grid>
             <Grid item xs={6}>
               <LoadingButton
+                loading={isLoading}
                 variant="contained"
                 fullWidth
                 type="submit"
-                loading={isLoading}
               >
-                Add User
+                Save Changes
               </LoadingButton>
             </Grid>
           </Grid>
@@ -156,4 +127,4 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
   );
 };
 
-export default AddUserModal;
+export default EditUserModal;

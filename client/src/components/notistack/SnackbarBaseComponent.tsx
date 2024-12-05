@@ -1,12 +1,7 @@
-import { forwardRef, useCallback, useState } from "react";
-import { Close } from "@mui/icons-material";
-import { alpha, Box, IconButton, Stack } from "@mui/material";
-import dayjs from "dayjs";
-import {
-  SnackbarContent,
-  useSnackbar,
-  type CustomContentProps,
-} from "notistack";
+import { forwardRef } from "react";
+import { InfoOutlined } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/material";
+import { SnackbarContent, type CustomContentProps } from "notistack";
 
 export interface ISnackbarBaseComponent extends CustomContentProps {
   color: string;
@@ -16,52 +11,34 @@ export interface ISnackbarBaseComponent extends CustomContentProps {
 const SnackbarBaseComponent = forwardRef<
   HTMLDivElement,
   ISnackbarBaseComponent
->(({ id, color, ...props }, ref) => {
+>(({ color, ...props }, ref) => {
   const { message } = props;
-  const { closeSnackbar } = useSnackbar();
-
-  const [timeOfEvent] = useState<Date>(new Date());
-
-  const handleDismiss = useCallback(() => {
-    closeSnackbar(id);
-  }, [id, closeSnackbar]);
 
   return (
     <SnackbarContent ref={ref}>
       <Stack
         sx={{
-          width: "100%",
-          backgroundColor: "#fff",
-          boxShadow: (theme) =>
-            `0 10px 30px ${alpha(theme.palette.grey[500], 0.3)}`,
+          // width: "100%",
+          width: 400,
+          maxWidth: 400,
+          backgroundColor: color,
+          padding: "20px 18px",
 
-          borderRadius: 1,
+          borderRadius: "10px",
           overflow: "hidden",
+          border: "2px solid #FFF",
         }}
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
+        direction="column"
       >
-        <Stack direction="row" alignItems="center">
-          <Box sx={{ width: 11, bgcolor: color, minHeight: 50, mr: 1 }}></Box>
-
-          <Box>
-            <Box
-              sx={{
-                fontSize: 12,
-                color: (theme) => theme.palette.grey[500],
-                lineHeight: 1,
-              }}
-            >
-              {dayjs(timeOfEvent).format("MMM DD, HH:mm:ss")}
-            </Box>
-            <Box sx={{ fontSize: 14, color: "#000" }}>{message}</Box>
-          </Box>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <InfoOutlined sx={{ fontSize: 22, color: "#FFF" }} />
+          <Typography fontSize={16} fontWeight={600} color="#FFF">
+            Changes saved
+          </Typography>
         </Stack>
-
-        <IconButton sx={{ ml: 1.5, mr: 0.5 }} onClick={handleDismiss}>
-          <Close sx={{ fontSize: 18 }} />
-        </IconButton>
+        <Typography ml={3.85} fontSize={12} fontWeight={500} color="#FFF">
+          {message}
+        </Typography>
       </Stack>
     </SnackbarContent>
   );

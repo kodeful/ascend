@@ -17,6 +17,10 @@ const SnackbarProvider: FC<SnackbarProviderProps> = ({ children }) => {
         error: SnackbarErrorComponent,
         info: SnackbarInfoComponent,
       }}
+      anchorOrigin={{
+        horizontal: "right",
+        vertical: "bottom",
+      }}
     >
       {children}
     </SnackbarActualProvider>

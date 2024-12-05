@@ -42,7 +42,8 @@ const useMeStore = create<MeState & MeActions>()(
 // for debugging
 // useMeStore.subscribe(console.log);
 
-export const userInitials = (name: string) => {
+export const userInitials = (name: string | undefined) => {
+  if (!name) return "";
   return map(split(name, " "), (word) => word.charAt(0)).join("") ?? "";
 };
 

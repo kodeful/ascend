@@ -44,13 +44,13 @@ const HomeRecentReportsDataGrid = () => {
         columns={columns}
         rows={[
           {
-            id: 1,
+            _id: 1,
             name: "Weekly Group Report ascend",
             date: "27/10/2024",
             type: "Group",
           },
           {
-            id: 2,
+            _id: 2,
             name: "Weekly Group Report ascend",
             date: "27/10/2024",
             type: "Group",

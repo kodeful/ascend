@@ -6,15 +6,25 @@
  * OpenAPI spec version: 1.0.0
  */
 import {
+  useMutation,
   useQuery,
+  type MutationFunction,
   type QueryFunction,
   type QueryKey,
+  type UseMutationOptions,
+  type UseMutationResult,
   type UseQueryOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
 
 import { axiosInstance } from "../../axios-instance";
-import type { MeResponse } from ".././models";
+import type {
+  CreateUserBody,
+  FilterUsersResponse,
+  MeResponse,
+  UpdateUserBody,
+  UserControllerFilterUsersParams,
+} from ".././models";
 
 /**
  * @summary Me
@@ -81,3 +91,235 @@ export function useUserControllerMe<
 
   return query;
 }
+
+/**
+ * @summary Filter users
+ */
+export const userControllerFilterUsers = (
+  params?: UserControllerFilterUsersParams,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<FilterUsersResponse>({
+    url: `/user`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getUserControllerFilterUsersQueryKey = (
+  params?: UserControllerFilterUsersParams,
+) => {
+  return [`/user`, ...(params ? [params] : [])] as const;
+};
+
+export const getUserControllerFilterUsersQueryOptions = <
+  TData = Awaited<ReturnType<typeof userControllerFilterUsers>>,
+  TError = unknown,
+>(
+  params?: UserControllerFilterUsersParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof userControllerFilterUsers>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getUserControllerFilterUsersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof userControllerFilterUsers>>
+  > = ({ signal }) => userControllerFilterUsers(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof userControllerFilterUsers>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type UserControllerFilterUsersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof userControllerFilterUsers>>
+>;
+export type UserControllerFilterUsersQueryError = unknown;
+
+/**
+ * @summary Filter users
+ */
+
+export function useUserControllerFilterUsers<
+  TData = Awaited<ReturnType<typeof userControllerFilterUsers>>,
+  TError = unknown,
+>(
+  params?: UserControllerFilterUsersParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof userControllerFilterUsers>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getUserControllerFilterUsersQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Create user
+ */
+export const userControllerCreateUser = (createUserBody?: CreateUserBody) => {
+  return axiosInstance<unknown>({
+    url: `/user`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: createUserBody,
+  });
+};
+
+export const getUserControllerCreateUserMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerCreateUser>>,
+    TError,
+    { data: CreateUserBody },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof userControllerCreateUser>>,
+  TError,
+  { data: CreateUserBody },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof userControllerCreateUser>>,
+    { data: CreateUserBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return userControllerCreateUser(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerCreateUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof userControllerCreateUser>>
+>;
+export type UserControllerCreateUserMutationBody = CreateUserBody;
+export type UserControllerCreateUserMutationError = unknown;
+
+/**
+ * @summary Create user
+ */
+export const useUserControllerCreateUser = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerCreateUser>>,
+    TError,
+    { data: CreateUserBody },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof userControllerCreateUser>>,
+  TError,
+  { data: CreateUserBody },
+  TContext
+> => {
+  const mutationOptions = getUserControllerCreateUserMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Update user
+ */
+export const userControllerUpdateUser = (
+  userId: unknown,
+  updateUserBody?: UpdateUserBody,
+) => {
+  return axiosInstance<unknown>({
+    url: `/user/${userId}`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: updateUserBody,
+  });
+};
+
+export const getUserControllerUpdateUserMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerUpdateUser>>,
+    TError,
+    { userId: unknown; data: UpdateUserBody },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof userControllerUpdateUser>>,
+  TError,
+  { userId: unknown; data: UpdateUserBody },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof userControllerUpdateUser>>,
+    { userId: unknown; data: UpdateUserBody }
+  > = (props) => {
+    const { userId, data } = props ?? {};
+
+    return userControllerUpdateUser(userId, data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerUpdateUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof userControllerUpdateUser>>
+>;
+export type UserControllerUpdateUserMutationBody = UpdateUserBody;
+export type UserControllerUpdateUserMutationError = unknown;
+
+/**
+ * @summary Update user
+ */
+export const useUserControllerUpdateUser = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof userControllerUpdateUser>>,
+    TError,
+    { userId: unknown; data: UpdateUserBody },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof userControllerUpdateUser>>,
+  TError,
+  { userId: unknown; data: UpdateUserBody },
+  TContext
+> => {
+  const mutationOptions = getUserControllerUpdateUserMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};

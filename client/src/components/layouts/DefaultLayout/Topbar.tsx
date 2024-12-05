@@ -32,7 +32,7 @@ const Topbar: FC<{}> = () => {
   const [isUserDrawerOpen, setIsUserDrawerOpen] = useState<boolean>(false);
   const toggleUserDrawer = () => setIsUserDrawerOpen((prev) => !prev);
 
-  const name = useMeStore((s) => [s.me?.firstName, s.me?.lastName].join(" "));
+  const name = useMeStore((s) => s.me?.fullName);
   const firstName = useMeStore((s) => s.me?.firstName);
   const initials = userInitials(name);
 

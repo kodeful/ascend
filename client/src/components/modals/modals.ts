@@ -1,6 +1,7 @@
 import type { FC } from "react";
 
 import AddUserModal from "./add-user-modal/AddUserModal";
+import EditUserModal from "./edit-user-modal/EditUserModal";
 import LogoutModal from "./logout-modal/LogoutModal";
 
 export const defaultModals: {
@@ -11,6 +12,10 @@ export const defaultModals: {
   {
     key: "add-user",
     Component: AddUserModal,
+  },
+  {
+    key: "edit-user",
+    Component: EditUserModal,
   },
   // Logout
   {
