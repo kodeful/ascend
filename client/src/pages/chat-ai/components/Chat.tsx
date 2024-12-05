@@ -1,5 +1,5 @@
 import React from "react";
-import { AddCircleOutline, AddOutlined, Info } from "@mui/icons-material";
+import { Info } from "@mui/icons-material";
 import { Box, ButtonBase, Grid, Paper, Stack, Typography } from "@mui/material";
 
 import AddCircleIcon from "components/icons/AddCircleIcon";

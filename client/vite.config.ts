@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
       logOverride: { "this-is-undefined-in-esm": "silent" }, // prevents "Top-level this warning" https://github.com/vitejs/vite/issues/8644
     },
     server: {
-      port: 3101,
+      port: 3105,
     },
     test: {
       globals: true,
