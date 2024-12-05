@@ -2,16 +2,16 @@ import { map, split } from "lodash";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-// import { PermissionsType } from "./permissions";
+import type { User } from "api/generated/models";
 
 type MeState = {
   token: string | null;
-  me: any;
+  me: User | null;
 };
 
 type MeActions = {
   setToken: (token: string) => void;
-  setMe: (me: any) => void;
+  setMe: (me: User) => void;
   reset: () => void;
 };
 

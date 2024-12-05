@@ -15,12 +15,11 @@ const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
   shrinked,
   children,
 }) => {
-  const isMobile = useMediaQuery<Theme>((theme) =>
-    theme.breakpoints.down("md"),
+  const isTablet = useMediaQuery<Theme>((theme) =>
+    theme.breakpoints.down("lg"),
   );
 
-  const isDesktopDrawerShrinked = shrinked;
-  // const [isDesktopDrawerShrinked] = useState<boolean>(shrinked);
+  const isDesktopDrawerShrinked = isTablet || shrinked;
 
   return (
     <ScrollTopProvider>
@@ -52,7 +51,7 @@ const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
           flex={1}
           sx={{
             overflow: "auto",
-            paddingTop: isMobile ? "64px" : 0,
+            paddingTop: 0,
           }}
           className="content"
         >

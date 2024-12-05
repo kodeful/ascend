@@ -74,7 +74,8 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
   const history = useHistory();
 
   const firstName = useMeStore((s) => s.me?.firstName);
-  const name = useMeStore((s) => s.me?.name);
+  const name = useMeStore((s) => [s.me?.firstName, s.me?.lastName].join(" "));
+  const role = useMeStore((s) => s.me?.role);
   const initials = userInitials(name);
 
   return (
@@ -142,7 +143,7 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
           color="#FFE4B0"
           lineHeight={1}
         >
-          Facilitator
+          {role}
         </Typography>
       </Stack>
 

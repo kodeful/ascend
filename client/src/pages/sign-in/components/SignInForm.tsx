@@ -6,6 +6,7 @@ import { Form as FormikForm, FormikProvider, useFormik } from "formik";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import * as yup from "yup";
 
+import { useAuthControllerLogin } from "api/generated/auth/auth";
 import FormikTextField from "components/forms/FormikTextField";
 import { useMeStore } from "components/stores/MeStore";
 
@@ -19,20 +20,26 @@ const SignInForm = () => {
       email: "",
       password: "",
     },
-
     validationSchema: yup.object({
       email: yup.string().email().required(),
       password: yup.string().required(),
     }),
-    onSubmit: (values) => {
-      useMeStore.getState().setMe({
-        name: "John Doe",
-        firstName: "John",
-        lastName: "Doe",
-        email: values.email,
+    onSubmit: async (values) => {
+      await login({
+        data: {
+          email: values.email,
+          password: values.password,
+        },
       });
-      useMeStore.getState().setToken("token");
-      history.push("/home");
+    },
+  });
+
+  const { mutateAsync: login, isLoading } = useAuthControllerLogin({
+    mutation: {
+      onSuccess: ({ token }) => {
+        useMeStore.getState().setToken(token);
+        history.push("/home");
+      },
     },
   });
 
@@ -91,11 +98,10 @@ const SignInForm = () => {
 
           <LoadingButton
             sx={{ mt: 1, mb: 1.5 }}
-            // sx={{ mt: 4.5, py: 1 }}
             type="submit"
             variant="contained"
             fullWidth
-            // loading={status === "loading"}
+            loading={isLoading}
           >
             Access
           </LoadingButton>

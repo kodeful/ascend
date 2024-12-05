@@ -1,9 +1,14 @@
 import { Action } from 'routing-controllers';
 
-export function currentUserChecker(): (action: Action) => Promise<undefined> {
+import { User } from 'api/models/user.model';
+
+// Response
+export function currentUserChecker(): (
+  action: Action,
+) => Promise<User | undefined> {
   return async function innerCurrentUserChecker(
     action: Action,
-  ): Promise<undefined> {
+  ): Promise<User | undefined> {
     return action.request.user;
   };
 }

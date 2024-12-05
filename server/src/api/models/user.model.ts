@@ -1,6 +1,12 @@
 import { Ref, getModelForClass, prop } from '@typegoose/typegoose';
 import { Expose, Transform } from 'class-transformer';
-import { IsEmail, IsMongoId, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
 
@@ -20,6 +26,11 @@ export class User extends Document {
   @Transform(transformMongoId)
   @prop({ type: SchemaTypes.ObjectId, ref: Organisation, required: true })
   public organisation: Ref<Organisation>;
+
+  @Expose()
+  @IsEnum(UserRole)
+  @prop({ type: String, required: true, enum: UserRole })
+  public role: UserRole;
 
   @Expose()
   @IsString()

@@ -3,14 +3,15 @@ import { Box, Button, Stack } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
 
 import FormikTextField from "components/forms/FormikTextField";
+import { useMeStore } from "components/stores/MeStore";
 
 const SettingsAccountInfoForm = () => {
   const formik = useFormik({
     initialValues: {
-      username: "",
-      firstName: "",
-      lastName: "",
-      email: "",
+      username: useMeStore.getState().me?.username || "",
+      firstName: useMeStore.getState().me?.firstName || "",
+      lastName: useMeStore.getState().me?.lastName || "",
+      email: useMeStore.getState().me?.email || "",
     },
     onSubmit: (values) => {
       console.log(values);

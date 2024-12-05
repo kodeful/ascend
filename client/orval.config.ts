@@ -20,7 +20,7 @@ export default defineConfig({
     },
     input: {
       target: process.env.REACT_APP_API_URL
-        ? `${process.env.REACT_APP_API_URL}/web/swagger.json`
+        ? `${process.env.REACT_APP_API_URL}/swagger.json`
         : "unknown_url",
     },
     hooks: {

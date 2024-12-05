@@ -40,6 +40,7 @@ export const env = {
     routePrefix: getOsEnv('APP_ROUTE_PREFIX'),
     port: normalizePort(process.env.PORT || getOsEnv('APP_PORT')) as number,
     banner: toBool(getOsEnv('APP_BANNER')),
+    decodeKey: getOsEnv('APP_DECODE_KEY'),
     dirs: {
       controllers: getOsPaths('CONTROLLERS'),
       middlewares: getOsPaths('MIDDLEWARES'),

@@ -8,7 +8,7 @@ import SettingsAccountInfoForm from "./SettingsAccountInfoForm";
 import SettingsPasswordForm from "./SettingsPasswordForm";
 
 const SettingsAccountPage = () => {
-  const name = useMeStore((s) => s.me?.name);
+  const name = useMeStore((s) => [s.me?.firstName, s.me?.lastName].join(" "));
   const initials = userInitials(name);
 
   return (
