@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import { Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
+import FilePDFIMG from "assets/imgs/files/file-pdf.png";
 
 import DataGrid from "components/DataGrid/DataGrid";
 
@@ -14,6 +15,21 @@ const HomeRecentReportsDataGrid = () => {
         // type: "boolean",
         // width: 120,
         // editable: true,
+        renderCell: ({ value }) => (
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Box
+              component="img"
+              src={FilePDFIMG}
+              width={20}
+              height={20}
+              sx={{
+                pb: 0.2,
+                objectFit: "contain",
+              }}
+            />
+            <Box>{value}</Box>
+          </Stack>
+        ),
         flex: 1,
       },
       {

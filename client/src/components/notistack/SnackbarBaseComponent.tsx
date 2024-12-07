@@ -12,7 +12,7 @@ const SnackbarBaseComponent = forwardRef<
   HTMLDivElement,
   ISnackbarBaseComponent
 >(({ color, ...props }, ref) => {
-  const { message } = props;
+  const { variant, message } = props;
 
   return (
     <SnackbarContent ref={ref}>
@@ -33,7 +33,10 @@ const SnackbarBaseComponent = forwardRef<
         <Stack direction="row" spacing={1} alignItems="center">
           <InfoOutlined sx={{ fontSize: 22, color: "#FFF" }} />
           <Typography fontSize={16} fontWeight={600} color="#FFF">
-            Changes saved
+            {variant === "success" ? "Changes saved" : ""}
+            {variant === "error" ? "Error" : ""}
+            {variant === "warning" ? "Warning" : ""}
+            {variant === "info" ? "Info" : ""}
           </Typography>
         </Stack>
         <Typography ml={3.85} fontSize={12} fontWeight={500} color="#FFF">

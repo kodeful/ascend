@@ -8,6 +8,7 @@ import CreateReportPage from "pages/report/create/CreateReportPage";
 import ReportPage from "pages/report/ReportPage";
 // import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
 import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
+import SettingsConnectionsFilesPage from "pages/settings/connections/files/SettingsConnectionsFIlesPage";
 import SettingsConnectionsPage from "pages/settings/connections/SettingsConnectionsPage";
 import SettingsGroupSettingsPage from "pages/settings/group-settings/SettingsGroupSettingsPage";
 import SignInPage from "pages/sign-in/SignInPage";
@@ -63,6 +64,13 @@ const App = () => {
           path="/settings/connections"
           shrinked
         />
+        <PrivateRoute
+          exact
+          component={SettingsConnectionsFilesPage}
+          path="/settings/connections/files"
+          shrinked
+        />
+
         {/* <PrivateRoute
           exact
           component={SettingsPage}

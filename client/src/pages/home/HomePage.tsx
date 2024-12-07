@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 
+import Title from "components/TItle/Title";
+
 import Home3EyesViewReport from "./components/Home3EyesViewReport/Home3EyesViewReport";
 import HomeGroupActivity from "./components/HomeGroupActivity/HomeGroupActivity";
 import HomeGroupDeltaChange from "./components/HomeGroupDeltaChange/HomeGroupDeltaChange";
@@ -16,9 +18,7 @@ const HomePage = () => {
         py: 2,
       }}
     >
-      <Typography variant="h1" color="primary.main">
-        Dashboard
-      </Typography>
+      <Title title="Dashboard" />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>

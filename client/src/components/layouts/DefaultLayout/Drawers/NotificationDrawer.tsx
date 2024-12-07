@@ -3,6 +3,7 @@ import { Box, Drawer, Paper, Stack, Typography } from "@mui/material";
 import AlertNotificationIMG from "assets/imgs/notifications/alert-notification.jpeg";
 
 import CloseIcon from "components/icons/CloseIcon";
+import Title from "components/TItle/Title";
 
 // import { useHistory } from "react-router";
 
@@ -79,9 +80,7 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
         />
       </Stack>
 
-      <Typography variant="h1" color="primary">
-        Inbox
-      </Typography>
+      <Title title="Notifications" />
 
       <Stack direction="column" spacing={2} mt={2}>
         {notifications.map((notification) => (

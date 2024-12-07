@@ -60,7 +60,16 @@ const CreateReportSidebar = () => {
 
         <Divider sx={{ my: 2 }} />
 
-        <FormikAutocomplete name="rangeDate" label="Range Date" options={[]} />
+        <FormikAutocomplete
+          name="rangeDate"
+          label="Range Date"
+          options={[
+            {
+              value: "last-week",
+              label: "Last week",
+            },
+          ]}
+        />
 
         <Divider sx={{ my: 2 }} />
 

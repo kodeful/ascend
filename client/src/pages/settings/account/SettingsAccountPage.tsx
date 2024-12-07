@@ -2,6 +2,7 @@ import React from "react";
 import { Avatar, Box, Paper, Stack, Typography } from "@mui/material";
 
 import { useMeStore, userInitials } from "components/stores/MeStore";
+import Title from "components/TItle/Title";
 
 import SettingsPageLayout from "../SettingsPageLayout";
 import SettingsAccountInfoForm from "./SettingsAccountInfoForm";
@@ -21,9 +22,7 @@ const SettingsAccountPage = () => {
         width="100%"
         flex={1}
       >
-        <Typography variant="h1" color="primary.main">
-          Account
-        </Typography>
+        <Title title="Account" />
 
         <Stack direction="column" mt={3} width="100%" spacing={2}>
           <Paper sx={{ p: 2 }}>

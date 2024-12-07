@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
 
 import FormikTextField from "components/forms/FormikTextField";
 import { openModal } from "components/modals/ModalsStore";
+import Title from "components/TItle/Title";
 
 import SettingsPageLayout from "../SettingsPageLayout";
 import GroupUsersDataGrid from "./components/GroupUsersDataGrid";
@@ -26,9 +27,7 @@ const SettingsGroupSettingsPage = () => {
         flex={1}
         overflow="hidden"
       >
-        <Typography variant="h1" color="primary.main">
-          Group settings
-        </Typography>
+        <Title title="Group settings" />
 
         <Stack direction="column" mt={3} width="100%" spacing={2}>
           <FormikProvider value={formik}>

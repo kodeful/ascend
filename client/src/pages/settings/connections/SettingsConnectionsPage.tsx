@@ -5,6 +5,9 @@ import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
 import LearnDashIMG from "assets/imgs/connections/learn-dash.png";
 import LuminaIMG from "assets/imgs/connections/lumina.png";
 import MoodleIMG from "assets/imgs/connections/moodle.png";
+import { useHistory } from "react-router-dom";
+
+import Title from "components/TItle/Title";
 
 import SettingsPageLayout from "../SettingsPageLayout";
 
@@ -12,28 +15,40 @@ const connectApps = [
   {
     img: LearnDashIMG,
     title: "LearnDash LMS",
+    link: "/settings/connections/learn-dash",
+    disabled: true,
   },
   {
     img: MoodleIMG,
     title: "Moodle LMS",
+    link: "/settings/connections/moodle",
+    disabled: true,
   },
   {
     img: LuminaIMG,
     title: "Lumina",
+    link: "/settings/connections/lumina",
+    disabled: true,
   },
   {
     img: GoogleSheetsIMG,
     title: "Google Form",
+    link: "/settings/connections/google-form",
+    disabled: true,
   },
 ];
 const importData = [
   {
     img: ExcelIMG,
     title: "Files .CSV .XLS",
+    link: "/settings/connections/files",
+    disabled: false,
   },
 ];
 
 const SettingsConnectionsPage = () => {
+  const history = useHistory();
+
   return (
     <SettingsPageLayout>
       <Stack
@@ -44,9 +59,7 @@ const SettingsConnectionsPage = () => {
         width="100%"
         flex={1}
       >
-        <Typography variant="h1" color="primary.main">
-          Connections
-        </Typography>
+        <Title title="Connections" />
 
         <Stack direction="column" mt={3} width="100%" spacing={2}>
           <Typography variant="h5" color="#4D4D4D">
@@ -64,6 +77,10 @@ const SettingsConnectionsPage = () => {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                }}
+                onClick={() => {
+                  if (app.disabled) return;
+                  history.push(app.link);
                 }}
               >
                 <Box
@@ -106,6 +123,10 @@ const SettingsConnectionsPage = () => {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                }}
+                onClick={() => {
+                  if (app.disabled) return;
+                  history.push(app.link);
                 }}
               >
                 <Box

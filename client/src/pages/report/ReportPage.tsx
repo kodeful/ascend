@@ -5,6 +5,7 @@ import HomeLearners from "pages/home/components/HomeLearners";
 import HomeRecentReportsDataGrid from "pages/home/components/HomeRecentReports/HomeRecentReportsDataGrid";
 
 import FormikTextField from "components/forms/FormikTextField";
+import Title from "components/TItle/Title";
 
 import ReportBuilderTemplate from "./components/ReportBuilderTemplate/ReportBuilderTemplate";
 
@@ -23,9 +24,7 @@ const ReportPage = () => {
         py: 2,
       }}
     >
-      <Typography variant="h1" color="primary.main">
-        Report builder
-      </Typography>
+      <Title title="Report builder" />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>

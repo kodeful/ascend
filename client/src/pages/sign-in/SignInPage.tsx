@@ -1,5 +1,7 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
+
+import Title from "components/TItle/Title";
 
 import SignInForm from "./components/SignInForm";
 import SignInLayout from "./SignInLayout";
@@ -7,9 +9,10 @@ import SignInLayout from "./SignInLayout";
 const SignInPage = () => {
   return (
     <SignInLayout>
-      <Typography variant="h1" color="primary.main" mb={1}>
-        Sign in
-      </Typography>
+      <Box mb={1}>
+        <Title title="Sign in" />
+      </Box>
+
       <SignInForm />
     </SignInLayout>
   );

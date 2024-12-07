@@ -4,6 +4,8 @@ import Home3EyesViewReport from "pages/home/components/Home3EyesViewReport/Home3
 import HomeGroupTrust from "pages/home/components/HomeGroupTrust/HomeGroupTrust";
 import HomeLearners from "pages/home/components/HomeLearners";
 
+import Title from "components/TItle/Title";
+
 import DataGroupMetrics from "./components/DataGroupMetrics/DataGroupMetrics";
 import DataLuminaGroupEvaluation from "./components/DataLumina/DataLuminaGroupEvaluation";
 
@@ -15,9 +17,7 @@ const DataPage = () => {
         py: 2,
       }}
     >
-      <Typography variant="h1" color="primary.main">
-        Group metrics
-      </Typography>
+      <Title title="Group metrics" />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>

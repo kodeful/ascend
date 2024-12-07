@@ -15,7 +15,8 @@
 		"format:fix": "prettier --write ./src/**/*.ts",
 		"lint:check": "eslint --ext .ts .",
 		"lint:fix": "eslint --fix --ext .ts .",
-		"seed": "ts-node -r tsconfig-paths/register ./src/database/index.ts"
+		"seed": "ts-node -r tsconfig-paths/register ./src/database/index.ts",
+		"deploy": "docker build -t andrejkitanovic/ascend . && docker image prune -f && docker publish andrejkitanovic/ascend"
 	},
 	"author": "Andrej Kitanovic",
 	"license": "ISC",

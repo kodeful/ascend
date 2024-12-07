@@ -1,5 +1,7 @@
 import React from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
+
+import Title from "components/TItle/Title";
 
 import CreateReportSidebar from "./CreateReportSidebar";
 
@@ -17,9 +19,19 @@ const CreateReportPage = () => {
         flex={1}
         overflow="hidden"
       >
-        <Typography variant="h1" color="primary.main">
-          Create Report
-        </Typography>
+        <Title
+          title="Create Report"
+          breadcrumbs={[
+            {
+              title: "Report",
+              link: "/report",
+            },
+            {
+              title: "Create Report",
+              link: "/report/create",
+            },
+          ]}
+        />
       </Stack>
     </Stack>
   );

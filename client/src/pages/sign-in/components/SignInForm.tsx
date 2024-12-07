@@ -86,15 +86,6 @@ const SignInForm = () => {
               ),
             }}
           />
-          {/* <Link
-            component={RouterLink}
-            to={`/forgot-password`}
-            fontSize={14}
-            sx={{ textDecoration: "none" }}
-            data-cy="forgot-password-button"
-          >
-            Forgot Password?
-          </Link> */}
 
           <LoadingButton
             sx={{ mt: 1, mb: 1.5 }}
