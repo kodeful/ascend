@@ -3,7 +3,7 @@ name: Build and Deploy to Docker Hub and Redeploy DigitalOcean App
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build-and-deploy:

@@ -88,27 +88,24 @@ const ROIForm = () => {
     onSubmit: async (values) => {
       await calculateROI({
         data: {
-          numFirstLineManagers: values.numFirstLineManagers as number,
-          numEmployeesManaged: values.numEmployeesManaged as number,
-          costPerManagerProgram: values.costPerManagerProgram as number,
-          avgAttritionRateFirstLine: values.avgAttritionRateFirstLine as number,
-          avgAttritionRateNonManager:
-            values.avgAttritionRateNonManager as number,
-          minRehireCostFirstLinePercent:
-            values.minRehireCostFirstLinePercent as number,
-          maxRehireCostFirstLinePercent:
-            values.maxRehireCostFirstLinePercent as number,
+          numFirstLineManagers: values.numFirstLineManagers!,
+          numEmployeesManaged: values.numEmployeesManaged!,
+          costPerManagerProgram: values.costPerManagerProgram!,
+          avgAttritionRateFirstLine: values.avgAttritionRateFirstLine!,
+          avgAttritionRateNonManager: values.avgAttritionRateNonManager!,
+          minRehireCostFirstLinePercent: values.minRehireCostFirstLinePercent!,
+          maxRehireCostFirstLinePercent: values.maxRehireCostFirstLinePercent!,
           minRehireCostNonManagerPercent:
-            values.minRehireCostNonManagerPercent as number,
+            values.minRehireCostNonManagerPercent!,
           maxRehireCostNonManagerPercent:
-            values.maxRehireCostNonManagerPercent as number,
-          avgSalaryFirstLineManager: values.avgSalaryFirstLineManager as number,
-          avgSalaryNonManager: values.avgSalaryNonManager as number,
-          investmentDurationYears: values.investmentDurationYears as number,
+            values.maxRehireCostNonManagerPercent!,
+          avgSalaryFirstLineManager: values.avgSalaryFirstLineManager!,
+          avgSalaryNonManager: values.avgSalaryNonManager!,
+          investmentDurationYears: values.investmentDurationYears!,
           targetAttritionReductionPercent:
-            values.targetAttritionReductionPercent as number,
-          minRoiThresholdPercent: values.minRoiThresholdPercent as number,
-          compoundRatePercent: values.compoundRatePercent as number,
+            values.targetAttritionReductionPercent!,
+          minRoiThresholdPercent: values.minRoiThresholdPercent!,
+          compoundRatePercent: values.compoundRatePercent!,
         },
       });
     },
