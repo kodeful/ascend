@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type FC } from "react";
+import React, { useEffect, useMemo, useState, type FC } from "react";
 import { Typography, type TypographyProps } from "@mui/material";
 
 type CounterProps = TypographyProps & {
@@ -16,17 +16,34 @@ const Counter: FC<CounterProps> = ({
   ...rest
 }) => {
   const [currentCount, setCurrentCount] = useState<number>(0);
+  const isNegative = useMemo(() => count < currentCount, [count, currentCount]);
 
   useEffect(() => {
-    const totalSteps = Math.ceil(count / step); // Calculate the total steps needed
-    const intervalTime = duration / totalSteps; // Calculate the interval time for each step
+    let totalSteps = Math.ceil(count / step);
+    totalSteps = Math.min(totalSteps, duration / 10);
+    const intervalTime = duration / totalSteps;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    step = count / totalSteps || 1;
 
     const interval = setInterval(() => {
       setCurrentCount((prev) => {
-        const nextNumber = prev + step;
-        if (nextNumber >= count) {
-          clearInterval(interval);
-          return count;
+        let nextNumber = prev;
+        switch (isNegative) {
+          case true:
+            nextNumber -= step;
+            if (nextNumber <= count) {
+              clearInterval(interval);
+              return count;
+            }
+            break;
+          case false:
+            nextNumber += step;
+            if (nextNumber >= count) {
+              clearInterval(interval);
+              return count;
+            }
+            break;
         }
 
         return parseFloat(nextNumber.toFixed(1));
@@ -34,7 +51,7 @@ const Counter: FC<CounterProps> = ({
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [count, duration, step]);
+  }, [count, duration, step, isNegative]);
 
   return (
     <Typography

@@ -1,10 +1,10 @@
-// import React, { Fragment, useState } from "react";
 import { useState, type FC } from "react";
 import {
   AppBar,
   Avatar,
   Box,
   Button,
+  IconButton,
   LinearProgress,
   Stack,
   Toolbar,
@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import { useIsFetching } from "@tanstack/react-query";
 
+import NotificationIcon from "components/icons/NotificationIcon";
 import { useMeStore, userInitials } from "components/stores/MeStore";
 
+import NotificationDrawer from "./Drawers/NotificationDrawer";
 import UserDrawer from "./Drawers/UserDrawer";
 
 const Topbar: FC<{}> = () => {
@@ -24,10 +26,10 @@ const Topbar: FC<{}> = () => {
   );
   const isFetching = useIsFetching();
 
-  // const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
-  //   useState<boolean>(false);
-  // const toggleNotificationDrawer = () =>
-  //   setIsNotificationDrawerOpen((prev) => !prev);
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] =
+    useState<boolean>(false);
+  const toggleNotificationDrawer = () =>
+    setIsNotificationDrawerOpen((prev) => !prev);
 
   const [isUserDrawerOpen, setIsUserDrawerOpen] = useState<boolean>(false);
   const toggleUserDrawer = () => setIsUserDrawerOpen((prev) => !prev);
@@ -63,9 +65,9 @@ const Topbar: FC<{}> = () => {
             height: "100%",
           }}
         >
-          <Stack direction="row" alignItems="center">
+          <Stack direction="row" alignItems="center" spacing={0.5}>
             {/* Notifications */}
-            {/* <Box>
+            <Box>
               <IconButton
                 sx={{
                   width: 36,
@@ -85,7 +87,7 @@ const Topbar: FC<{}> = () => {
                 isOpen={isNotificationDrawerOpen}
                 onClose={toggleNotificationDrawer}
               />
-            </Box> */}
+            </Box>
 
             {/* User */}
             <Box>

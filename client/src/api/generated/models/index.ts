@@ -6,12 +6,17 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from "./calculateROIBody";
 export * from "./createUserBody";
 export * from "./createUserBodyRole";
 export * from "./filterUsersResponse";
+export * from "./findROIResponse";
 export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./meResponse";
+export * from "./rOICalculator";
+export * from "./rOICalculatorFields";
+export * from "./rOICalculatorResult";
 export * from "./updateMeBody";
 export * from "./updateMeChangePasswordBody";
 export * from "./updateUserBody";

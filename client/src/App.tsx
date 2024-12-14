@@ -6,9 +6,10 @@ import HomePage from "pages/home/HomePage";
 import LearnerDetailsPage from "pages/learner/details/LearnerDetailsPage";
 import CreateReportPage from "pages/report/create/CreateReportPage";
 import ReportPage from "pages/report/ReportPage";
+import ROICalculatorPage from "pages/roi-calculator/ROICalculatorPage";
 // import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
 import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
-import SettingsConnectionsFilesPage from "pages/settings/connections/files/SettingsConnectionsFIlesPage";
+import SettingsConnectionsFilesPage from "pages/settings/connections/files/SettingsConnectionsFilesPage";
 import SettingsConnectionsPage from "pages/settings/connections/SettingsConnectionsPage";
 import SettingsGroupSettingsPage from "pages/settings/group-settings/SettingsGroupSettingsPage";
 import SignInPage from "pages/sign-in/SignInPage";
@@ -40,6 +41,11 @@ const App = () => {
         />
         <PrivateRoute exact component={ChatAiPage} path="/chat-ai" />
 
+        <PrivateRoute
+          exact
+          component={ROICalculatorPage}
+          path="/roi-calculator"
+        />
         <PrivateRoute
           exact
           component={LearnerDetailsPage}

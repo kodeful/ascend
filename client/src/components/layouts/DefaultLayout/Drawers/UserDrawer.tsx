@@ -36,7 +36,7 @@ const menuListTop: SidebarMenuListChild = [
   {
     icon: <SettingsIcon />,
     text: "Settings",
-    link: "/settings",
+    link: "/settings/account",
   },
   {
     icon: <ConnectionIcon />,
@@ -207,7 +207,10 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
                     icon={icon}
                     text={text}
                     link={link}
-                    onClick={onClick}
+                    onClick={() => {
+                      onClick?.();
+                      onClose();
+                    }}
                   />
                 );
               })}

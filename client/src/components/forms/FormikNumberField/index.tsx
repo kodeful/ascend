@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, type TextFieldProps } from "@mui/material";
+import { Box, TextField, Typography, type TextFieldProps } from "@mui/material";
 import { useField } from "formik";
 import { NumericFormat, type NumericFormatProps } from "react-number-format";
 
@@ -11,6 +11,7 @@ type Props = MakeRequired<TextFieldProps, "name">;
 const FormikNumberField = ({
   name,
   helperText,
+  label,
   ...rest
 }: NumericFormatProps<Props>) => {
   const [field, meta, helper] = useField<number>(name);
@@ -26,20 +27,38 @@ const FormikNumberField = ({
   }
 
   return (
-    <NumericFormat
-      fullWidth
-      error={meta.touched && !!meta.error}
-      helperText={helperTextValue}
-      thousandSeparator
-      {...field}
-      {...rest}
-      onChange={() => {}}
-      onValueChange={(values) => {
-        const { floatValue } = values;
-        helper.setValue(floatValue!);
+    <Box
+      sx={{
+        opacity: rest.disabled ? 0.5 : 1,
       }}
-      customInput={TextField}
-    />
+    >
+      {label && (
+        <Typography
+          color="#0F172A"
+          fontSize={14}
+          fontWeight={500}
+          textAlign="left"
+        >
+          {label}
+        </Typography>
+      )}
+
+      <NumericFormat
+        fullWidth
+        error={meta.touched && !!meta.error}
+        helperText={helperTextValue}
+        thousandSeparator
+        label=""
+        {...field}
+        {...rest}
+        onChange={() => {}}
+        onValueChange={(values) => {
+          const { floatValue } = values;
+          helper.setValue(floatValue!);
+        }}
+        customInput={TextField}
+      />
+    </Box>
   );
 };
 
