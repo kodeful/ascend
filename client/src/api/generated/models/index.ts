@@ -7,16 +7,24 @@
  */
 
 export * from "./calculateROIBody";
+export * from "./chatControllerFilterChatsParams";
+export * from "./chatMessage";
 export * from "./createUserBody";
 export * from "./createUserBodyRole";
+export * from "./filterChatsData";
+export * from "./filterChatsResponse";
 export * from "./filterUsersResponse";
 export * from "./findROIResponse";
+export * from "./getChatMessagesResponse";
 export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./meResponse";
 export * from "./rOICalculator";
 export * from "./rOICalculatorFields";
 export * from "./rOICalculatorResult";
+export * from "./startChatBody";
+export * from "./startChatData";
+export * from "./startChatResponse";
 export * from "./updateMeBody";
 export * from "./updateMeChangePasswordBody";
 export * from "./updateUserBody";

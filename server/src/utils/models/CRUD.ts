@@ -141,9 +141,8 @@ export abstract class CRUD<T> {
     return this.model.countDocuments(filter).lean();
   }
 
-  public async create(c: Partial<T>): Promise<Ref<T>> {
-    const { _id } = await this.model.create(c);
-    return _id as Ref<T>;
+  public async create(c: Partial<T>) {
+    return this.model.create(c);
   }
 
   public async updateOne(

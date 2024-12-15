@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserHistory } from "history";
+import ChatSinglePage from "pages/chat-ai/chat/ChatSinglePage";
 import ChatAiPage from "pages/chat-ai/ChatAiPage";
 import DataPage from "pages/data/DataPage";
 import LearnerDetailsPage from "pages/data/learner/details/LearnerDetailsPage";
@@ -50,6 +51,11 @@ const App = () => {
           shrinked
         />
         <PrivateRoute exact component={ChatAiPage} path="/chat-ai" />
+        <PrivateRoute
+          exact
+          component={ChatSinglePage}
+          path="/chat-ai/:chatId"
+        />
 
         <PrivateRoute
           exact

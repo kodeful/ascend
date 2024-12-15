@@ -12,6 +12,20 @@ import { userInitials } from "components/stores/MeStore";
 const ReportPDF = () => {
   const { values } = useFormikContext() as any;
 
+  const { width, height } = useMemo(() => {
+    if (values.horizontal) {
+      return {
+        width: 934,
+        height: 660,
+      };
+    }
+
+    return {
+      width: 660,
+      height: 934,
+    };
+  }, [values.horizontal]);
+
   const { data: learners } = useUserControllerFilterUsers(
     {
       limit: -1,
@@ -35,8 +49,8 @@ const ReportPDF = () => {
       {/* STARTING PAGE */}
       <Stack
         position="relative"
-        width={660}
-        height={934}
+        width={width}
+        height={height}
         borderRadius={1.5}
         bgcolor="#FFF"
         boxShadow="4px 4px 11.3px 0px #0000000D"
@@ -45,6 +59,7 @@ const ReportPDF = () => {
         px={9}
         justifyContent="space-between"
         overflow="hidden"
+        boxSizing="border-box"
       >
         {/* LOGO */}
         <AscendIcon

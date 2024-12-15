@@ -3,10 +3,10 @@ import { Grid, Stack, Typography } from "@mui/material";
 
 import Title from "components/TItle/Title";
 
-import Chat from "./components/Chat";
-import PreviousChatsWidget from "./components/PreviousChatsWidget";
+import PreviousChatsWidget from "../components/PreviousChatsWidget";
+import SingleChat from "./components/SingleChat";
 
-const ChatAiPage = () => {
+const ChatSinglePage = () => {
   return (
     <Stack
       sx={{
@@ -19,7 +19,7 @@ const ChatAiPage = () => {
 
       <Grid container spacing={2} mt={2} height="100%">
         <Grid item xs={8}>
-          <Chat />
+          <SingleChat />
         </Grid>
         <Grid item xs={4}>
           <Typography variant="h5" color="#4D4D4D">
@@ -33,4 +33,4 @@ const ChatAiPage = () => {
   );
 };
 
-export default ChatAiPage;
+export default ChatSinglePage;

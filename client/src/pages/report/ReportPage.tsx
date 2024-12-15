@@ -35,16 +35,36 @@ const ReportPage = () => {
           {/* Start from template */}
           <Grid container pt={1} spacing={2}>
             <Grid item xs={3}>
-              <ReportBuilderTemplate title="Group Ascend Formula Report" />
+              <ReportBuilderTemplate
+                title="Group Ascend Formula Report"
+                state={{
+                  reportType: "group-report",
+                }}
+              />
             </Grid>
             <Grid item xs={3}>
-              <ReportBuilderTemplate title="Ascend Individual Formula Report" />
+              <ReportBuilderTemplate
+                title="Ascend Individual Formula Report"
+                state={{
+                  reportType: "individual-report",
+                }}
+              />
             </Grid>
             <Grid item xs={3}>
-              <ReportBuilderTemplate title="LMS Group Learning Activities Report" />
+              <ReportBuilderTemplate
+                title="LMS Group Learning Activities Report"
+                state={{
+                  reportType: "group-report",
+                }}
+              />
             </Grid>
             <Grid item xs={3}>
-              <ReportBuilderTemplate title="LMS Individual Learning Activities Report" />
+              <ReportBuilderTemplate
+                title="LMS Individual Learning Activities Report"
+                state={{
+                  reportType: "individual-report",
+                }}
+              />
             </Grid>
           </Grid>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
+import { useLocation } from "react-router-dom";
 
 import Title from "components/TItle/Title";
 
@@ -8,15 +9,19 @@ import ReportPDF from "./components/ReportPDF";
 import CreateReportSidebar from "./CreateReportSidebar";
 
 const CreateReportPage = () => {
+  const location = useLocation();
+  const locationState = (location.state || {}) as any;
+
   const formik = useFormik({
     initialValues: {
       title: "",
       subtitle: "",
-      reportType: null,
+      reportType: locationState?.reportType ?? null,
       learner: null,
       rangeDate: null,
       horizontal: false,
     },
+    enableReinitialize: true,
     onSubmit: () => {},
   });
 

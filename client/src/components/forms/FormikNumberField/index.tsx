@@ -51,6 +51,27 @@ const FormikNumberField = ({
         label=""
         {...field}
         {...rest}
+        isAllowed={(values) => {
+          const { floatValue } = values;
+
+          if (
+            rest.min &&
+            floatValue &&
+            floatValue < parseFloat(rest.min as string)
+          ) {
+            return false;
+          }
+
+          if (
+            rest.max &&
+            floatValue &&
+            floatValue > parseFloat(rest.max as string)
+          ) {
+            return false;
+          }
+
+          return true;
+        }}
         onChange={() => {}}
         onValueChange={(values) => {
           const { floatValue } = values;

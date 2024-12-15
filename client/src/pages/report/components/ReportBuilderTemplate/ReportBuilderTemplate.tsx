@@ -6,9 +6,13 @@ import PageIcon from "components/icons/PageIcon";
 
 interface ReportBuilderTemplateProps {
   title: string;
+  state?: any;
 }
 
-const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({ title }) => {
+const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({
+  title,
+  state,
+}) => {
   const history = useHistory();
 
   return (
@@ -31,7 +35,7 @@ const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({ title }) => {
             `0px 4px 4px ${alpha(theme.palette.primary.main, 0.25)}`,
         },
       }}
-      onClick={() => history.push("/report/create")}
+      onClick={() => history.push("/report/create", state)}
     >
       <Stack width="100%" height={20} bgcolor="#E1D7CB" position="relative">
         <Stack
