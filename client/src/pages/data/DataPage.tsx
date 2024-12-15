@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
+import ROICalculatorWidget from "pages/data/roi-calculator/components/ROICalculatorWidget";
 import Home3EyesViewReport from "pages/home/components/Home3EyesViewReport/Home3EyesViewReport";
 import HomeGroupTrust from "pages/home/components/HomeGroupTrust/HomeGroupTrust";
 import HomeLearners from "pages/home/components/HomeLearners";
-import ROICalculatorWidget from "pages/roi-calculator/components/ROICalculatorWidget";
 
 import Title from "components/TItle/Title";
 
@@ -70,23 +70,9 @@ const DataPage = () => {
             {/* ROI Calculator */}
             <Grid container pt={1} spacing={2}>
               <Grid item xs={12}>
-                <ROICalculatorWidget link="/roi-calculator" />
+                <ROICalculatorWidget link="/data/roi-calculator" />
               </Grid>
             </Grid>
-
-            {/* <Typography variant="h5" color="#4D4D4D" mt={3}>
-              ROI Calculator
-            </Typography>
-
-            <Grid container pt={1} spacing={2}>
-              <Grid item xs={12}>
-                <Paper
-                  sx={{
-                    height: 442,
-                  }}
-                ></Paper>
-              </Grid>
-            </Grid> */}
           </Box>
         </Grid>
       </Grid>

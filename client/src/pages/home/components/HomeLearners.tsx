@@ -54,7 +54,7 @@ const HomeLearners = () => {
               justifyContent="space-between"
               width="100%"
               onClick={() => {
-                history.push("/learner/id");
+                history.push("/data/learner/id");
               }}
             >
               <Stack direction="row" py={1.5} spacing={1}>

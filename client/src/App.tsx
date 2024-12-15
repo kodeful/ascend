@@ -2,11 +2,11 @@ import React from "react";
 import { createBrowserHistory } from "history";
 import ChatAiPage from "pages/chat-ai/ChatAiPage";
 import DataPage from "pages/data/DataPage";
+import LearnerDetailsPage from "pages/data/learner/details/LearnerDetailsPage";
+import ROICalculatorPage from "pages/data/roi-calculator/ROICalculatorPage";
 import HomePage from "pages/home/HomePage";
-import LearnerDetailsPage from "pages/learner/details/LearnerDetailsPage";
 import CreateReportPage from "pages/report/create/CreateReportPage";
 import ReportPage from "pages/report/ReportPage";
-import ROICalculatorPage from "pages/roi-calculator/ROICalculatorPage";
 // import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
 import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
 import SettingsConnectionsFilesPage from "pages/settings/connections/files/SettingsConnectionsFilesPage";
@@ -32,6 +32,16 @@ const App = () => {
         {/* CONTROLLERS */}
         <PrivateRoute exact component={HomePage} path="/home" />
         <PrivateRoute exact component={DataPage} path="/data" />
+        <PrivateRoute
+          exact
+          component={ROICalculatorPage}
+          path="/data/roi-calculator"
+        />
+        <PrivateRoute
+          exact
+          component={LearnerDetailsPage}
+          path="/data/learner/:learnerId"
+        />
         <PrivateRoute exact component={ReportPage} path="/report" />
         <PrivateRoute
           exact
@@ -40,17 +50,6 @@ const App = () => {
           shrinked
         />
         <PrivateRoute exact component={ChatAiPage} path="/chat-ai" />
-
-        <PrivateRoute
-          exact
-          component={ROICalculatorPage}
-          path="/roi-calculator"
-        />
-        <PrivateRoute
-          exact
-          component={LearnerDetailsPage}
-          path="/learner/:learnerId"
-        />
 
         <PrivateRoute
           exact

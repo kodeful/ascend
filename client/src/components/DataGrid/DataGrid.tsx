@@ -11,7 +11,12 @@ const DataGridWrapper: FC<DataGridWrapperProps> = ({ ...rest }) => {
       hideFooter
       disableColumnMenu
       getRowId={(row) => row._id}
-      slotProps={{}}
+      slotProps={{
+        loadingOverlay: {
+          variant: "linear-progress",
+          noRowsVariant: "skeleton",
+        },
+      }}
       sx={{
         border: "1px solid #E1D7CB",
         borderRadius: "8px",

@@ -14,7 +14,19 @@ const ROICalculatorPage = () => {
         py: 2,
       }}
     >
-      <Title title="ROI Calculator" />
+      <Title
+        title="ROI Calculator"
+        breadcrumbs={[
+          {
+            title: "Data",
+            link: "/data",
+          },
+          {
+            title: "ROI Calculator",
+            link: "/data/roi-calculator",
+          },
+        ]}
+      />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>
