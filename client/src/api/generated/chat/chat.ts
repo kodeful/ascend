@@ -22,6 +22,8 @@ import type {
   ChatControllerFilterChatsParams,
   FilterChatsResponse,
   GetChatMessagesResponse,
+  SendMessageChatBody,
+  SendMessageChatResponse,
   StartChatBody,
   StartChatResponse,
 } from ".././models";
@@ -270,3 +272,79 @@ export function useChatControllerGetChatMessages<
 
   return query;
 }
+
+/**
+ * @summary Send message chat
+ */
+export const chatControllerSendMessageChat = (
+  chatId: unknown,
+  sendMessageChatBody?: SendMessageChatBody,
+) => {
+  return axiosInstance<SendMessageChatResponse>({
+    url: `/chat/${chatId}`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: sendMessageChatBody,
+  });
+};
+
+export const getChatControllerSendMessageChatMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof chatControllerSendMessageChat>>,
+    TError,
+    { chatId: unknown; data: SendMessageChatBody },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof chatControllerSendMessageChat>>,
+  TError,
+  { chatId: unknown; data: SendMessageChatBody },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof chatControllerSendMessageChat>>,
+    { chatId: unknown; data: SendMessageChatBody }
+  > = (props) => {
+    const { chatId, data } = props ?? {};
+
+    return chatControllerSendMessageChat(chatId, data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ChatControllerSendMessageChatMutationResult = NonNullable<
+  Awaited<ReturnType<typeof chatControllerSendMessageChat>>
+>;
+export type ChatControllerSendMessageChatMutationBody = SendMessageChatBody;
+export type ChatControllerSendMessageChatMutationError = unknown;
+
+/**
+ * @summary Send message chat
+ */
+export const useChatControllerSendMessageChat = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof chatControllerSendMessageChat>>,
+    TError,
+    { chatId: unknown; data: SendMessageChatBody },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof chatControllerSendMessageChat>>,
+  TError,
+  { chatId: unknown; data: SendMessageChatBody },
+  TContext
+> => {
+  const mutationOptions =
+    getChatControllerSendMessageChatMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};

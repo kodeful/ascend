@@ -83,8 +83,8 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
       <Title title="Notifications" />
 
       <Stack direction="column" spacing={2} mt={2}>
-        {notifications.map((notification) => (
-          <Box>
+        {notifications.map((notification, i) => (
+          <Box key={i}>
             <Typography fontSize={16} fontWeight={600} color="#6C6B67">
               {notification.date}
             </Typography>

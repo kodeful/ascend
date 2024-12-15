@@ -9,6 +9,7 @@ import {
 import { useHistory, useLocation } from "react-router-dom";
 
 export interface SidebarMenuItemsProps {
+  id: string;
   icon: JSX.Element;
   text: string | JSX.Element;
   link?: string;

@@ -11,16 +11,19 @@ import SidebarMenuItem from "components/layouts/DefaultLayout/Sidebar/SidebarMen
 
 const sidebarMenuList: SidebarMenuListChild = [
   {
+    id: "account",
     icon: <AccountIcon />,
     text: "Account",
     link: "/settings/account",
   },
   {
+    id: "group-settings",
     icon: <AccountIcon />,
     text: "Group Settings",
     link: "/settings/group-settings",
   },
   {
+    id: "connections",
     icon: <ConnectionIcon />,
     text: "Connections",
     link: "/settings/connections",
@@ -31,6 +34,7 @@ const sidebarMenuList: SidebarMenuListChild = [
   //   link: "/settings/notification-settings",
   // },
   {
+    id: "support",
     icon: <SupportIcon />,
     text: "Support",
     link: "/settings/support",
@@ -39,6 +43,7 @@ const sidebarMenuList: SidebarMenuListChild = [
 
 const sidebarMenuListBottom: SidebarMenuListChild = [
   {
+    id: "about-ascend",
     icon: <AscendIcon />,
     text: "About ascend",
     link: "/about",
@@ -71,10 +76,11 @@ const SettingsSidebar = () => {
           overflow="hidden"
         >
           <Stack>
-            {sidebarMenuList.map(({ icon, text, link }) => {
+            {sidebarMenuList.map(({ id, icon, text, link }) => {
               return (
                 <SidebarMenuItem
-                  key={link}
+                  key={id}
+                  id={id}
                   icon={icon}
                   text={text}
                   link={link}
@@ -92,10 +98,11 @@ const SettingsSidebar = () => {
           <Divider sx={{ mx: 2, my: 1.5 }} />
 
           <Stack>
-            {sidebarMenuListBottom.map(({ icon, text, link }) => {
+            {sidebarMenuListBottom.map(({ id, icon, text, link }) => {
               return (
                 <SidebarMenuItem
-                  key={link}
+                  key={id}
+                  id={id}
                   icon={icon}
                   text={text}
                   link={link}

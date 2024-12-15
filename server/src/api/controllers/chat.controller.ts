@@ -1,5 +1,12 @@
-import { Transform, Type, plainToInstance } from 'class-transformer';
-import { IsMongoId, IsString, ValidateNested } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { Ref } from '@typegoose/typegoose';
+import { Exclude, Transform, Type, plainToInstance } from 'class-transformer';
+import {
+  IsMongoId,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import {
   Authorized,
   Body,
@@ -8,6 +15,7 @@ import {
   JsonController,
   Param,
   Post,
+  Put,
   QueryParams,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
@@ -26,7 +34,7 @@ import { mongoId } from 'utils/mongoId';
 class filterChatsData extends Chat {
   @ValidateNested()
   @Type(() => ChatMessage)
-  lastMessage: ChatMessage;
+  firstMessage: ChatMessage;
 }
 
 class filterChatsResponse {
@@ -58,6 +66,24 @@ class startChatResponse {
   @ValidateNested()
   @Type(() => startChatData)
   data: startChatData;
+}
+
+// ?|> sendMessageChat
+class sendMessageChatBody {
+  @IsString()
+  message: string;
+}
+
+class sendMessageChatData extends PickType(ChatMessage, ['message']) {
+  @Exclude()
+  @IsOptional()
+  protected _: null;
+}
+
+class sendMessageChatResponse {
+  @ValidateNested()
+  @Type(() => sendMessageChatData)
+  data: sendMessageChatData;
 }
 
 // Controller
@@ -95,11 +121,11 @@ export class ChatController {
     const data = await Promise.all(
       chats.map(async (chat) => {
         // @ts-expect-error
-        chat.lastMessage = await this.chatMessageService.findOne({
+        chat.firstMessage = await this.chatMessageService.findOne({
           filter: {
             chat: chat._id,
           },
-          sort: { createdAt: -1 },
+          sort: { createdAt: 1 },
         });
 
         return chat;
@@ -111,10 +137,7 @@ export class ChatController {
 
   @Get('/messages/:chatId')
   @ResponseSchema(getChatMessagesResponse)
-  public async getChatMessages(
-    @CurrentUser() user: User,
-    @Param('chatId') chatId: string,
-  ) {
+  public async getChatMessages(@Param('chatId') chatId: string) {
     const data = await this.chatMessageService.find({
       filter: {
         chat: chatId,
@@ -146,6 +169,26 @@ export class ChatController {
     });
     return {
       data,
+    };
+  }
+
+  @Put('/:chatId')
+  @ResponseSchema(sendMessageChatResponse)
+  public async sendMessageChat(
+    @CurrentUser() user: User,
+    @Param('chatId') chatId: Ref<Chat>,
+    @Body() { message }: sendMessageChatBody,
+  ) {
+    await this.chatMessageService.create({
+      chat: chatId,
+      user: user._id,
+      message: message,
+    });
+
+    return {
+      data: {
+        message,
+      },
     };
   }
 }

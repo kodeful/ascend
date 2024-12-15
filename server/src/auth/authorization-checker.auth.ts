@@ -16,8 +16,7 @@ export function authorizationChecker(): (
     action: Action,
     // roles: any[],
   ): Promise<boolean> {
-    const { id } = await authService.parseTokenFromRequest(action.request);
-
+    const id = await authService.parseTokenFromRequest(action.request);
     if (!id) {
       return false;
     }

@@ -25,21 +25,25 @@ export type SidebarMenuListChild = (SidebarMenuItemsProps & {
 
 const sidebarMenuList: SidebarMenuListChild = [
   {
+    id: "home",
     icon: <HomeIcon />,
     text: "Home",
     link: "/home",
   },
   {
+    id: "data",
     icon: <DataIcon />,
     text: "Data",
     link: "/data",
   },
   {
+    id: "report",
     icon: <ReportIcon />,
     text: "Report",
     link: "/report",
   },
   {
+    id: "chat-ai",
     icon: <ChatIcon />,
     text: "Chat Ai",
     link: "/chat-ai",
@@ -48,11 +52,13 @@ const sidebarMenuList: SidebarMenuListChild = [
 
 const sidebarMenuListBottom: SidebarMenuListChild = [
   {
+    id: "settings",
     icon: <SettingsIcon />,
     text: "Settings",
     link: "/settings",
   },
   {
+    id: "logout",
     icon: <LogoutIcon />,
     text: "Logout",
     onClick: () => {
@@ -91,10 +97,11 @@ const SidebarMenu: FC<SidebarMenuProps> = ({ expanded }) => {
         overflow="hidden"
       >
         <Stack flex={1}>
-          {sidebarMenuList.map(({ icon, text, link, onClick }) => {
+          {sidebarMenuList.map(({ id, icon, text, link, onClick }) => {
             return (
               <SidebarMenuItem
-                key={link}
+                key={id}
+                id={id}
                 icon={icon}
                 text={text}
                 link={link}
@@ -108,10 +115,11 @@ const SidebarMenu: FC<SidebarMenuProps> = ({ expanded }) => {
         <Divider sx={{ mx: 2, my: 1.5 }} />
 
         <Stack>
-          {sidebarMenuListBottom.map(({ icon, text, link, onClick }) => {
+          {sidebarMenuListBottom.map(({ id, icon, text, link, onClick }) => {
             return (
               <SidebarMenuItem
-                key={link}
+                key={id}
+                id={id}
                 icon={icon}
                 text={text}
                 link={link}

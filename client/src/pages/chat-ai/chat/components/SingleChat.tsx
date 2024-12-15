@@ -1,10 +1,41 @@
 import React from "react";
 import { Paper, Stack } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import ChatInput from "pages/chat-ai/components/ChatInput";
+import { useParams } from "react-router-dom";
+
+import { useChatControllerSendMessageChat } from "api/generated/chat/chat";
+import { useMeStore } from "components/stores/MeStore";
+import dayjs from "utils/dayjs";
 
 import SingleChatMessages from "./SingleChatMessages";
+import { useSingleChatSocket } from "./useSingleChatSocket";
 
 const SingleChat = () => {
+  const queryClient = useQueryClient();
+  const { chatId } = useParams<{ chatId: string }>();
+
+  useSingleChatSocket();
+
+  const { mutateAsync: sendMessage } = useChatControllerSendMessageChat({
+    mutation: {
+      onSuccess: ({ data }) => {
+        queryClient.setQueryData(["chat-messages", chatId], (oldData: any) => ({
+          data: [
+            ...(oldData?.data || []),
+            {
+              _id: Math.random(),
+              user: useMeStore.getState().me?._id,
+              message: data.message,
+              createdAt: dayjs().toISOString(),
+              updatedAt: dayjs().toISOString(),
+            },
+          ],
+        }));
+      },
+    },
+  });
+
   return (
     <Paper sx={{ height: "100%" }}>
       <Stack
@@ -12,6 +43,8 @@ const SingleChat = () => {
         height="100%"
         alignItems="center"
         justifyContent="center"
+        flex={1}
+        overflow="hidden"
       >
         <Stack
           direction="column"
@@ -26,7 +59,16 @@ const SingleChat = () => {
         >
           <SingleChatMessages />
 
-          <ChatInput />
+          <ChatInput
+            onSend={async (message) => {
+              await sendMessage({
+                chatId,
+                data: {
+                  message,
+                },
+              });
+            }}
+          />
         </Stack>
       </Stack>
     </Paper>

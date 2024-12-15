@@ -34,11 +34,13 @@ type UserDrawerProps = {
 
 const menuListTop: SidebarMenuListChild = [
   {
+    id: "settings",
     icon: <SettingsIcon />,
     text: "Settings",
     link: "/settings/account",
   },
   {
+    id: "connections",
     icon: <ConnectionIcon />,
     text: "Connections",
     link: "/settings/connections",
@@ -49,6 +51,7 @@ const menuListTop: SidebarMenuListChild = [
   //   link: "/settings/notification-settings",
   // },
   {
+    id: "support",
     icon: <SupportIcon />,
     text: "Support",
     link: "/settings/support",
@@ -57,11 +60,13 @@ const menuListTop: SidebarMenuListChild = [
 
 const menuListBottom: SidebarMenuListChild = [
   {
+    id: "about-ascend",
     icon: <AscendIcon />,
     text: "About Ascend",
     link: "/settings/support",
   },
   {
+    id: "logout",
     icon: <LogoutIcon />,
     text: "Logout",
     onClick: () => {
@@ -200,10 +205,11 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
               direction="column"
               divider={<Divider sx={{ mx: 0.5, my: "4px!important" }} />}
             >
-              {menuListTop.map(({ icon, text, link, onClick }) => {
+              {menuListTop.map(({ id, icon, text, link, onClick }) => {
                 return (
                   <UserDrawerMenuItem
-                    key={link}
+                    key={id}
+                    id={id}
                     icon={icon}
                     text={text}
                     link={link}
@@ -223,10 +229,11 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
               direction="column"
               divider={<Divider sx={{ mx: 0.5, my: "4px!important" }} />}
             >
-              {menuListBottom.map(({ icon, text, link, onClick }) => {
+              {menuListBottom.map(({ id, icon, text, link, onClick }) => {
                 return (
                   <UserDrawerMenuItem
-                    key={link}
+                    key={id}
+                    id={id}
                     icon={icon}
                     text={text}
                     link={link}

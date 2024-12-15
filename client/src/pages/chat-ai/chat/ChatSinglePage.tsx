@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Stack, Typography } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 import Title from "components/TItle/Title";
 
@@ -7,6 +8,8 @@ import PreviousChatsWidget from "../components/PreviousChatsWidget";
 import SingleChat from "./components/SingleChat";
 
 const ChatSinglePage = () => {
+  const { chatId } = useParams<{ chatId: string }>();
+
   return (
     <Stack
       sx={{
@@ -26,7 +29,7 @@ const ChatSinglePage = () => {
             Previous chats
           </Typography>
 
-          <PreviousChatsWidget />
+          <PreviousChatsWidget selected={chatId} />
         </Grid>
       </Grid>
     </Stack>

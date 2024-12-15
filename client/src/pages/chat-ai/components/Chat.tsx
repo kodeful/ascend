@@ -1,10 +1,27 @@
 import { Info } from "@mui/icons-material";
 import { Paper, Stack, Typography } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
+import { useHistory } from "react-router-dom";
+
+import { useChatControllerStartChat } from "api/generated/chat/chat";
 
 import ChatInput from "./ChatInput";
 import ChatSuggestions from "./ChatSuggestions";
 
 const Chat = () => {
+  const queryClient = useQueryClient();
+  const history = useHistory();
+
+  const { mutateAsync: startChat } = useChatControllerStartChat({
+    mutation: {
+      onSuccess: ({ data }) => {
+        history.push(`/chat-ai/${data._id}`);
+
+        queryClient.invalidateQueries(["chats"]);
+      },
+    },
+  });
+
   return (
     <Paper sx={{ height: "100%" }}>
       <Stack
@@ -30,9 +47,25 @@ const Chat = () => {
             </Typography>
           </Stack>
 
-          <ChatInput />
+          <ChatInput
+            onSend={async (message) => {
+              await startChat({
+                data: {
+                  message,
+                },
+              });
+            }}
+          />
 
-          <ChatSuggestions />
+          <ChatSuggestions
+            onSend={async (message) => {
+              await startChat({
+                data: {
+                  message,
+                },
+              });
+            }}
+          />
         </Stack>
       </Stack>
     </Paper>

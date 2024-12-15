@@ -14,9 +14,14 @@ import { User } from './user.model';
   if (!this.user) return;
 
   setTimeout(async () => {
+    const message = 'Hello, how can I help you?';
     await ChatMessageModel.create({
       chat: this.chat,
-      message: 'Hello, how can I help you?',
+      message,
+    });
+
+    global.io.of(`/socket/chat/${this.chat}`).emit('message', {
+      message,
     });
   }, 3000);
 })

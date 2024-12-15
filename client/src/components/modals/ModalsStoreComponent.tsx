@@ -5,7 +5,7 @@ import { useModalsStore } from "./ModalsStore";
 const ModalsStoreComponent = () => {
   const modals = useModalsStore((s) => s.modals);
   // const hasOpenModal = useMemo(() => modals.some((d) => d.open), [modals]);
-  console.log(modals);
+
   return (
     <>
       {modals.map(({ Component, open, key, params }) => (

@@ -1,18 +1,19 @@
-import React, { useMemo } from "react";
-import {
-  ButtonBase,
-  Divider,
-  Skeleton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import React, { useMemo, type FC } from "react";
+import { ButtonBase, darken, Divider, Stack, Typography } from "@mui/material";
+import { groupBy } from "lodash";
 import { useHistory } from "react-router-dom";
 
 import { useChatControllerFilterChats } from "api/generated/chat/chat";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 import dayjs from "utils/dayjs";
 
-const PreviousChatsWidget = () => {
+import PreviousChatsWidgetSkeleton from "./PreviousChatsWidgetSkeleton";
+
+type PreviousChatsWidgetProps = {
+  selected?: string;
+};
+
+const PreviousChatsWidget: FC<PreviousChatsWidgetProps> = ({ selected }) => {
   const history = useHistory();
 
   const { data: chats, isLoading: isChatsLoading } =
@@ -27,48 +28,68 @@ const PreviousChatsWidget = () => {
       },
     );
 
-  const chatGroups = useMemo(() => chats?.data || [], [chats]);
+  const chatGroups = useMemo(
+    () =>
+      groupBy(chats?.data ?? [], (chat) => dayjs(chat.createdAt).fromNow()) ||
+      [],
+    [chats],
+  );
+
   return (
     <AsyncComponent
       loading={isChatsLoading}
-      SkeletonComponent={
-        <Stack direction="column" spacing={1.5} mt={2} divider={<Divider />}>
-          {[1, 2, 3, 4, 5].map((key) => (
-            <Stack direction="column" key={key}>
-              <Skeleton
-                variant="text"
-                sx={{ fontSize: 14, mb: 0.5 }}
-                width={100}
-              />
-              <Skeleton variant="text" sx={{ fontSize: 14 }} width={180} />
-            </Stack>
-          ))}
-        </Stack>
-      }
+      SkeletonComponent={<PreviousChatsWidgetSkeleton />}
     >
       <Stack direction="column" spacing={1.5} mt={2} divider={<Divider />}>
-        {chatGroups.map((data) => (
-          <Stack
-            direction="column"
-            textAlign="left"
-            alignItems="flex-start"
-            component={ButtonBase}
-            onClick={() => {
-              history.push(`/chat-ai/${data._id}`);
-            }}
-          >
+        {Object.keys(chatGroups).map((group) => (
+          <Stack key={group} direction="column">
             <Typography
               fontSize={14}
               fontWeight={600}
               color="#4D4D4D"
               mb={0.5}
               textTransform="capitalize"
+              px={0.5}
             >
-              {dayjs(data.createdAt).fromNow()}
+              {group}
             </Typography>
-            <Typography fontSize={14} color="#4D4D4D">
-              {data.lastMessage?.message}
-            </Typography>
+
+            {chatGroups[group].map((data) => (
+              <>
+                <ButtonBase
+                  key={data._id}
+                  sx={{
+                    textAlign: "left",
+                    py: 1,
+                    px: 1,
+                    width: "100%",
+                    borderRadius: 2,
+
+                    bgcolor:
+                      selected === data._id
+                        ? darken("#F5EFEA", 0.05)
+                        : "transparent",
+                    "&:hover": {
+                      bgcolor: darken("#F5EFEA", 0.1),
+                    },
+                  }}
+                  onClick={() => {
+                    history.push(`/chat-ai/${data._id}`);
+                  }}
+                >
+                  <Typography
+                    fontSize={14}
+                    color="#4D4D4D"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    width="100%"
+                  >
+                    {data.firstMessage?.message}
+                  </Typography>
+                </ButtonBase>
+              </>
+            ))}
           </Stack>
         ))}
       </Stack>

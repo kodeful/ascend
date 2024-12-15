@@ -1,9 +1,5 @@
-import React from "react";
+import { type FC } from "react";
 import { ButtonBase, Grid, Stack, Typography } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
-import { useHistory } from "react-router-dom";
-
-import { useChatControllerStartChat } from "api/generated/chat/chat";
 
 const chatSuggestions = [
   {
@@ -24,20 +20,11 @@ const chatSuggestions = [
   },
 ];
 
-const ChatSuggestions = () => {
-  const queryClient = useQueryClient();
-  const history = useHistory();
+type ChatSuggestionsProps = {
+  onSend: (message: string) => Promise<void>;
+};
 
-  const { mutateAsync: startChat } = useChatControllerStartChat({
-    mutation: {
-      onSuccess: ({ data }) => {
-        history.push(`/chat-ai/${data._id}`);
-
-        queryClient.invalidateQueries(["chats"]);
-      },
-    },
-  });
-
+const ChatSuggestions: FC<ChatSuggestionsProps> = ({ onSend }) => {
   return (
     <Grid container spacing={1} mt={1}>
       {chatSuggestions.map((suggestion) => (
@@ -56,13 +43,9 @@ const ChatSuggestions = () => {
               border: "2px dashed #C6BDB3",
             }}
             component={ButtonBase}
-            onClick={() =>
-              startChat({
-                data: {
-                  message: [suggestion.icon, suggestion.text].join(" "),
-                },
-              })
-            }
+            onClick={async () => {
+              await onSend([suggestion.icon, suggestion.text].join(" "));
+            }}
           >
             <Typography>{suggestion.icon}</Typography>
             <Typography
