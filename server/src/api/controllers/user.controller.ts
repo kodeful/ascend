@@ -98,7 +98,7 @@ export class UserController {
     @CurrentUser() user: User,
     @Body() { firstName, lastName, email }: updateMeBody,
   ) {
-    await UserModel.findByIdAndUpdate(user._id, {
+    await this.userService.updateOneById(user._id, {
       firstName,
       lastName,
       email,

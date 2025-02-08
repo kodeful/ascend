@@ -98,7 +98,12 @@ const DataLuminaChart: FC<DataLuminaChartProps> = ({
       <Stack width={labels ? 150 : 40}>
         <Stack direction="column" my={1}>
           {data.map((item) => (
-            <Stack direction="row" height={34} alignItems="center">
+            <Stack
+              key={item.label}
+              direction="row"
+              height={34}
+              alignItems="center"
+            >
               <Typography
                 fontSize={12}
                 fontWeight={700}

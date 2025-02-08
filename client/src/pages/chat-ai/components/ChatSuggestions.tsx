@@ -28,7 +28,7 @@ const ChatSuggestions: FC<ChatSuggestionsProps> = ({ onSend }) => {
   return (
     <Grid container spacing={1} mt={1}>
       {chatSuggestions.map((suggestion) => (
-        <Grid item xs={6}>
+        <Grid item xs={6} key={suggestion.icon}>
           <Stack
             direction="row"
             alignItems="center"

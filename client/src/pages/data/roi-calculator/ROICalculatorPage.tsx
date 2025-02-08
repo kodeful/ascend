@@ -29,7 +29,7 @@ const ROICalculatorPage = () => {
       />
 
       <Grid container spacing={2} mt={2}>
-        <Grid item xs={8}>
+        <Grid item xs={12} xl={8}>
           <Typography variant="h5" color="#4D4D4D">
             Enter data
           </Typography>
@@ -41,7 +41,7 @@ const ROICalculatorPage = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} xl={4}>
           <Typography variant="h5" color="#4D4D4D">
             Result
           </Typography>

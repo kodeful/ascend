@@ -56,7 +56,7 @@ module.exports = {
     "@typescript-eslint/require-await": "off", // TODO change
     "@typescript-eslint/no-unsafe-enum-comparison": "off", // TODO change
     "@typescript-eslint/no-empty-function": "off", // TODO change
-    "react/jsx-key": "off", // TODO change
+    "react/jsx-key": "warn",
     // FIXME: fix above errors and remove to allow default behaviour
 
     //react

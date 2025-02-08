@@ -31,6 +31,7 @@ const Title: FC<TitleProps> = ({ title, breadcrumbs }) => {
       >
         {breadcrumbs?.map((breadcrumb) => (
           <Link
+            key={breadcrumb.title}
             to={breadcrumb.link}
             component={RouteLink}
             fontSize={14}

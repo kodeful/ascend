@@ -125,12 +125,29 @@ const ROIForm = () => {
             </Grid>
             <Grid item xs={6}>
               <FormikNumberField
+                label="Average Salary - First-Line Manager"
+                name="avgSalaryFirstLineManager"
+                min={0}
+                prefix="$"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormikNumberField
                 label="Total Employees Managed by First-Line Managers Taking Program"
                 name="numEmployeesManaged"
                 min={0}
               />
             </Grid>
             <Grid item xs={6}>
+              <FormikNumberField
+                label="Average Salary - Non-Manager Employees:"
+                name="avgSalaryNonManager"
+                min={0}
+                prefix="$"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <FormikNumberField
                 label="Cost of Development program per First-Line Manager"
                 name="costPerManagerProgram"
@@ -161,7 +178,7 @@ const ROIForm = () => {
                 label="Min Cost of Losing & Rehiring First-Line Managers (As % of Salary)"
                 name="minRehireCostFirstLinePercent"
                 min={0}
-                max={100}
+                // max={100}
                 suffix="%"
               />
             </Grid>
@@ -170,7 +187,7 @@ const ROIForm = () => {
                 label="Max Cost of Losing & Rehiring First-Line Managers (As % of Salary)"
                 name="maxRehireCostFirstLinePercent"
                 min={0}
-                max={100}
+                // max={100}
                 suffix="%"
               />
             </Grid>
@@ -179,7 +196,7 @@ const ROIForm = () => {
                 label="Min Cost of Losing & Rehiring Non-Manager Employees (As % of Salary)"
                 name="minRehireCostNonManagerPercent"
                 min={0}
-                max={100}
+                // max={100}
                 suffix="%"
               />
             </Grid>
@@ -188,26 +205,11 @@ const ROIForm = () => {
                 label="Max Cost of Losing & Rehiring Non-Manager Employees (As % of Salary)"
                 name="maxRehireCostNonManagerPercent"
                 min={0}
-                max={100}
+                // max={100}
                 suffix="%"
               />
             </Grid>
-            <Grid item xs={6}>
-              <FormikNumberField
-                label="Average Salary - First-Line Manager"
-                name="avgSalaryFirstLineManager"
-                min={0}
-                prefix="$"
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormikNumberField
-                label="Average Salary - Non-Manager Employees:"
-                name="avgSalaryNonManager"
-                min={0}
-                prefix="$"
-              />
-            </Grid>
+
             <Grid item xs={6}>
               <FormikNumberField
                 label="Number of Year of expected value from Investment (n)"
@@ -229,7 +231,7 @@ const ROIForm = () => {
                 label="Minimum ROI (Threshold for decision on training) (%)"
                 name="minRoiThresholdPercent"
                 min={0}
-                max={100}
+                // max={100}
                 suffix="%"
               />
             </Grid>

@@ -2,9 +2,9 @@ import React from "react";
 import { Box, ButtonBase, Paper, Stack, Typography } from "@mui/material";
 import ExcelIMG from "assets/imgs/connections/excel.png";
 import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
-import LearnDashIMG from "assets/imgs/connections/learn-dash.png";
-import LuminaIMG from "assets/imgs/connections/lumina.png";
-import MoodleIMG from "assets/imgs/connections/moodle.png";
+// import LearnDashIMG from "assets/imgs/connections/learn-dash.png";
+// import LuminaIMG from "assets/imgs/connections/lumina.png";
+// import MoodleIMG from "assets/imgs/connections/moodle.png";
 import { useHistory } from "react-router-dom";
 
 import Title from "components/TItle/Title";
@@ -12,24 +12,24 @@ import Title from "components/TItle/Title";
 import SettingsPageLayout from "../SettingsPageLayout";
 
 const connectApps = [
-  {
-    img: LearnDashIMG,
-    title: "LearnDash LMS",
-    link: "/settings/connections/learn-dash",
-    disabled: true,
-  },
-  {
-    img: MoodleIMG,
-    title: "Moodle LMS",
-    link: "/settings/connections/moodle",
-    disabled: true,
-  },
-  {
-    img: LuminaIMG,
-    title: "Lumina",
-    link: "/settings/connections/lumina",
-    disabled: true,
-  },
+  // {
+  //   img: LearnDashIMG,
+  //   title: "LearnDash LMS",
+  //   link: "/settings/connections/learn-dash",
+  //   disabled: true,
+  // },
+  // {
+  //   img: MoodleIMG,
+  //   title: "Moodle LMS",
+  //   link: "/settings/connections/moodle",
+  //   disabled: true,
+  // },
+  // {
+  //   img: LuminaIMG,
+  //   title: "Lumina",
+  //   link: "/settings/connections/lumina",
+  //   disabled: true,
+  // },
   {
     img: GoogleSheetsIMG,
     title: "Google Form",
@@ -69,6 +69,7 @@ const SettingsConnectionsPage = () => {
           <Stack direction="row" gap={2} flexWrap="wrap">
             {connectApps.map((app) => (
               <Paper
+                key={app.title}
                 component={ButtonBase}
                 sx={{
                   width: 240,
@@ -115,6 +116,7 @@ const SettingsConnectionsPage = () => {
           <Stack direction="row" gap={2} flexWrap="wrap">
             {importData.map((app) => (
               <Paper
+                key={app.title}
                 component={ButtonBase}
                 sx={{
                   width: 240,

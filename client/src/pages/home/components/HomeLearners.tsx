@@ -44,8 +44,8 @@ const HomeLearners = () => {
         loading={isLoading}
         SkeletonComponent={
           <Stack direction="column" divider={<Divider />}>
-            {range(0, 3).map(() => (
-              <Stack direction="row" py={1.5} spacing={1}>
+            {range(0, 3).map((_, index) => (
+              <Stack direction="row" py={1.5} spacing={1} key={index}>
                 <Skeleton variant="circular" width={39} height={39} />
 
                 <Box>
@@ -68,6 +68,7 @@ const HomeLearners = () => {
 
             return (
               <Stack
+                key={learner._id}
                 component={ButtonBase}
                 textAlign="left"
                 direction="row"

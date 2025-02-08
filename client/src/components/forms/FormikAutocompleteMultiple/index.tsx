@@ -76,6 +76,7 @@ const FormikAutocompleteMultiple = <
       renderTags={(value) =>
         value.map((option) => (
           <Box
+            key={option.value}
             sx={{
               display: "flex",
               flexWrap: "wrap",
