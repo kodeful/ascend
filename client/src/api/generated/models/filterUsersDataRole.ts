@@ -6,10 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UserRole = (typeof UserRole)[keyof typeof UserRole];
+export type FilterUsersDataRole =
+  (typeof FilterUsersDataRole)[keyof typeof FilterUsersDataRole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UserRole = {
+export const FilterUsersDataRole = {
   Learner: "Learner",
   Facilitator: "Facilitator",
 } as const;

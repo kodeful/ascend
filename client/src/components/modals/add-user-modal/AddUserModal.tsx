@@ -14,7 +14,7 @@ import { Form, FormikProvider, useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
 import * as yup from "yup";
 
-import { UserRole } from "api/generated/models";
+import { UserWorkspaceRole } from "api/generated/models";
 import { useUserControllerCreateUser } from "api/generated/user/user";
 import FormikAutocomplete, {
   valueOptions,
@@ -60,7 +60,7 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
           lastName: values.lastName,
           phone: values.phone,
           username: values.username,
-          role: values.role as unknown as UserRole,
+          role: values.role as unknown as UserWorkspaceRole,
           password: values.password,
         },
       });
@@ -115,7 +115,7 @@ const AddUserModal: FC<AddUserModalProps> = ({ visible, handleClose }) => {
           <FormikAutocomplete
             name="role"
             label="User Type"
-            options={valueOptions(Object.keys(UserRole))}
+            options={valueOptions(Object.keys(UserWorkspaceRole))}
           />
           <FormikTextField name="password" label="Password" type="password" />
           <FormikTextField

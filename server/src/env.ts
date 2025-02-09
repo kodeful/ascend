@@ -69,4 +69,7 @@ export const env = {
     enabled: toBool(getOsEnv('MONITOR_ENABLED')),
     route: getOsEnv('MONITOR_ROUTE'),
   },
+  googleSheets: {
+    apiKey: getOsEnv('GOOGLE_SHEETS_API_KEY'),
+  },
 };

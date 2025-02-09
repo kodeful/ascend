@@ -5,8 +5,8 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { User } from "./user";
+import type { FilterUsersData } from "./filterUsersData";
 
 export interface FilterUsersResponse {
-  data: User[];
+  data: FilterUsersData[];
 }

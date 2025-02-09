@@ -1,12 +1,7 @@
 import { PickType } from '@nestjs/swagger';
 import { Ref } from '@typegoose/typegoose';
-import { Exclude, Transform, Type, plainToInstance } from 'class-transformer';
-import {
-  IsMongoId,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { Exclude, Type, plainToInstance } from 'class-transformer';
+import { IsOptional, IsString, ValidateNested } from 'class-validator';
 import {
   Authorized,
   Body,
@@ -26,7 +21,6 @@ import { User } from 'api/models/user.model';
 import { ChatMessageService } from 'api/services/chat-message.service';
 import { ChatService } from 'api/services/chat.service';
 import { FilterQueryParams } from 'api/types/filter.types';
-import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 import { mongoId } from 'utils/mongoId';
 
 // Response Types
@@ -43,29 +37,10 @@ class filterChatsResponse {
   data: filterChatsData[];
 }
 
-// ?|> getChatMessages
-class getChatMessagesResponse {
-  @ValidateNested({ each: true })
-  @Type(() => ChatMessage)
-  data: ChatMessage[];
-}
-
 // ?|> startChat
 class startChatBody {
   @IsString()
   message: string;
-}
-
-class startChatData {
-  @IsMongoId()
-  @Transform(transformMongoId)
-  _id: string;
-}
-
-class startChatResponse {
-  @ValidateNested()
-  @Type(() => startChatData)
-  data: startChatData;
 }
 
 // ?|> sendMessageChat
@@ -78,12 +53,6 @@ class sendMessageChatData extends PickType(ChatMessage, ['message']) {
   @Exclude()
   @IsOptional()
   protected _: null;
-}
-
-class sendMessageChatResponse {
-  @ValidateNested()
-  @Type(() => sendMessageChatData)
-  data: sendMessageChatData;
 }
 
 // Controller
@@ -136,20 +105,30 @@ export class ChatController {
   }
 
   @Get('/messages/:chatId')
-  @ResponseSchema(getChatMessagesResponse)
+  @ResponseSchema(ChatMessage, { isArray: true })
   public async getChatMessages(@Param('chatId') chatId: string) {
-    const data = await this.chatMessageService.find({
+    return this.chatMessageService.find({
       filter: {
         chat: chatId,
       },
       sort: { createdAt: 1 },
     });
-
-    return { data };
   }
 
   @Post()
-  @ResponseSchema(startChatResponse)
+  @OpenAPI({
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: {
+              type: 'string',
+            },
+          },
+        },
+      },
+    },
+  })
   public async startChat(
     @CurrentUser() user: User,
     @Body() { message }: startChatBody,
@@ -164,16 +143,11 @@ export class ChatController {
       message: message,
     });
 
-    const data = plainToInstance(startChatData, {
-      _id: chat._id,
-    });
-    return {
-      data,
-    };
+    return chat._id.toString();
   }
 
   @Put('/:chatId')
-  @ResponseSchema(sendMessageChatResponse)
+  @ResponseSchema(sendMessageChatData)
   public async sendMessageChat(
     @CurrentUser() user: User,
     @Param('chatId') chatId: Ref<Chat>,
@@ -185,10 +159,6 @@ export class ChatController {
       message: message,
     });
 
-    return {
-      data: {
-        message,
-      },
-    };
+    return message;
   }
 }

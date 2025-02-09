@@ -3,10 +3,10 @@ import { IsOptional, ValidateNested } from 'class-validator';
 import {
   Authorized,
   Body,
-  CurrentUser,
   Get,
   JsonController,
   Post,
+  Req,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
@@ -14,7 +14,6 @@ import {
   ROICalculator,
   ROICalculatorFields,
 } from 'api/models/roi-calculator.model';
-import { User } from 'api/models/user.model';
 import { ROICalculatorService } from 'api/services/roi-calculator.service';
 import { roiCalculations } from 'utils/roi';
 
@@ -41,9 +40,9 @@ export class ROICalculatorController {
 
   @Get()
   @ResponseSchema(findROIResponse)
-  public async findROI(@CurrentUser() user: User) {
+  public async findROI(@Req() req: any) {
     const data = await this.roiCalculatorService.findOne({
-      filter: { organisation: user.organisation },
+      filter: { organisation: req.organisation._id },
     });
 
     return { data };
@@ -52,12 +51,12 @@ export class ROICalculatorController {
   @Post('/calculate')
   @ResponseSchema(undefined)
   public async calculateROI(
-    @CurrentUser() user: User,
+    @Req() req: any,
     @Body()
     { ...roiFields }: calculateROIBody,
   ) {
     const caluclationExists = await this.roiCalculatorService.exists({
-      filter: { organisation: user.organisation },
+      filter: { organisation: req.organisation._id },
     });
 
     const roiCalculator = {
@@ -71,7 +70,7 @@ export class ROICalculatorController {
       });
     } else {
       await this.roiCalculatorService.create({
-        organisation: user.organisation,
+        organisation: req.organisation._id,
         ...roiCalculator,
       });
     }

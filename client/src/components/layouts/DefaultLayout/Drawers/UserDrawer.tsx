@@ -22,7 +22,7 @@ import LogoutIcon from "components/icons/LogoutIcon";
 import SettingsIcon from "components/icons/SettingsIcon";
 import SupportIcon from "components/icons/SupportIcon";
 import { openModal } from "components/modals/ModalsStore";
-import { useMeStore, userInitials } from "components/stores/MeStore";
+import { role, useMeStore, userInitials } from "components/stores/MeStore";
 
 import type { SidebarMenuListChild } from "../Sidebar/SidebarMenu/SidebarMenu";
 import UserDrawerMenuItem from "./UserDrawerMenuItem";
@@ -80,7 +80,6 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
 
   const firstName = useMeStore((s) => s.me?.firstName);
   const name = useMeStore((s) => s.me?.fullName);
-  const role = useMeStore((s) => s.me?.role);
   const initials = userInitials(name);
 
   return (
@@ -148,7 +147,7 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
           color="#FFE4B0"
           lineHeight={1}
         >
-          {role}
+          {role()}
         </Typography>
       </Stack>
 

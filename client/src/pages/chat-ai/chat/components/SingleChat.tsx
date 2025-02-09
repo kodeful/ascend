@@ -19,19 +19,17 @@ const SingleChat = () => {
 
   const { mutateAsync: sendMessage } = useChatControllerSendMessageChat({
     mutation: {
-      onSuccess: ({ data }) => {
-        queryClient.setQueryData(["chat-messages", chatId], (oldData: any) => ({
-          data: [
-            ...(oldData?.data || []),
-            {
-              _id: Math.random(),
-              user: useMeStore.getState().me?._id,
-              message: data.message,
-              createdAt: dayjs().toISOString(),
-              updatedAt: dayjs().toISOString(),
-            },
-          ],
-        }));
+      onSuccess: (message) => {
+        queryClient.setQueryData(["chat-messages", chatId], (oldData: any) => [
+          ...(oldData || []),
+          {
+            _id: Math.random(),
+            user: useMeStore.getState().me?._id,
+            message,
+            createdAt: dayjs().toISOString(),
+            updatedAt: dayjs().toISOString(),
+          },
+        ]);
       },
     },
   });

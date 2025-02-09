@@ -5,9 +5,9 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { UserWorkspace } from "./userWorkspace";
+import type { FilterUsersDataRole } from "./filterUsersDataRole";
 
-export interface User {
+export interface FilterUsersData {
   /** @pattern ^[0-9a-fA-F]{24}$ */
   _id: string;
   email: string;
@@ -16,6 +16,7 @@ export interface User {
   lastName: string;
   password: string;
   phone?: string;
+  role: FilterUsersDataRole;
   username: string;
-  workspaces: UserWorkspace[];
+  verified: boolean;
 }

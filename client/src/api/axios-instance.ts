@@ -9,28 +9,32 @@ export const axiosInstanceBase = Axios.create({
 axiosInstanceBase.interceptors.request.use(
   (config) => {
     const token = useMeStore.getState().token;
+    const workspace = useMeStore.getState().workspace;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    if (workspace) {
+      config.headers["X-Workspace"] = workspace;
+    }
+
     return config;
   },
   (error) => {
+    console.log("Request error", error);
     Promise.reject(error);
   },
 );
 
 export const axiosInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
-  const source = Axios.CancelToken.source();
   const promise = axiosInstanceBase({
     ...config,
-    cancelToken: source.token,
+    signal: AbortSignal.timeout(5 * 60_000),
   }).then(({ data }) => data);
 
   // @ts-ignore
-  promise.cancel = () => {
-    source.cancel("Query was cancelled by React Query");
-  };
+  // controller.abort();
 
   return promise;
 };

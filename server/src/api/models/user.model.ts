@@ -1,11 +1,14 @@
 import { Ref, getModelForClass, pre, prop } from '@typegoose/typegoose';
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
+  IsBoolean,
+  IsDateString,
   IsEmail,
   IsEnum,
   IsMongoId,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
@@ -18,6 +21,40 @@ import { Organisation } from './organisation.model';
 export enum UserRole {
   LEARNER = 'Learner',
   FACILITATOR = 'Facilitator',
+}
+
+class UserWorkspace {
+  @Expose()
+  @IsMongoId()
+  @Transform(transformMongoId)
+  @prop({
+    type: SchemaTypes.ObjectId,
+    ref: 'Organization',
+    required: true,
+  })
+  public organisation: Ref<Organisation>;
+
+  @Expose()
+  @IsEnum(UserRole)
+  @prop({ type: String, enum: UserRole, required: true })
+  public role: UserRole;
+
+  @Expose()
+  @IsBoolean()
+  @prop({ type: Boolean, default: false })
+  public verified: boolean;
+
+  @Expose()
+  @IsOptional()
+  @IsDateString()
+  @prop({ type: Date })
+  public verificationExpiresAt?: Date;
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @prop({ type: String })
+  public verificationToken?: string;
 }
 
 @pre<User>('save', async function () {
@@ -34,17 +71,6 @@ export enum UserRole {
   this._update.fullName = [user.firstName, user.lastName].join(' ');
 })
 export class User extends Document {
-  @Expose()
-  @IsMongoId()
-  @Transform(transformMongoId)
-  @prop({ type: SchemaTypes.ObjectId, ref: Organisation, required: true })
-  public organisation: Ref<Organisation>;
-
-  @Expose()
-  @IsEnum(UserRole)
-  @prop({ type: String, required: true, enum: UserRole })
-  public role: UserRole;
-
   @Expose()
   @IsString()
   @prop({ type: String, required: true, unique: true })
@@ -81,6 +107,12 @@ export class User extends Document {
   @IsString()
   @prop({ type: String })
   public phone?: string;
+
+  @Expose()
+  @ValidateNested({ each: true })
+  @Type(() => UserWorkspace)
+  @prop({ _id: false, type: [UserWorkspace], default: [] })
+  public workspaces: UserWorkspace[];
 }
 
 export const UserModel = getModelForClass(User);

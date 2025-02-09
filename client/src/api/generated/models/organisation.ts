@@ -5,8 +5,9 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { SendMessageChatData } from "./sendMessageChatData";
 
-export interface SendMessageChatResponse {
-  data: SendMessageChatData;
+export interface Organisation {
+  /** @pattern ^[0-9a-fA-F]{24}$ */
+  _id: string;
+  name: string;
 }

@@ -5,8 +5,7 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { StartChatData } from "./startChatData";
 
-export interface StartChatResponse {
-  data: StartChatData;
-}
+export type OrganisationControllerCreateOrganisationBody = {
+  name?: string;
+};

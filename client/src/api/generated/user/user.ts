@@ -21,10 +21,10 @@ import { axiosInstance } from "../../axios-instance";
 import type {
   CreateUserBody,
   FilterUsersResponse,
-  MeResponse,
   UpdateMeBody,
   UpdateMeChangePasswordBody,
   UpdateUserBody,
+  User,
   UserControllerFilterUsersParams,
 } from ".././models";
 
@@ -32,7 +32,7 @@ import type {
  * @summary Me
  */
 export const userControllerMe = (signal?: AbortSignal) => {
-  return axiosInstance<MeResponse>({ url: `/user/me`, method: "GET", signal });
+  return axiosInstance<User>({ url: `/user/me`, method: "GET", signal });
 };
 
 export const getUserControllerMeQueryKey = () => {

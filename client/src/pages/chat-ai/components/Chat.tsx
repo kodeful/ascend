@@ -14,8 +14,8 @@ const Chat = () => {
 
   const { mutateAsync: startChat } = useChatControllerStartChat({
     mutation: {
-      onSuccess: ({ data }) => {
-        history.push(`/chat-ai/${data._id}`);
+      onSuccess: (chatId) => {
+        history.push(`/chat-ai/${chatId.toString()}`);
 
         queryClient.invalidateQueries(["chats"]);
       },

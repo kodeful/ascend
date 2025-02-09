@@ -1,8 +1,14 @@
-import { PickType } from '@nestjs/swagger';
+import { OmitType, PickType } from '@nestjs/swagger';
 import { Ref } from '@typegoose/typegoose';
 import { Exclude, Type, plainToInstance } from 'class-transformer';
-import { IsOptional, IsString, ValidateNested } from 'class-validator';
-import { isEqual } from 'lodash';
+import {
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { find, isEqual, omit } from 'lodash';
 import {
   Authorized,
   BadRequestError,
@@ -14,22 +20,16 @@ import {
   Post,
   Put,
   QueryParams,
+  Req,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
-import { User, UserModel } from 'api/models/user.model';
+import { User, UserModel, UserRole } from 'api/models/user.model';
 import { UserService } from 'api/services/user.service';
 import { FilterQueryParams } from 'api/types/filter.types';
 import { UserWithPassword } from 'api/types/models/user.types';
 
 // Response Types
-// ?|> me
-class meResponse {
-  @ValidateNested()
-  @Type(() => User)
-  data: User;
-}
-
 // ?|> updateMe
 class updateMeBody extends PickType(User, ['firstName', 'lastName', 'email']) {
   @Exclude()
@@ -47,10 +47,18 @@ class updateMeChangePasswordBody {
 }
 
 // ?|> filterUsers
+class filterUsersData extends OmitType(User, ['workspaces']) {
+  @IsEnum(UserRole)
+  role: UserRole;
+
+  @IsBoolean()
+  verified: boolean;
+}
+
 class filterUsersResponse {
   @ValidateNested({ each: true })
-  @Type(() => User)
-  data: User[];
+  @Type(() => filterUsersData)
+  data: filterUsersData[];
 }
 
 // ?|> createUser
@@ -60,8 +68,10 @@ class createUserBody extends PickType(User, [
   'lastName',
   'phone',
   'username',
-  'role',
 ]) {
+  @IsEnum(UserRole)
+  role: UserRole;
+
   @IsString()
   password: string;
 }
@@ -87,9 +97,9 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('/me')
-  @ResponseSchema(meResponse)
+  @ResponseSchema(User)
   public async me(@CurrentUser() user: User) {
-    return { data: user };
+    return user;
   }
 
   @Put('/me')
@@ -132,6 +142,7 @@ export class UserController {
   @Get()
   @ResponseSchema(filterUsersResponse)
   public async filterUsers(
+    @Req() req: any,
     @CurrentUser() user: User,
     @QueryParams() queryParams: FilterQueryParams<User>,
   ) {
@@ -140,16 +151,32 @@ export class UserController {
       queryParams,
     );
 
-    return this.userService.filter({
+    const { data: users, meta } = await this.userService.filter({
       limit,
       page,
       sort,
       filter,
       defaultFilter: {
         _id: { $ne: user._id },
+        'workspaces.organisation': req.organisation._id,
       },
       Model: User,
     });
+
+    const data = users.map((user) => {
+      const workspace = find(user.workspaces, {
+        organisation: req.organisation._id,
+      });
+      const teamUser = omit(user, ['workspaces']);
+
+      return {
+        ...teamUser,
+        role: workspace.role,
+        verified: workspace.verified,
+      };
+    }) as filterUsersData[];
+
+    return { data, meta };
   }
 
   @Post()
@@ -165,17 +192,22 @@ export class UserController {
       role,
       password,
     }: createUserBody,
-    @CurrentUser() user: User,
+    @Req() req: any,
   ) {
-    await UserModel.create({
-      organisation: user.organisation,
+    await this.userService.create({
       email,
       firstName,
       lastName,
       phone,
       username,
-      role,
       password,
+      workspaces: [
+        {
+          organisation: req.organisation._id,
+          role,
+          verified: true,
+        },
+      ],
     });
 
     return {};

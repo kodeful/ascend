@@ -20,12 +20,11 @@ import {
 import { axiosInstance } from "../../axios-instance";
 import type {
   ChatControllerFilterChatsParams,
+  ChatMessage,
   FilterChatsResponse,
-  GetChatMessagesResponse,
   SendMessageChatBody,
-  SendMessageChatResponse,
+  SendMessageChatData,
   StartChatBody,
-  StartChatResponse,
 } from ".././models";
 
 /**
@@ -118,7 +117,7 @@ export function useChatControllerFilterChats<
  * @summary Start chat
  */
 export const chatControllerStartChat = (startChatBody?: StartChatBody) => {
-  return axiosInstance<StartChatResponse>({
+  return axiosInstance<string>({
     url: `/chat`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -192,7 +191,7 @@ export const chatControllerGetChatMessages = (
   chatId: string,
   signal?: AbortSignal,
 ) => {
-  return axiosInstance<GetChatMessagesResponse>({
+  return axiosInstance<ChatMessage[]>({
     url: `/chat/messages/${chatId}`,
     method: "GET",
     signal,
@@ -280,7 +279,7 @@ export const chatControllerSendMessageChat = (
   chatId: unknown,
   sendMessageChatBody?: SendMessageChatBody,
 ) => {
-  return axiosInstance<SendMessageChatResponse>({
+  return axiosInstance<SendMessageChatData>({
     url: `/chat/${chatId}`,
     method: "PUT",
     headers: { "Content-Type": "application/json" },

@@ -8,16 +8,11 @@ import AscendIcon from "components/icons/AscendIcon";
 
 const SingleChatMessages = () => {
   const { chatId } = useParams<{ chatId: string }>();
-  const { data: chatMessagesRes } = useChatControllerGetChatMessages(chatId, {
+  const { data: chatMessages } = useChatControllerGetChatMessages(chatId, {
     query: {
       queryKey: ["chat-messages", chatId],
     },
   });
-
-  const chatMessages = useMemo(
-    () => chatMessagesRes?.data || [],
-    [chatMessagesRes],
-  );
 
   const isChatGenerating = useMemo(
     () => Boolean(last(chatMessages)?.user),
@@ -31,7 +26,7 @@ const SingleChatMessages = () => {
       height="100%"
       spacing={1}
     >
-      {chatMessages.map(({ _id, user, message }) => (
+      {(chatMessages ?? []).map(({ _id, user, message }) => (
         <Stack
           position="relative"
           direction="row"

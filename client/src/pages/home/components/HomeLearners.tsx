@@ -24,7 +24,7 @@ const HomeLearners = () => {
   const { data: learners, isLoading } = useUserControllerFilterUsers(
     {
       limit: -1,
-      filter: "role::eq::Learner",
+      filter: "workspaces.role::eq::Learner",
     },
     {
       query: {

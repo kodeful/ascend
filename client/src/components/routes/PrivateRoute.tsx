@@ -1,7 +1,8 @@
-import { useEffect, useMemo, type FC } from "react";
+import { useEffect, type FC } from "react";
 import type { AxiosError } from "axios";
 import { Route, useHistory, type RouteProps } from "react-router-dom";
 
+import { useOrganisationControllerGetMeOrganisation } from "api/generated/organisation/organisation";
 import { useUserControllerMe } from "api/generated/user/user";
 import DefaultLayout from "components/layouts/DefaultLayout";
 import { LayoutSplashScreen } from "components/providers/SplashScreenProvider";
@@ -27,7 +28,7 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
   const token = useMeStore((s) => s.token);
   const me = useMeStore((s) => s.me);
 
-  const { data: currentUserResponse } = useUserControllerMe({
+  const { data: currentUser } = useUserControllerMe({
     query: {
       queryKey: ["me"],
       enabled: Boolean(token),
@@ -40,10 +41,13 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
     },
   });
 
-  const currentUser = useMemo(
-    () => currentUserResponse?.data,
-    [currentUserResponse?.data],
-  );
+  const { data: currentOrganisation } =
+    useOrganisationControllerGetMeOrganisation({
+      query: {
+        queryKey: ["me", "organisation"],
+        enabled: Boolean(token),
+      },
+    });
 
   useEffect(() => {
     if (!token) history.push("/sign-in");
@@ -53,6 +57,11 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
     if (!currentUser) return;
     useMeStore.getState().setMe(currentUser);
   }, [currentUser]);
+
+  useEffect(() => {
+    if (!currentOrganisation) return;
+    useMeStore.getState().setOrganisation(currentOrganisation);
+  }, [currentOrganisation]);
 
   if (me) {
     // if (hasRole(requiredRole)) {

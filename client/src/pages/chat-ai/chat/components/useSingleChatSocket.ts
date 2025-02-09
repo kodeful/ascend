@@ -21,18 +21,16 @@ export const useSingleChatSocket = () => {
     );
 
     socket.on("message", ({ message }) => {
-      queryClient.setQueryData(["chat-messages", chatId], (oldData: any) => ({
-        data: [
-          ...(oldData?.data || []),
-          {
-            _id: Math.random(),
-            user: undefined,
-            message,
-            createdAt: dayjs().toISOString(),
-            updatedAt: dayjs().toISOString(),
-          },
-        ],
-      }));
+      queryClient.setQueryData(["chat-messages", chatId], (oldData: any) => [
+        ...(oldData || []),
+        {
+          _id: Math.random(),
+          user: undefined,
+          message,
+          createdAt: dayjs().toISOString(),
+          updatedAt: dayjs().toISOString(),
+        },
+      ]);
     });
 
     socket.on("connect", async () => {});
