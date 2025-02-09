@@ -75,7 +75,7 @@ const FormikAutocomplete = <
         size={size}
         options={options}
         onChange={async (_e, value) => {
-          helpers.setValue(value !== null ? value.value : null);
+          helpers.setValue(value !== null ? value?.value : null);
         }}
         // couldn't satisfy typescript, but 99.9% will work.
         // @ts-expect-error

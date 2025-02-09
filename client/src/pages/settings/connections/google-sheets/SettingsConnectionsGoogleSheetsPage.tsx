@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import ExcelIMG from "assets/imgs/connections/excel.png";
+import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
 import SettingsPageLayout from "pages/settings/SettingsPageLayout";
 
 import { openModal } from "components/modals/ModalsStore";
@@ -25,8 +25,8 @@ const SettingsConnectionsFilesPage = () => {
               link: "/settings/connections",
             },
             {
-              title: "Files",
-              link: "/settings/connections/files",
+              title: "Google Sheets",
+              link: "/settings/connections/google-sheet",
             },
           ]}
         />
@@ -40,7 +40,7 @@ const SettingsConnectionsFilesPage = () => {
           <Stack direction="row" spacing={2} alignItems="center">
             <Box
               component="img"
-              src={ExcelIMG}
+              src={GoogleSheetsIMG}
               width={67}
               height={62}
               sx={{
@@ -54,17 +54,14 @@ const SettingsConnectionsFilesPage = () => {
                 color="#4D4D4D"
                 lineHeight={1.2}
               >
-                Files
+                Google Sheets
               </Typography>
               <Typography
                 fontSize={18}
                 fontWeight={600}
                 color="primary.dark"
                 lineHeight={1.2}
-              >
-                {/* .csv .xls .xlsx .json */}
-                .csv .json
-              </Typography>
+              ></Typography>
             </Box>
           </Stack>
 
@@ -79,7 +76,7 @@ const SettingsConnectionsFilesPage = () => {
               }}
               onClick={() => {
                 openModal("import-file", {
-                  source: "file",
+                  source: "google-sheet",
                 });
               }}
             >

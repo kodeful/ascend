@@ -62,6 +62,18 @@ const HomeLearners = () => {
         }
       >
         <Stack direction="column" divider={<Divider />}>
+          {!learners?.data.length && (
+            <Typography
+              fontSize={14}
+              color="#60646C"
+              fontWeight={500}
+              textAlign="center"
+              py={2}
+            >
+              No active learners found
+            </Typography>
+          )}
+
           {(learners?.data || []).map((learner) => {
             const initials = userInitials(learner.fullName);
             const change = 0;

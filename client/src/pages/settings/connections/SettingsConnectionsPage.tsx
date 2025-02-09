@@ -34,13 +34,14 @@ const connectApps = [
     img: GoogleSheetsIMG,
     title: "Google Sheets",
     link: "/settings/connections/google-sheets",
-    disabled: true,
+    disabled: false,
   },
 ];
 const importData = [
   {
     img: ExcelIMG,
-    title: "Files .CSV .XLS",
+    // title: "Files .CSV .XLS",
+    title: "Files .CSV .JSON",
     link: "/settings/connections/files",
     disabled: false,
   },
