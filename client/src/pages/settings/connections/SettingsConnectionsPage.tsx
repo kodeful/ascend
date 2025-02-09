@@ -32,8 +32,8 @@ const connectApps = [
   // },
   {
     img: GoogleSheetsIMG,
-    title: "Google Form",
-    link: "/settings/connections/google-form",
+    title: "Google Sheets",
+    link: "/settings/connections/google-sheets",
     disabled: true,
   },
 ];

@@ -56,7 +56,7 @@ const GroupUsersDataGrid = () => {
               mt: -0.4,
             }}
             onClick={() => {
-              openModal("edit-user", {
+              openModal("user-edit", {
                 user: row,
               });
             }}

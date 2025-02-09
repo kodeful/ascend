@@ -1,8 +1,9 @@
 import type { FC } from "react";
 
-import AddUserModal from "./add-user-modal/AddUserModal";
-import EditUserModal from "./edit-user-modal/EditUserModal";
-import LogoutModal from "./logout-modal/LogoutModal";
+import LogoutModal from "./AuthModals/LogoutModal";
+import AddOrganizationModal from "./OrganizationModals/AddOrganizationModal";
+import AddUserModal from "./UserModals/AddUserModal";
+import EditUserModal from "./UserModals/EditUserModal";
 
 export const defaultModals: {
   key: string;
@@ -10,12 +11,17 @@ export const defaultModals: {
   precheck?: () => Promise<boolean>;
 }[] = [
   {
-    key: "add-user",
+    key: "user-add",
     Component: AddUserModal,
   },
   {
-    key: "edit-user",
+    key: "user-edit",
     Component: EditUserModal,
+  },
+  // Organization
+  {
+    key: "organization-add",
+    Component: AddOrganizationModal,
   },
   // Logout
   {

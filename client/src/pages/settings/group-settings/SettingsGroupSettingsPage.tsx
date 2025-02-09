@@ -57,7 +57,7 @@ const SettingsGroupSettingsPage = () => {
                       fontSize: 14,
                     }}
                     onClick={() => {
-                      openModal("add-user");
+                      openModal("user-add");
                     }}
                   >
                     Add User

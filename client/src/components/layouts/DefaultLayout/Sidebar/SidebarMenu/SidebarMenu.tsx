@@ -81,6 +81,7 @@ const SidebarMenu: FC<SidebarMenuProps> = ({ expanded }) => {
         flex: 1,
 
         pt: 0,
+        pb: 0,
         height: "100%",
         msOverflowStyle: "none",
         "&::-webkit-scrollbar": {
@@ -91,7 +92,7 @@ const SidebarMenu: FC<SidebarMenuProps> = ({ expanded }) => {
       <Stack
         direction="column"
         pt={3}
-        pb={1}
+        // pb={1}
         justifyContent="space-between"
         height="100%"
         overflow="hidden"
