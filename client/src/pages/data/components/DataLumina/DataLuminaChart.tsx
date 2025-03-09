@@ -16,18 +16,18 @@ const DataLuminaChart: FC<DataLuminaChartProps> = ({
 }) => {
   const data = useMemo(() => {
     return [
-      { value: 37, color: "#A0C705", label: "Intimate" },
-      { value: 1, color: "#A0C705", label: "Accommodating" },
-      { value: 38, color: "#A0C705", label: "Collaborative" },
-      { value: 48, color: "#A0C705", label: "Adaptable" },
-      { value: 64, color: "#A0C705", label: "Empathetic" },
-      { value: 18, color: "#CDDD68", label: "Flexible" },
-      { value: 88, color: "#F1B136", label: "Spontaneous" },
-      { value: 99, color: "#F1B136", label: "Conceptual" },
-      { value: 96, color: "#F1B136", label: "Imaginative" },
-      { value: 1, color: "#F1B136", label: "Radical" },
-      { value: 39, color: "#F1B136", label: "Sociable" },
-      { value: 4, color: "#EC762E", label: "Demonstrative" },
+      { value: 0, color: "#A0C705", label: "Intimate" },
+      { value: 0, color: "#A0C705", label: "Accommodating" },
+      { value: 0, color: "#A0C705", label: "Collaborative" },
+      { value: 0, color: "#A0C705", label: "Adaptable" },
+      { value: 0, color: "#A0C705", label: "Empathetic" },
+      { value: 0, color: "#CDDD68", label: "Flexible" },
+      { value: 0, color: "#F1B136", label: "Spontaneous" },
+      { value: 0, color: "#F1B136", label: "Conceptual" },
+      { value: 0, color: "#F1B136", label: "Imaginative" },
+      { value: 0, color: "#F1B136", label: "Radical" },
+      { value: 0, color: "#F1B136", label: "Sociable" },
+      { value: 0, color: "#EC762E", label: "Demonstrative" },
     ];
   }, []);
 

@@ -24,7 +24,7 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
     xAxis: {
       lineWidth: 0,
       categories: [
-        "Criteria 1",
+        "Time Management",
         "Criteria 2",
         "Criteria 3",
         "Criteria 4",

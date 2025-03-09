@@ -73,6 +73,40 @@ const defaultThemeOptions: ThemeOptions = {
         // },
       },
     },
+    MuiToggleButtonGroup: {
+      defaultProps: {
+        size: "small",
+      },
+      styleOverrides: {
+        root: {
+          marginTop: -4,
+          padding: "0 2px",
+          borderRadius: 4,
+          // backgroundColor: theme.palette.primary.main,
+          height: 38,
+          background: "#E1D7CB",
+          width: "fit-content",
+
+          // boxShadow:
+          //   "0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)",
+        },
+        grouped: {
+          border: "none",
+          margin: "4px 2px",
+          fontSize: 14,
+          fontWeight: 500,
+          borderRadius: 4,
+          textTransform: "none",
+          transition: "background-color 150ms ease-in-out",
+          "&.Mui-selected": {
+            backgroundColor: "#FFFFFF",
+            "&:hover": {
+              backgroundColor: "#FFFFFF",
+            },
+          },
+        },
+      },
+    },
     MuiDivider: {
       styleOverrides: {
         root: {

@@ -26,8 +26,9 @@ import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { User, UserModel, UserRole } from 'api/models/user.model';
 import { UserService } from 'api/services/user.service';
-import { FilterQueryParams } from 'api/types/filter.types';
+import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { UserWithPassword } from 'api/types/models/user.types';
+import { mongoId } from 'utils/mongoId';
 
 // Response Types
 // ?|> updateMe
@@ -59,6 +60,10 @@ class filterUsersResponse {
   @ValidateNested({ each: true })
   @Type(() => filterUsersData)
   data: filterUsersData[];
+
+  @ValidateNested()
+  @Type(() => FilterMeta)
+  meta: FilterMeta;
 }
 
 // ?|> createUser
@@ -143,7 +148,7 @@ export class UserController {
   @ResponseSchema(filterUsersResponse)
   public async filterUsers(
     @Req() req: any,
-    @CurrentUser() user: User,
+    // @CurrentUser() user: User,
     @QueryParams() queryParams: FilterQueryParams<User>,
   ) {
     const { limit, page, sort, filter } = plainToInstance(
@@ -156,9 +161,9 @@ export class UserController {
       page,
       sort,
       filter,
-      defaultFilter: {
-        _id: { $ne: user._id },
-        'workspaces.organisation': req.organisation._id,
+      defaultFilter: {},
+      preFilter: {
+        'workspaces.organisation': mongoId(req.organisation._id),
       },
       Model: User,
     });

@@ -49,6 +49,7 @@ const FormikAutocomplete = <
   size,
   helperText,
   TextFieldProps,
+  placeholder,
   ...rest
 }: FormikAutocompleteProps<Option, DisableClearable>) => {
   const theme = useTheme();
@@ -107,6 +108,7 @@ const FormikAutocomplete = <
                 </>
               ),
             }}
+            placeholder={placeholder}
             {...TextFieldProps}
           />
         )}

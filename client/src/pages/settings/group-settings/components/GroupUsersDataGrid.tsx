@@ -6,8 +6,11 @@ import { type GridColDef } from "@mui/x-data-grid";
 import { useUserControllerFilterUsers } from "api/generated/user/user";
 import DataGrid from "components/DataGrid/DataGrid";
 import { openModal } from "components/modals/ModalsStore";
+import { useMeStore } from "components/stores/MeStore";
 
 const GroupUsersDataGrid = () => {
+  const me = useMeStore((s) => s.me);
+
   const { data: users, isLoading } = useUserControllerFilterUsers(
     {
       limit: -1,
@@ -30,6 +33,10 @@ const GroupUsersDataGrid = () => {
         field: "fullName",
         headerName: "Name",
         flex: 1,
+        valueFormatter: (value, row) => {
+          if (row._id !== me?._id) return value;
+          return `${value} (You)`;
+        },
       },
       {
         field: "role",
@@ -46,35 +53,38 @@ const GroupUsersDataGrid = () => {
         headerName: "",
         width: 100,
         align: "right",
-        renderCell: ({ row }) => (
-          <ButtonBase
-            sx={{
-              border: "1px solid #CBD5E1",
-              padding: "5px 6px 5px 12px",
-              borderRadius: "20px",
-              backgroundColor: "#FFFFFF",
-              mt: -0.4,
-            }}
-            onClick={() => {
-              openModal("user-edit", {
-                user: row,
-              });
-            }}
-          >
-            <Typography fontSize={12} fontWeight={600} color="#535851">
-              Edit
-            </Typography>
-            <ChevronRight
+        renderCell: ({ row }) => {
+          if (row._id === me?._id) return null;
+          return (
+            <ButtonBase
               sx={{
-                fontSize: 16,
-                color: "#94a3b8",
+                border: "1px solid #CBD5E1",
+                padding: "5px 6px 5px 12px",
+                borderRadius: "20px",
+                backgroundColor: "#FFFFFF",
+                mt: -0.4,
               }}
-            />
-          </ButtonBase>
-        ),
+              onClick={() => {
+                openModal("user-edit", {
+                  user: row,
+                });
+              }}
+            >
+              <Typography fontSize={12} fontWeight={600} color="#535851">
+                Edit
+              </Typography>
+              <ChevronRight
+                sx={{
+                  fontSize: 16,
+                  color: "#94a3b8",
+                }}
+              />
+            </ButtonBase>
+          );
+        },
       },
     ],
-    [],
+    [me?._id],
   );
 
   return (
@@ -93,7 +103,7 @@ const GroupUsersDataGrid = () => {
           opacity: 0.5,
         }}
       >
-        Showing <b>{users?.data?.length}</b> of {/* @ts-expect-error */}
+        Showing <b>{users?.data?.length}</b> of{" "}
         <b>{users?.meta?.pagination?.totalResults}</b> users
       </Typography>
     </>

@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { isEqual } from 'lodash';
+import { first, isEqual } from 'lodash';
 import { FilterQuery, Model, isValidObjectId } from 'mongoose';
 
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
@@ -28,6 +28,7 @@ export async function modelFilter<T, V>({
     aggregations,
     populate,
     defaultFilter,
+    preFilter,
     Model,
   } = query;
 
@@ -39,7 +40,7 @@ export async function modelFilter<T, V>({
     const filters = filterString.split(';');
 
     const parsedValue = (value: string) => {
-      if (isValidObjectId(value)) {
+      if (isValidObjectId(value) && /^[a-f\d]{24}$/i.test(value)) {
         return mongoId(value);
       }
 
@@ -94,10 +95,10 @@ export async function modelFilter<T, V>({
           addFilter(key, { $lte: parseFloat(value) });
           break;
         case 'in':
-          addFilter(key, { $in: value });
+          addFilter(key, { $in: value.split(',') });
           break;
         case 'nin':
-          addFilter(key, { $nin: value });
+          addFilter(key, { $nin: value.split(',') });
           break;
         default:
           break;
@@ -112,99 +113,134 @@ export async function modelFilter<T, V>({
     sort[singleSortString.replace(/^-/, '')] = order;
   });
 
-  // Create search model
-  const [aggregationData, aggregationMeta] = await Promise.all([
-    model.aggregate([
-      ...(aggregations || []),
-      ...(populate
-        ? populate.flatMap((p) => {
-            return [
-              {
-                $lookup: {
-                  from: p.Model,
-                  localField: p.path,
-                  foreignField: p.field || '_id',
-                  as: p.as || p.path,
+  // Create Filter Aggregation
+  const filterDataAggregation = [];
+  if (!isEqual(preFilter, {})) {
+    filterDataAggregation.push({ $match: preFilter });
+  }
+  if (isEqual(match, {})) {
+    filterDataAggregation.push(
+      ...(!isEqual(sort, {}) ? [{ $sort: sort }] : []),
+      ...(limit === -1
+        ? []
+        : [{ $skip: (page - 1) * limit }, { $limit: limit }]),
+    );
+  }
+  filterDataAggregation.push(...(aggregations || []));
+  if (populate) {
+    filterDataAggregation.push(
+      ...populate.flatMap((p) => {
+        return [
+          {
+            $lookup: {
+              from: p.Model,
+              localField: p.path,
+              foreignField: p.field || '_id',
+              as: p.as || p.path,
+            },
+          },
+          ...(p.type === 'single'
+            ? [
+                {
+                  $addFields: {
+                    [p.as || p.path]: {
+                      $cond: {
+                        if: { $isArray: `$${p.as || p.path}` },
+                        then: { $arrayElemAt: [`$${p.as || p.path}`, 0] },
+                        else: `$${p.as || p.path}`,
+                      },
+                    },
+                  },
                 },
-              },
-              ...(p.type === 'single'
-                ? [
-                    {
-                      $addFields: {
-                        [p.as || p.path]: {
-                          $cond: {
-                            if: { $isArray: `$${p.as || p.path}` },
-                            then: { $arrayElemAt: [`$${p.as || p.path}`, 0] },
-                            else: `$${p.as || p.path}`,
-                          },
-                        },
-                      },
+              ]
+            : []),
+          ...(p.type === 'count'
+            ? [
+                {
+                  $addFields: {
+                    [p.as || p.path + '_count']: {
+                      $size: '$' + (p.as || p.path),
                     },
-                  ]
-                : []),
-              ...(p.type === 'count'
-                ? [
-                    {
-                      $addFields: {
-                        [p.as || p.path + '_count']: {
-                          $size: '$' + (p.as || p.path),
-                        },
-                      },
-                    },
-                  ]
-                : []),
-            ];
-          })
-        : []),
+                  },
+                },
+              ]
+            : []),
+        ];
+      }),
+    );
+  }
+  if (!isEqual(match, {})) {
+    filterDataAggregation.push(
       { $match: match },
       ...(!isEqual(sort, {}) ? [{ $sort: sort }] : []),
       ...(limit === -1
         ? []
         : [{ $skip: (page - 1) * limit }, { $limit: limit }]),
-    ]),
-    model.aggregate([
-      ...(aggregations || []),
-      ...(populate
-        ? populate.flatMap((p) => {
-            return [
-              {
-                $lookup: {
-                  from: p.Model,
-                  localField: p.path,
-                  foreignField: p.field || '_id',
-                  as: p.as || p.path,
-                },
+    );
+  }
+
+  const filterMetaAggregation = [];
+  if (!isEqual(preFilter, {})) {
+    filterMetaAggregation.push({ $match: preFilter });
+  }
+  if (!isEqual(match, {})) {
+    filterMetaAggregation.push(...(aggregations || []));
+    if (populate) {
+      filterMetaAggregation.push(
+        ...populate.flatMap((p) => {
+          return [
+            {
+              $lookup: {
+                from: p.Model,
+                localField: p.path,
+                foreignField: p.field || '_id',
+                as: p.as || p.path,
               },
-              ...(p.type === 'single'
-                ? [
-                    {
-                      $unwind: {
-                        path: '$' + (p.as || p.path),
-                        preserveNullAndEmptyArrays: true,
-                      },
-                    },
-                  ]
-                : []),
-              ...(p.type === 'count'
-                ? [
-                    {
-                      $addFields: {
-                        [p.as || p.path + '_count']: {
-                          $size: '$' + (p.as || p.path),
+            },
+            ...(p.type === 'single'
+              ? [
+                  {
+                    $addFields: {
+                      [p.as || p.path]: {
+                        $cond: {
+                          if: { $isArray: `$${p.as || p.path}` },
+                          then: { $arrayElemAt: [`$${p.as || p.path}`, 0] },
+                          else: `$${p.as || p.path}`,
                         },
                       },
                     },
-                  ]
-                : []),
-            ];
-          })
-        : []),
-      { $match: match },
-      { $count: 'totalResults' },
-    ]),
+                  },
+                ]
+              : []),
+            ...(p.type === 'count'
+              ? [
+                  {
+                    $addFields: {
+                      [p.as || p.path + '_count']: {
+                        $size: '$' + (p.as || p.path),
+                      },
+                    },
+                  },
+                ]
+              : []),
+          ];
+        }),
+      );
+    }
+    filterMetaAggregation.push({ $match: match });
+  }
+  filterMetaAggregation.push(
+    { $group: { _id: null, totalResults: { $sum: 1 } } },
+    { $project: { _id: 0, totalResults: 1 } },
+  );
+
+  // Create search model
+  const [aggregationData, aggregationMeta] = await Promise.all([
+    model.aggregate(filterDataAggregation),
+    model.aggregate(filterMetaAggregation),
   ]);
 
-  const totalResults = aggregationMeta[0]?.totalResults ?? 0;
+  const totalResults = first(aggregationMeta)?.totalResults ?? 0;
   const meta: FilterMeta = {
     pagination: {
       currentPage: page,
@@ -219,3 +255,17 @@ export async function modelFilter<T, V>({
   //@ts-expect-error
   return { data: plainToInstance(modelClass, aggregationData), meta };
 }
+
+export const extractFilters = (filterString: string) => {
+  if (!filterString) return [];
+  const filters = filterString.split(';');
+
+  return filters.reduce(
+    (result, filter) => {
+      const [key, operator, value] = filter.split('::');
+      result.push({ key, operator, value });
+      return result;
+    },
+    [] as { key: string; operator: string; value: string }[],
+  );
+};

@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { LoadingButton } from "@mui/lab";
 import { Button, Divider, Grid, Typography } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { Form, FormikProvider, useFormik } from "formik";
 import * as yup from "yup";
 
@@ -17,15 +18,21 @@ type ImportFileGoogleSheetProps = {
 const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
   handleClose,
 }) => {
+  const queryClient = useQueryClient();
+
   const formik = useFormik({
     initialValues: {
       spreadsheetLink: null,
-      metric: "",
+      refetchInterval: null,
+      metric: null,
+      skill: "",
       assessment: null,
     },
     validationSchema: yup.object({
       spreadsheetLink: yup.string().nullable().required(),
+      refetchInterval: yup.string().nullable().required(),
       metric: yup.string().required(),
+      skill: yup.string().required(),
       assessment: yup.string().nullable().required(),
     }),
 
@@ -33,7 +40,9 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
       await importGoogleSheet({
         data: {
           spreadsheetLink: values.spreadsheetLink,
+          refetchInterval: values.refetchInterval,
           metric: values.metric,
+          skill: values.skill,
           assessment: values.assessment,
         },
       });
@@ -46,6 +55,9 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
     useImportControllerImportGoogleSheet({
       mutation: {
         onSuccess: async () => {
+          await queryClient.invalidateQueries(["imports", "google-sheet"]);
+
+          handleClose();
           // useMeStore.getState().setWorkspace(workspace);
           // window.location.reload();
         },
@@ -65,6 +77,11 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
         </Typography>
 
         <FormikTextField name="spreadsheetLink" label="Spreadsheet link" />
+        <FormikAutocomplete
+          name="refetchInterval"
+          label="Refetch interval"
+          options={valueOptions(["Daily"])}
+        />
 
         <Typography
           fontSize={14}
@@ -76,11 +93,13 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
           Data info
         </Typography>
 
-        <FormikTextField
-          // freeSolo
+        <FormikAutocomplete
           name="metric"
           label="Metric"
+          options={valueOptions(["Knowledge", "Confidence", "Application"])}
         />
+
+        <FormikTextField name="skill" label="Skill" />
 
         <FormikAutocomplete
           name="assessment"

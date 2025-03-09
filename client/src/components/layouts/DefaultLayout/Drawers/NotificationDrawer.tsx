@@ -1,6 +1,7 @@
-import { useMemo, type FC } from "react";
-import { Box, Drawer, Paper, Stack, Typography } from "@mui/material";
-import AlertNotificationIMG from "assets/imgs/notifications/alert-notification.jpeg";
+import { type FC } from "react";
+import { Drawer, Stack, Typography } from "@mui/material";
+
+// import AlertNotificationIMG from "assets/imgs/notifications/alert-notification.jpeg";
 
 import CloseIcon from "components/icons/CloseIcon";
 import Title from "components/TItle/Title";
@@ -16,31 +17,31 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
   isOpen,
   onClose,
 }) => {
-  const notifications = useMemo(() => {
-    return [
-      {
-        date: "Yesterday",
-        type: "calendar",
-        title: "Weekly report generated",
-        description:
-          "A new weekly report has been generated. Check it now and discover the evolution of your students.",
-      },
-      {
-        date: "August 29",
-        type: "path",
-        title: "Follow the learners path",
-        description:
-          "Did you know that you can follow the LMS metrics from Ascend App to each individual learner.",
-      },
-      {
-        date: "August 26",
-        type: "chart",
-        title: "New charts available",
-        description:
-          "We have launched a new release of Ascend and we have big news! Now you can view the 3 Eye Report y different ways to compare growth. ",
-      },
-    ];
-  }, []);
+  // const notifications = useMemo(() => {
+  //   return [
+  //     {
+  //       date: "Yesterday",
+  //       type: "calendar",
+  //       title: "Weekly report generated",
+  //       description:
+  //         "A new weekly report has been generated. Check it now and discover the evolution of your students.",
+  //     },
+  //     {
+  //       date: "August 29",
+  //       type: "path",
+  //       title: "Follow the learners path",
+  //       description:
+  //         "Did you know that you can follow the LMS metrics from Ascend App to each individual learner.",
+  //     },
+  //     {
+  //       date: "August 26",
+  //       type: "chart",
+  //       title: "New charts available",
+  //       description:
+  //         "We have launched a new release of Ascend and we have big news! Now you can view the 3 Eye Report y different ways to compare growth. ",
+  //     },
+  //   ];
+  // }, []);
 
   return (
     <Drawer
@@ -83,7 +84,11 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
       <Title title="Notifications" />
 
       <Stack direction="column" spacing={2} mt={2}>
-        {notifications.map((notification, i) => (
+        <Typography fontSize={16} fontWeight={600} color="#6C6B67">
+          Your notification inbox is empty.
+        </Typography>
+
+        {/* {notifications.map((notification, i) => ( 
           <Box key={i}>
             <Typography fontSize={16} fontWeight={600} color="#6C6B67">
               {notification.date}
@@ -113,6 +118,7 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
             </Paper>
           </Box>
         ))}
+          */}
       </Stack>
     </Drawer>
   );

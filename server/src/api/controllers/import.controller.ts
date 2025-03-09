@@ -1,3 +1,6 @@
+import { Ref } from '@typegoose/typegoose';
+import { Type, plainToInstance } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
 import csvtojson from 'csvtojson';
 import dayjs from 'dayjs';
 import { google } from 'googleapis';
@@ -6,31 +9,50 @@ import {
   Authorized,
   BadRequestError,
   Body,
+  Get,
   JsonController,
   Post,
+  QueryParams,
+  Req,
   UploadedFile,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
+import { Import } from 'api/models/import/import.model';
+import { ImportService } from 'api/services/import.service';
+import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { env } from 'env';
+import { mongoId } from 'utils/mongoId';
 
 // Response Types
+// ?|> filterImports
+class filterImportsResponse {
+  @ValidateNested({ each: true })
+  @Type(() => Import)
+  data: Import[];
+
+  @ValidateNested()
+  @Type(() => FilterMeta)
+  meta: FilterMeta;
+}
 
 // Controller
 @Authorized()
 @JsonController('/import')
 @OpenAPI({})
 export class ImportController {
-  //   constructor() {}
+  constructor(private importService: ImportService) {}
 
   private async processImportData({
-    source,
+    importId,
     metric,
+    skill,
     assessment,
     rows,
   }: {
-    source: 'google-sheet' | 'file';
+    importId: Ref<Import>;
     metric: string;
+    skill: string;
     assessment: string;
     rows: {
       timestamp: Date;
@@ -38,14 +60,41 @@ export class ImportController {
       score: number;
     }[];
   }) {
-    console.log(source, metric, assessment, rows);
+    console.log(importId, metric, skill, assessment, rows);
     return;
+  }
+
+  @Get()
+  @ResponseSchema(filterImportsResponse)
+  public async filterImports(
+    @Req() req: any,
+    // @CurrentUser() user: User,
+    @QueryParams() queryParams: FilterQueryParams<Import>,
+  ) {
+    const { limit, page, sort, filter } = plainToInstance(
+      FilterQueryParams,
+      queryParams,
+    );
+
+    return this.importService.filter({
+      limit,
+      page,
+      sort,
+      filter,
+      defaultFilter: {},
+      preFilter: {
+        organisation: mongoId(req.organisation._id),
+      },
+      Model: Import,
+    });
   }
 
   @Post('/google-sheet')
   @ResponseSchema(undefined)
   public async importGoogleSheet(
-    @Body() { spreadsheetLink, metric, assessment }: any,
+    @Req() req: any,
+    @Body()
+    { spreadsheetLink, refetchInterval, metric, skill, assessment }: any,
   ) {
     const sheets = google.sheets({
       version: 'v4',
@@ -79,9 +128,22 @@ export class ImportController {
       };
     });
 
+    // CREATE IMPORT
+    const { _id: importId } =
+      await this.importService.importGoogleSheetService.create({
+        organisation: req.organisation._id,
+        sheetId: spreadsheetId,
+        refetchInterval,
+        metric,
+        skill,
+        assessment,
+      });
+
+    // CREATE IMPORT DATA
     await this.processImportData({
-      source: 'google-sheet',
+      importId,
       metric,
+      skill,
       assessment,
       rows: extractedData,
     });
@@ -92,7 +154,8 @@ export class ImportController {
   @Post('/file')
   @ResponseSchema(undefined)
   public async importFile(
-    @Body() { metric, assessment }: any,
+    @Req() req: any,
+    @Body() { metric, assessment, skill }: any,
     @UploadedFile('file') file?: any,
   ) {
     if (!file) {
@@ -114,10 +177,23 @@ export class ImportController {
         throw new BadRequestError('Invalid file type');
     }
 
-    console.log(extractedData);
+    // CREATE IMPORT
+    const { _id: importId } = await this.importService.importFileService.create(
+      {
+        organisation: req.organisation._id,
+        fileName: file.originalname,
+        fileType,
+        metric,
+        skill,
+        assessment,
+      },
+    );
+
+    // CREATE IMPORT DATA
     await this.processImportData({
-      source: 'file',
+      importId,
       metric,
+      skill,
       assessment,
       rows: extractedData,
     });

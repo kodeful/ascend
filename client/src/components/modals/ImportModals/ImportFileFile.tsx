@@ -22,12 +22,14 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
   const formik = useFormik({
     initialValues: {
       file: null,
-      metric: "",
+      metric: null,
+      skill: "",
       assessment: null,
     },
     validationSchema: yup.object({
       file: yup.mixed().required(),
-      metric: yup.string().required(),
+      metric: yup.string().nullable().required(),
+      skill: yup.string().required(),
       assessment: yup.string().nullable().required(),
     }),
 
@@ -37,7 +39,8 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
       const formData = new FormData();
       // @ts-expect-error
       formData.append("file", values.file);
-      formData.append("metric", values.metric);
+      formData.append("metric", values.metric as unknown as string);
+      formData.append("skill", values.skill);
       formData.append("assessment", values.assessment as unknown as string);
 
       await axiosInstance({
@@ -134,11 +137,13 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
             Data info
           </Typography>
 
-          <FormikTextField
-            // freeSolo
+          <FormikAutocomplete
             name="metric"
             label="Metric"
+            options={valueOptions(["Knowledge", "Confidence", "Application"])}
           />
+
+          <FormikTextField name="skill" label="Skill" />
 
           <FormikAutocomplete
             name="assessment"

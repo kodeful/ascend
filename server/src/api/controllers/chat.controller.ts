@@ -12,6 +12,7 @@ import {
   Post,
   Put,
   QueryParams,
+  Req,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
@@ -68,7 +69,7 @@ export class ChatController {
   @Get()
   @ResponseSchema(filterChatsResponse)
   public async filterChats(
-    @CurrentUser() user: User,
+    @Req() req: any,
     @QueryParams() queryParams: FilterQueryParams<User>,
   ) {
     const { limit, page, sort, filter } = plainToInstance(
@@ -81,8 +82,9 @@ export class ChatController {
       page,
       sort,
       filter,
-      defaultFilter: {
-        user: mongoId(user._id),
+      defaultFilter: {},
+      preFilter: {
+        organisation: mongoId(req.organisation._id),
       },
       Model: filterChatsData,
     });
@@ -130,11 +132,12 @@ export class ChatController {
     },
   })
   public async startChat(
+    @Req() req: any,
     @CurrentUser() user: User,
     @Body() { message }: startChatBody,
   ) {
     const chat = await this.chatService.create({
-      user: user._id,
+      organisation: req.organisation._id,
     });
 
     await this.chatMessageService.create({
@@ -154,8 +157,8 @@ export class ChatController {
     @Body() { message }: sendMessageChatBody,
   ) {
     await this.chatMessageService.create({
-      chat: chatId,
       user: user._id,
+      chat: chatId,
       message: message,
     });
 

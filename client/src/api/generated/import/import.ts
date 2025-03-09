@@ -7,12 +7,107 @@
  */
 import {
   useMutation,
+  useQuery,
   type MutationFunction,
+  type QueryFunction,
+  type QueryKey,
   type UseMutationOptions,
   type UseMutationResult,
+  type UseQueryOptions,
+  type UseQueryResult,
 } from "@tanstack/react-query";
 
 import { axiosInstance } from "../../axios-instance";
+import type {
+  FilterImportsResponse,
+  ImportControllerFilterImportsParams,
+} from ".././models";
+
+/**
+ * @summary Filter imports
+ */
+export const importControllerFilterImports = (
+  params?: ImportControllerFilterImportsParams,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<FilterImportsResponse>({
+    url: `/import`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getImportControllerFilterImportsQueryKey = (
+  params?: ImportControllerFilterImportsParams,
+) => {
+  return [`/import`, ...(params ? [params] : [])] as const;
+};
+
+export const getImportControllerFilterImportsQueryOptions = <
+  TData = Awaited<ReturnType<typeof importControllerFilterImports>>,
+  TError = unknown,
+>(
+  params?: ImportControllerFilterImportsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof importControllerFilterImports>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getImportControllerFilterImportsQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof importControllerFilterImports>>
+  > = ({ signal }) => importControllerFilterImports(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof importControllerFilterImports>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ImportControllerFilterImportsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof importControllerFilterImports>>
+>;
+export type ImportControllerFilterImportsQueryError = unknown;
+
+/**
+ * @summary Filter imports
+ */
+
+export function useImportControllerFilterImports<
+  TData = Awaited<ReturnType<typeof importControllerFilterImports>>,
+  TError = unknown,
+>(
+  params?: ImportControllerFilterImportsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof importControllerFilterImports>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getImportControllerFilterImportsQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * @summary Import google sheet

@@ -6,9 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { FilterMeta } from "./filterMeta";
-import type { FilterUsersData } from "./filterUsersData";
+import type { Import } from "./import";
 
-export interface FilterUsersResponse {
-  data: FilterUsersData[];
+export interface FilterImportsResponse {
+  data: Import[];
   meta: FilterMeta;
 }

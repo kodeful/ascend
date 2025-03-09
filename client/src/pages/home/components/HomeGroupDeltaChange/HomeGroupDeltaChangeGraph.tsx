@@ -54,7 +54,7 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
       {
         type: "areaspline",
         name: "After",
-        data: [2, 4, 3],
+        data: [35, 0, 0],
         color: "#EE4F28", // Red for "After"
         fillColor: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
@@ -67,7 +67,7 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
       {
         type: "areaspline",
         name: "Before",
-        data: [1, 2, 1.5],
+        data: [29, 0, 0],
         color: "#AEAC95", // Gray for "Before"
         fillColor: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },

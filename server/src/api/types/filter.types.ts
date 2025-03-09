@@ -34,6 +34,9 @@ export class FilterQueryParams<T> {
   defaultFilter?: FilterQuery<T>;
 
   @Expose()
+  preFilter?: FilterQuery<T>;
+
+  @Expose()
   aggregations?: any;
 
   @Expose()

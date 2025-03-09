@@ -7,7 +7,7 @@ import { Container } from 'typedi';
 import { DocumentWithTimestamps } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
-import { User } from './user.model';
+import { Organisation } from './organisation.model';
 
 @index({ user: 1 })
 export class Chat extends DocumentWithTimestamps {
@@ -16,10 +16,11 @@ export class Chat extends DocumentWithTimestamps {
   @Transform(transformMongoId)
   @prop({
     type: SchemaTypes.ObjectId,
-    ref: User,
+    ref: 'Organisation',
     required: true,
+    unique: true,
   })
-  public user: Ref<User>;
+  public organisation: Ref<Organisation>;
 }
 
 export const ChatModel = getModelForClass(Chat, {

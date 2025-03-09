@@ -1,12 +1,23 @@
-import React from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
 import ExcelIMG from "assets/imgs/connections/excel.png";
 import SettingsPageLayout from "pages/settings/SettingsPageLayout";
 
 import { openModal } from "components/modals/ModalsStore";
 import Title from "components/TItle/Title";
 
+import ImportsFileDataGrid from "./ImportsFileDataGrid";
+
 const SettingsConnectionsFilesPage = () => {
+  const [tab, setTab] = useState<"imports" | "integration-details">("imports");
+
   return (
     <SettingsPageLayout>
       <Stack
@@ -34,6 +45,7 @@ const SettingsConnectionsFilesPage = () => {
         <Stack
           direction="row"
           mt={4}
+          pb={2}
           alignItems="center"
           justifyContent="space-between"
         >
@@ -87,6 +99,33 @@ const SettingsConnectionsFilesPage = () => {
             </Button>
           </Box>
         </Stack>
+
+        <ToggleButtonGroup
+          value={tab}
+          exclusive
+          onChange={(e, value) => {
+            if (!value) return;
+            setTab(value);
+          }}
+          sx={{ mb: 1 }}
+        >
+          <ToggleButton value="imports">Imports</ToggleButton>
+          <ToggleButton value="integration-details">
+            Integration Details
+          </ToggleButton>
+        </ToggleButtonGroup>
+
+        {tab === "imports" && (
+          <>
+            <Typography fontSize={18} fontWeight={600} color="#60646C" mb={1}>
+              Import logs
+            </Typography>
+
+            <Box>
+              <ImportsFileDataGrid />
+            </Box>
+          </>
+        )}
       </Stack>
     </SettingsPageLayout>
   );
