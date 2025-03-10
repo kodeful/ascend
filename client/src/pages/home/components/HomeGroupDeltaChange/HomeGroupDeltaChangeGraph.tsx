@@ -2,6 +2,8 @@ import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
+import { useMetricsControllerGetMetricsStatisticsByMetric } from "api/generated/metrics/metrics";
+
 interface HomeGroupDeltaChangeGraphProps {
   height: number;
 }
@@ -9,6 +11,12 @@ interface HomeGroupDeltaChangeGraphProps {
 const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
   height,
 }) => {
+  const { data: metrics } = useMetricsControllerGetMetricsStatisticsByMetric({
+    query: {
+      queryKey: ["metrics", "statistics", "by-metric"],
+    },
+  });
+
   const options: Highcharts.Options = {
     chart: {
       type: "areaspline",
@@ -54,7 +62,8 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
       {
         type: "areaspline",
         name: "After",
-        data: [35, 0, 0],
+        // @ts-expect-error
+        data: metrics?.after || [],
         color: "#EE4F28", // Red for "After"
         fillColor: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
@@ -67,7 +76,8 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
       {
         type: "areaspline",
         name: "Before",
-        data: [29, 0, 0],
+        // @ts-expect-error
+        data: metrics?.before || [],
         color: "#AEAC95", // Gray for "Before"
         fillColor: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },

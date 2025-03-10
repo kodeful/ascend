@@ -23,6 +23,7 @@ export * from "./findROIResponse";
 export * from "./import";
 export * from "./importAssessment";
 export * from "./importControllerFilterImportsParams";
+export * from "./importMetric";
 export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./organisation";

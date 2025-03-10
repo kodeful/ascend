@@ -1,12 +1,22 @@
 import React from "react";
-import { TrendingUp } from "@mui/icons-material";
-import { Paper, Stack, Typography } from "@mui/material";
+import { TrendingDown, TrendingUp } from "@mui/icons-material";
+import { Paper, Skeleton, Stack, Typography } from "@mui/material";
+import dayjs from "dayjs";
 
+import { useMetricsControllerGetMetricsStatisticsByMetric } from "api/generated/metrics/metrics";
+import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 import Counter from "components/Counter/Counter";
 
 import HomeGroupDeltaChangeGraph from "./HomeGroupDeltaChangeGraph";
 
 const HomeGroupDeltaChange = () => {
+  const { data: metrics, isLoading } =
+    useMetricsControllerGetMetricsStatisticsByMetric({
+      query: {
+        queryKey: ["metrics", "statistics", "by-metric"],
+      },
+    });
+
   return (
     <Paper
       sx={{
@@ -18,16 +28,35 @@ const HomeGroupDeltaChange = () => {
         Showing Group Delta Change
       </Typography>
 
-      <HomeGroupDeltaChangeGraph height={240} />
+      <AsyncComponent
+        loading={isLoading}
+        SkeletonComponent={<Skeleton variant="rectangular" height={240} />}
+      >
+        <HomeGroupDeltaChangeGraph height={240} />
+      </AsyncComponent>
 
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Typography fontSize={14} fontWeight={600} color="#1C2024">
-          Total increase up by <Counter count={8.2} step={0.1} />%
-        </Typography>
-        <TrendingUp color="success" />
+        <AsyncComponent
+          loading={isLoading}
+          SkeletonComponent={<Skeleton variant="text" width={160} />}
+        >
+          <Typography fontSize={14} fontWeight={600} color="#1C2024">
+            Total increase up by {/* @ts-expect-error */}
+            <Counter count={metrics?.increasePercentage * 100} step={0.1} />%
+          </Typography>
+
+          {/* @ts-expect-error */}
+          {metrics?.increasePercentage >= 0 ? (
+            <TrendingUp color="success" />
+          ) : (
+            <TrendingDown color="error" />
+          )}
+        </AsyncComponent>
       </Stack>
+
       <Typography fontSize={14} color="#60646C">
-        July - August 2024
+        {dayjs().subtract(1, "month").format("MMMM YYYY")} -{" "}
+        {dayjs().format("MMMM YYYY")}
       </Typography>
     </Paper>
   );

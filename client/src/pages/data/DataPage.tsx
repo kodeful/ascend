@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import ROICalculatorWidget from "pages/data/roi-calculator/components/ROICalculatorWidget";
 import Home3EyesViewReport from "pages/home/components/Home3EyesViewReport/Home3EyesViewReport";
-import HomeGroupTrust from "pages/home/components/HomeGroupTrust/HomeGroupTrust";
+import HomeGroupTrust from "pages/home/components/HomeGroupSkill/HomeGroupSkill";
 import HomeLearners from "pages/home/components/HomeLearners";
 
 import Title from "components/TItle/Title";

@@ -2,11 +2,11 @@ import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-interface HomeGroupTrustGraphProps {
+interface HomeGroupSkillGraphProps {
   height: number;
 }
 
-const HomeGroupTrustGraph: FC<HomeGroupTrustGraphProps> = ({ height }) => {
+const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({ height }) => {
   const options: Highcharts.Options = {
     chart: {
       type: "bar",
@@ -82,4 +82,4 @@ const HomeGroupTrustGraph: FC<HomeGroupTrustGraphProps> = ({ height }) => {
   return <HighchartsReact highcharts={Highcharts} options={options} />;
 };
 
-export default HomeGroupTrustGraph;
+export default HomeGroupSkillGraph;

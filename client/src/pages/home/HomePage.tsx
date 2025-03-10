@@ -6,7 +6,7 @@ import Title from "components/TItle/Title";
 import Home3EyesViewReport from "./components/Home3EyesViewReport/Home3EyesViewReport";
 import HomeGroupActivity from "./components/HomeGroupActivity/HomeGroupActivity";
 import HomeGroupDeltaChange from "./components/HomeGroupDeltaChange/HomeGroupDeltaChange";
-import HomeGroupTrust from "./components/HomeGroupTrust/HomeGroupTrust";
+import HomeGroupTrust from "./components/HomeGroupSkill/HomeGroupSkill";
 import HomeLearners from "./components/HomeLearners";
 import HomeRecentReportsDataGrid from "./components/HomeRecentReports/HomeRecentReportsDataGrid";
 

@@ -4,13 +4,11 @@ import { Grid, Paper, Stack, Typography } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
 
 import Counter from "components/Counter/Counter";
-import FormikAutocomplete, {
-  valueOptions,
-} from "components/forms/FormikAutocomplete";
 
-import HomeGroupTestGraph from "./HomeGroupTrustGraph";
+import HomeGroupTestGraph from "./HomeGroupSkillGraph";
+import SkillAutocomplete from "./SkillAutocomplete";
 
-const HomeGroupTrust = () => {
+const HomeGroupSkill = () => {
   const formik = useFormik({
     initialValues: {
       skill: null,
@@ -40,15 +38,7 @@ const HomeGroupTrust = () => {
             </Typography>
 
             <FormikProvider value={formik}>
-              <FormikAutocomplete
-                name="skill"
-                placeholder="Select Skill"
-                label=""
-                options={valueOptions(["Time Management"])}
-                sx={{
-                  width: 180,
-                }}
-              />
+              <SkillAutocomplete />
             </FormikProvider>
           </Stack>
         </Grid>
@@ -59,9 +49,6 @@ const HomeGroupTrust = () => {
         </Grid> */}
         <Grid item xs={12}>
           {!values.skill && (
-            // <Typography fontSize={14} color="#60646C">
-            //   Select a skill to see the graph
-            // </Typography>
             <Typography
               fontSize={14}
               color="#60646C"
@@ -109,4 +96,4 @@ const HomeGroupTrust = () => {
   );
 };
 
-export default HomeGroupTrust;
+export default HomeGroupSkill;

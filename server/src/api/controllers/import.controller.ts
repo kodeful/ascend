@@ -19,6 +19,8 @@ import {
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { Import } from 'api/models/import/import.model';
+import { Organisation } from 'api/models/organisation.model';
+import { ImportDataService } from 'api/services/import-data.service';
 import { ImportService } from 'api/services/import.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { env } from 'env';
@@ -41,15 +43,20 @@ class filterImportsResponse {
 @JsonController('/import')
 @OpenAPI({})
 export class ImportController {
-  constructor(private importService: ImportService) {}
+  constructor(
+    private importService: ImportService,
+    private importDataService: ImportDataService,
+  ) {}
 
   private async processImportData({
+    organisationId,
     importId,
     metric,
     skill,
     assessment,
     rows,
   }: {
+    organisationId: Ref<Organisation>;
     importId: Ref<Import>;
     metric: string;
     skill: string;
@@ -60,7 +67,22 @@ export class ImportController {
       score: number;
     }[];
   }) {
-    console.log(importId, metric, skill, assessment, rows);
+    const importDataBulk = map(rows, (row) => ({
+      insertOne: {
+        document: {
+          organisation: organisationId,
+          import: importId,
+          timestamp: row.timestamp,
+          email: row.email,
+          score: row.score,
+          metric,
+          skill,
+          assessment,
+        },
+      },
+    }));
+
+    await this.importDataService.model.bulkWrite(importDataBulk);
     return;
   }
 
@@ -141,6 +163,7 @@ export class ImportController {
 
     // CREATE IMPORT DATA
     await this.processImportData({
+      organisationId: req.organisation._id,
       importId,
       metric,
       skill,
@@ -191,6 +214,7 @@ export class ImportController {
 
     // CREATE IMPORT DATA
     await this.processImportData({
+      organisationId: req.organisation._id,
       importId,
       metric,
       skill,
