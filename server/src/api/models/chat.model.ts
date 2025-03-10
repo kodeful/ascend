@@ -9,7 +9,7 @@ import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
 import { Organisation } from './organisation.model';
 
-@index({ user: 1 })
+@index({ organisation: 1 })
 export class Chat extends DocumentWithTimestamps {
   @Expose()
   @IsMongoId()
@@ -18,7 +18,6 @@ export class Chat extends DocumentWithTimestamps {
     type: SchemaTypes.ObjectId,
     ref: 'Organisation',
     required: true,
-    unique: true,
   })
   public organisation: Ref<Organisation>;
 }

@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useFormikContext } from "formik";
 import { find } from "lodash";
 
+import { ReportType } from "api/generated/models";
 import { useUserControllerFilterUsers } from "api/generated/user/user";
 import AscendIcon from "components/icons/AscendIcon";
 import AscendTextIcon from "components/icons/AscendTextIcon";
@@ -107,8 +108,9 @@ const ReportPDF = () => {
 
           {values.reportType && (
             <Typography fontSize={42} fontWeight={600} color="primary.dark">
-              {values.reportType === "individual-report" && "Individual Report"}
-              {values.reportType === "group-report" && "Group Report"}
+              {values.reportType === ReportType.Individual_Report &&
+                "Individual Report"}
+              {values.reportType === ReportType.Group_Report && "Group Report"}
             </Typography>
           )}
 

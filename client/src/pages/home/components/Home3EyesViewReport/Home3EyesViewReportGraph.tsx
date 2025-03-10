@@ -2,6 +2,8 @@ import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
+import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+
 interface Home3EyesViewReportGraphProps {
   height: number;
 }
@@ -9,6 +11,17 @@ interface Home3EyesViewReportGraphProps {
 const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
   height,
 }) => {
+  const { data: metrics } = useMetricsControllerGetMetricsStatisticsBySkill(
+    {
+      skill: undefined,
+    },
+    {
+      query: {
+        queryKey: ["metrics", "statistics", "by-skill"],
+      },
+    },
+  );
+
   const options: Highcharts.Options = {
     chart: {
       type: "column",
@@ -23,18 +36,8 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
     },
     xAxis: {
       lineWidth: 0,
-      categories: [
-        "Time Management",
-        "Criteria 2",
-        "Criteria 3",
-        "Criteria 4",
-        "Criteria 5",
-        "Criteria 6",
-        "Criteria 7",
-        "Criteria 8",
-        "Criteria 9",
-        "Criteria 10",
-      ],
+      // @ts-expect-error
+      categories: metrics?.skills || [],
       //   crosshair: false,
       labels: {
         enabled: false,
@@ -74,21 +77,24 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
       {
         type: "column",
         name: "Peer evaluation",
-        data: [8, 7, 9, 8, 6, 8, 8, 8, 9, 7],
+        // @ts-expect-error
+        data: metrics?.peerEvaluations || [],
         color: "#F1B136",
       },
       {
         type: "column",
 
         name: "Self-evaluation",
-        data: [9, 8, 9, 8, 6, 8, 7, 8, 9, 7],
+        // @ts-expect-error
+        data: metrics?.selfEvaluations || [],
         color: "#EC762E",
       },
       {
         type: "column",
 
         name: "Facilitator evaluation",
-        data: [8, 6, 8, 9, 7, 9, 8, 9, 8, 6],
+        // @ts-expect-error
+        data: metrics?.facilitatorEvaluations || [],
         color: "#AEAC95",
       },
     ],

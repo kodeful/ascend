@@ -72,4 +72,7 @@ export const env = {
   googleSheets: {
     apiKey: getOsEnv('GOOGLE_SHEETS_API_KEY'),
   },
+  openai: {
+    apiKey: getOsEnv('OPENAI_API_KEY'),
+  },
 };

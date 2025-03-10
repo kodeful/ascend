@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-query";
 
 import { axiosInstance } from "../../axios-instance";
+import type { MetricsControllerGetMetricsStatisticsBySkillParams } from ".././models";
 
 /**
  * @summary Get metrics skills options
@@ -160,6 +161,100 @@ export function useMetricsControllerGetMetricsStatisticsByMetric<
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions =
     getMetricsControllerGetMetricsStatisticsByMetricQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Get metrics statistics by skill
+ */
+export const metricsControllerGetMetricsStatisticsBySkill = (
+  params?: MetricsControllerGetMetricsStatisticsBySkillParams,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<unknown>({
+    url: `/metrics/statistics/by-skill`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getMetricsControllerGetMetricsStatisticsBySkillQueryKey = (
+  params?: MetricsControllerGetMetricsStatisticsBySkillParams,
+) => {
+  return [`/metrics/statistics/by-skill`, ...(params ? [params] : [])] as const;
+};
+
+export const getMetricsControllerGetMetricsStatisticsBySkillQueryOptions = <
+  TData = Awaited<
+    ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>
+  >,
+  TError = unknown,
+>(
+  params?: MetricsControllerGetMetricsStatisticsBySkillParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getMetricsControllerGetMetricsStatisticsBySkillQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>>
+  > = ({ signal }) =>
+    metricsControllerGetMetricsStatisticsBySkill(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type MetricsControllerGetMetricsStatisticsBySkillQueryResult =
+  NonNullable<
+    Awaited<ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>>
+  >;
+export type MetricsControllerGetMetricsStatisticsBySkillQueryError = unknown;
+
+/**
+ * @summary Get metrics statistics by skill
+ */
+
+export function useMetricsControllerGetMetricsStatisticsBySkill<
+  TData = Awaited<
+    ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>
+  >,
+  TError = unknown,
+>(
+  params?: MetricsControllerGetMetricsStatisticsBySkillParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof metricsControllerGetMetricsStatisticsBySkill>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions =
+    getMetricsControllerGetMetricsStatisticsBySkillQueryOptions(
+      params,
+      options,
+    );
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

@@ -4,6 +4,7 @@ import { Form, FormikProvider, useFormik } from "formik";
 import HomeLearners from "pages/home/components/HomeLearners";
 import HomeRecentReportsDataGrid from "pages/home/components/HomeRecentReports/HomeRecentReportsDataGrid";
 
+import { ReportType } from "api/generated/models";
 import FormikTextField from "components/forms/FormikTextField";
 import Title from "components/TItle/Title";
 
@@ -38,7 +39,7 @@ const ReportPage = () => {
               <ReportBuilderTemplate
                 title="Group Ascend Formula Report"
                 state={{
-                  reportType: "group-report",
+                  reportType: ReportType.Group_Report,
                 }}
               />
             </Grid>
@@ -46,7 +47,7 @@ const ReportPage = () => {
               <ReportBuilderTemplate
                 title="Ascend Individual Formula Report"
                 state={{
-                  reportType: "individual-report",
+                  reportType: ReportType.Individual_Report,
                 }}
               />
             </Grid>
@@ -54,7 +55,7 @@ const ReportPage = () => {
               <ReportBuilderTemplate
                 title="LMS Group Learning Activities Report"
                 state={{
-                  reportType: "group-report",
+                  reportType: ReportType.Group_Report,
                 }}
               />
             </Grid>
@@ -62,7 +63,7 @@ const ReportPage = () => {
               <ReportBuilderTemplate
                 title="LMS Individual Learning Activities Report"
                 state={{
-                  reportType: "individual-report",
+                  reportType: ReportType.Individual_Report,
                 }}
               />
             </Grid>

@@ -1,8 +1,9 @@
 import React from "react";
 import { Stack } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
+import { useReportControllerCreateReport } from "api/generated/report/report";
 import Title from "components/TItle/Title";
 
 import ReportPDF from "./components/ReportPDF";
@@ -10,6 +11,7 @@ import CreateReportSidebar from "./CreateReportSidebar";
 
 const CreateReportPage = () => {
   const location = useLocation();
+  const history = useHistory();
   const locationState = (location.state || {}) as any;
 
   const formik = useFormik({
@@ -22,13 +24,32 @@ const CreateReportPage = () => {
       horizontal: false,
     },
     enableReinitialize: true,
-    onSubmit: () => {},
+    onSubmit: async (values) => {
+      await createReport({
+        data: {
+          title: values.title,
+          subtitle: values.subtitle,
+          type: values.reportType,
+          rangeDate: values.rangeDate,
+          horizontal: values.horizontal,
+        },
+      });
+    },
   });
+
+  const { mutateAsync: createReport, isLoading } =
+    useReportControllerCreateReport({
+      mutation: {
+        onSuccess: () => {
+          history.push("/report");
+        },
+      },
+    });
 
   return (
     <FormikProvider value={formik}>
       <Stack direction="row" height="100%">
-        <CreateReportSidebar />
+        <CreateReportSidebar isLoading={isLoading} />
 
         <Stack
           sx={{

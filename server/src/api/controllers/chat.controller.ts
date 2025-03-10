@@ -141,6 +141,7 @@ export class ChatController {
     });
 
     await this.chatMessageService.create({
+      organisation: req.organisation._id,
       chat: chat._id,
       user: user._id,
       message: message,
@@ -152,11 +153,13 @@ export class ChatController {
   @Put('/:chatId')
   @ResponseSchema(sendMessageChatData)
   public async sendMessageChat(
+    @Req() req: any,
     @CurrentUser() user: User,
     @Param('chatId') chatId: Ref<Chat>,
     @Body() { message }: sendMessageChatBody,
   ) {
     await this.chatMessageService.create({
+      organisation: req.organisation._id,
       user: user._id,
       chat: chatId,
       message: message,

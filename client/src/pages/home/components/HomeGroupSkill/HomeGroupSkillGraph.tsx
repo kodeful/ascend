@@ -2,11 +2,28 @@ import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
+import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+
 interface HomeGroupSkillGraphProps {
   height: number;
+  skill: string;
 }
 
-const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({ height }) => {
+const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({
+  height,
+  skill,
+}) => {
+  const { data: metrics } = useMetricsControllerGetMetricsStatisticsBySkill(
+    {
+      skill,
+    },
+    {
+      query: {
+        queryKey: ["metrics", "statistics", "by-skill", skill],
+      },
+    },
+  );
+
   const options: Highcharts.Options = {
     chart: {
       type: "bar",
@@ -22,7 +39,8 @@ const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({ height }) => {
     },
     xAxis: {
       lineWidth: 0,
-      categories: ["Criteria 1"],
+      // @ts-expect-error
+      categories: metrics?.skills || [],
 
       labels: {
         enabled: false,
@@ -61,19 +79,22 @@ const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({ height }) => {
       {
         type: "bar",
         name: "Peer evaluation",
-        data: [8],
+        // @ts-expect-error
+        data: metrics?.peerEvaluations || [],
         color: "#F1B136",
       },
       {
         type: "bar",
         name: "Self-evaluation",
-        data: [9],
+        // @ts-expect-error
+        data: metrics?.selfEvaluations || [],
         color: "#EC762E",
       },
       {
         type: "bar",
         name: "Facilitator evaluation",
-        data: [6],
+        // @ts-expect-error
+        data: metrics?.facilitatorEvaluations || [],
         color: "#AEAC95",
       },
     ],

@@ -1,13 +1,21 @@
+import type { FC } from "react";
 import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
-import { useFormikContext } from "formik";
+import { Form, useFormikContext } from "formik";
 import { useHistory } from "react-router-dom";
 
+import { ReportRangeDate, ReportType } from "api/generated/models";
 import { useUserControllerFilterUsers } from "api/generated/user/user";
-import FormikAutocomplete from "components/forms/FormikAutocomplete";
+import FormikAutocomplete, {
+  valueOptions,
+} from "components/forms/FormikAutocomplete";
 import FormikSwitch from "components/forms/FormikSwitch";
 import FormikTextField from "components/forms/FormikTextField";
 
-const CreateReportSidebar = () => {
+type CreateReportSidebarProps = {
+  isLoading: boolean;
+};
+
+const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
   const history = useHistory();
 
   const { values } = useFormikContext() as any;
@@ -33,6 +41,7 @@ const CreateReportSidebar = () => {
       borderRight="1px solid #E1D7CB"
       px={2}
       py={2}
+      component={Form}
     >
       <FormikTextField name="title" label="Title" placeholder="Write a title" />
 
@@ -47,20 +56,11 @@ const CreateReportSidebar = () => {
       <FormikAutocomplete
         name="reportType"
         label="Select report type"
-        options={[
-          {
-            value: "individual-report",
-            label: "Individual Report",
-          },
-          {
-            value: "group-report",
-            label: "Group Report",
-          },
-        ]}
+        options={valueOptions(Object.values(ReportType))}
         sx={{ mb: 0.5 }}
       />
 
-      {values.reportType === "individual-report" && (
+      {values.reportType === ReportType.Individual_Report && (
         <FormikAutocomplete
           name="learner"
           label="Select learner"
@@ -77,12 +77,7 @@ const CreateReportSidebar = () => {
       <FormikAutocomplete
         name="rangeDate"
         label="Range Date"
-        options={[
-          {
-            value: "last-week",
-            label: "Last week",
-          },
-        ]}
+        options={valueOptions(Object.values(ReportRangeDate))}
       />
 
       <Divider sx={{ my: 2 }} />
@@ -118,7 +113,12 @@ const CreateReportSidebar = () => {
             </Button>
           </Grid>
           <Grid item xs={6}>
-            <Button variant="contained" fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              type="submit"
+              disabled={isLoading}
+            >
               Save
             </Button>
           </Grid>

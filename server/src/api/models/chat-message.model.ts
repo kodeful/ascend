@@ -4,18 +4,24 @@ import { IsMongoId, IsString } from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
 
+import { openAIReply } from 'api/services/third-party/openai.service';
 import { DocumentWithTimestamps } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
 import { Chat } from './chat.model';
+import { Organisation } from './organisation.model';
 import { User } from './user.model';
 
 @post<ChatMessage>('save', async function () {
   if (!this.user) return;
 
-  setTimeout(async () => {
-    const message = 'Hello, how can I help you?';
+  const receivedMessage = this.message;
+  openAIReply({
+    organisationId: this.organisation,
+    receivedMessage: receivedMessage,
+  }).then(async (message) => {
     await ChatMessageModel.create({
+      organisation: this.organisation,
       chat: this.chat,
       message,
     });
@@ -23,10 +29,20 @@ import { User } from './user.model';
     global.io.of(`/socket/chat/${this.chat}`).emit('message', {
       message,
     });
-  }, 3000);
+  });
 })
 @index({ chat: 1 })
 export class ChatMessage extends DocumentWithTimestamps {
+  @Expose()
+  @IsMongoId()
+  @Transform(transformMongoId)
+  @prop({
+    type: SchemaTypes.ObjectId,
+    ref: 'Organisation',
+    required: true,
+  })
+  public organisation: Ref<Organisation>;
+
   @Expose()
   @IsMongoId()
   @Transform(transformMongoId)

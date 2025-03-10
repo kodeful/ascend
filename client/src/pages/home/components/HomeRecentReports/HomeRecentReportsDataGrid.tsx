@@ -3,14 +3,27 @@ import { Box, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import FilePDFIMG from "assets/imgs/files/file-pdf.png";
 
+import { useReportControllerFilterReports } from "api/generated/report/report";
 import DataGrid from "components/DataGrid/DataGrid";
+import dayjs from "utils/dayjs";
 
 const HomeRecentReportsDataGrid = () => {
+  const { data: reports, isLoading } = useReportControllerFilterReports(
+    {
+      limit: -1,
+    },
+    {
+      query: {
+        queryKey: ["reports"],
+      },
+    },
+  );
+
   const columns = useMemo<GridColDef<any, any>[]>(
     () => [
       {
-        field: "name",
-        headerName: "Name",
+        field: "title",
+        headerName: "Title",
         // headerAlign: "center",
         // type: "boolean",
         // width: 120,
@@ -33,13 +46,14 @@ const HomeRecentReportsDataGrid = () => {
         flex: 1,
       },
       {
-        field: "date",
+        field: "createdAt",
         headerName: "Date",
         // headerAlign: "center",
         // type: "boolean",
         // width: 120,
         // editable: true,
         flex: 1,
+        valueFormatter: (value) => dayjs(value).format("DD MMM, YYYY HH:mm"),
       },
       {
         field: "type",
@@ -58,20 +72,8 @@ const HomeRecentReportsDataGrid = () => {
     <>
       <DataGrid
         columns={columns}
-        rows={[
-          {
-            _id: 1,
-            name: "Weekly Group Report ascend",
-            date: "27/10/2024",
-            type: "Group",
-          },
-          {
-            _id: 2,
-            name: "Weekly Group Report ascend",
-            date: "27/10/2024",
-            type: "Group",
-          },
-        ]}
+        loading={isLoading}
+        rows={reports?.data || []}
       />
 
       <Typography
@@ -82,7 +84,8 @@ const HomeRecentReportsDataGrid = () => {
           opacity: 0.5,
         }}
       >
-        Showing <b>8</b> of <b>8</b> reports
+        Showing <b>{reports?.data?.length}</b> of{" "}
+        <b>{reports?.meta?.pagination?.totalResults}</b> reports
       </Typography>
     </>
   );

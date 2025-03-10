@@ -1,9 +1,15 @@
 import dayjs from 'dayjs';
-import { filter, forEach, meanBy, sum } from 'lodash';
-import { Authorized, Get, JsonController, Req } from 'routing-controllers';
+import { filter, forEach, map, mean, meanBy, sum, uniq } from 'lodash';
+import {
+  Authorized,
+  Get,
+  JsonController,
+  QueryParam,
+  Req,
+} from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
-import { ImportMetric } from 'api/models/import/import.model';
+import { ImportAssessment, ImportMetric } from 'api/models/import/import.model';
 import { ImportDataService } from 'api/services/import-data.service';
 
 // Response Types
@@ -98,6 +104,70 @@ export class MetricsController {
       before, // [Knowledge, Confidence, Application]
       after, // [Knowledge, Confidence, Application]
       increasePercentage,
+    };
+  }
+
+  @Get('/statistics/by-skill')
+  @ResponseSchema(undefined)
+  public async getMetricsStatisticsBySkill(
+    @Req() req,
+    @QueryParam('skill') skill: string,
+  ) {
+    const importData = await this.importDataService.find({
+      filter: {
+        organisation: req.organisation._id,
+        ...(skill && { skill }),
+      },
+      select: ['timestamp', 'metric', 'score', 'email', 'skill', 'assessment'],
+      sort: { timestamp: -1 },
+    });
+
+    const calculateMetrics = (importData) => {
+      const metrics = {
+        [ImportAssessment.SELF_EVALUATION]: [],
+        [ImportAssessment.PEER_EVALUATION]: [],
+        [ImportAssessment.FACILITATOR_EVALUATION]: [],
+      };
+      const usedCombinations = [];
+      forEach(importData, (item) => {
+        const combination = [item.email, item.assessment].join(':');
+        if (usedCombinations.includes(combination)) {
+          return;
+        }
+
+        metrics[item.assessment].push(item.score);
+        usedCombinations.push(combination);
+      });
+
+      return {
+        [ImportAssessment.PEER_EVALUATION]:
+          mean(metrics[ImportAssessment.PEER_EVALUATION]) || 0,
+        [ImportAssessment.SELF_EVALUATION]:
+          mean(metrics[ImportAssessment.SELF_EVALUATION]) || 0,
+        [ImportAssessment.FACILITATOR_EVALUATION]:
+          mean(metrics[ImportAssessment.FACILITATOR_EVALUATION]) || 0,
+      };
+    };
+
+    const skills = uniq(map(importData, 'skill'));
+    const peerEvaluations = [];
+    const selfEvaluations = [];
+    const facilitatorEvaluations = [];
+    forEach(skills, (skill) => {
+      const skillData = filter(importData, (item) => item.skill === skill);
+      const metrics = calculateMetrics(skillData);
+      peerEvaluations.push(metrics[ImportAssessment.PEER_EVALUATION]);
+      selfEvaluations.push(metrics[ImportAssessment.SELF_EVALUATION]);
+      facilitatorEvaluations.push(
+        metrics[ImportAssessment.FACILITATOR_EVALUATION],
+      );
+    });
+
+    return {
+      skills,
+      peerEvaluations,
+      selfEvaluations,
+      facilitatorEvaluations,
     };
   }
 }

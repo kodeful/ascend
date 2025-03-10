@@ -1,9 +1,12 @@
 import React from "react";
-import { TrendingUp } from "@mui/icons-material";
-import { Grid, Paper, Stack, Typography } from "@mui/material";
+// import { TrendingUp } from "@mui/icons-material";
+import { Grid, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
 
-import Counter from "components/Counter/Counter";
+import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+import AsyncComponent from "components/AsyncComponent/AsyncComponent";
+
+// import Counter from "components/Counter/Counter";
 
 import HomeGroupTestGraph from "./HomeGroupSkillGraph";
 import SkillAutocomplete from "./SkillAutocomplete";
@@ -17,6 +20,18 @@ const HomeGroupSkill = () => {
   });
 
   const { values } = formik;
+
+  const { isLoading } = useMetricsControllerGetMetricsStatisticsBySkill(
+    {
+      skill: values.skill!,
+    },
+    {
+      query: {
+        enabled: !!values.skill,
+        queryKey: ["metrics", "statistics", "by-skill", values.skill],
+      },
+    },
+  );
 
   return (
     <Paper
@@ -62,9 +77,16 @@ const HomeGroupSkill = () => {
 
           {values.skill && (
             <>
-              <HomeGroupTestGraph height={240} />
+              <AsyncComponent
+                loading={isLoading}
+                SkeletonComponent={
+                  <Skeleton variant="rectangular" height={240} />
+                }
+              >
+                <HomeGroupTestGraph height={240} skill={values.skill} />
+              </AsyncComponent>
 
-              <Stack
+              {/* <Stack
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
@@ -73,7 +95,7 @@ const HomeGroupSkill = () => {
                   <b>{values.skill}</b> has increased <Counter count={5.2} />%
                 </Typography>
                 <TrendingUp color="success" />
-              </Stack>
+              </Stack> */}
             </>
           )}
         </Grid>

@@ -1,9 +1,23 @@
 import React from "react";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Skeleton, Typography } from "@mui/material";
+
+import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 
 import Home3EyesViewReportGraph from "./Home3EyesViewReportGraph";
 
 const Home3EyesViewReport = () => {
+  const { isLoading } = useMetricsControllerGetMetricsStatisticsBySkill(
+    {
+      skill: undefined,
+    },
+    {
+      query: {
+        queryKey: ["metrics", "statistics", "by-skill"],
+      },
+    },
+  );
+
   return (
     <Paper
       sx={{
@@ -19,7 +33,12 @@ const Home3EyesViewReport = () => {
       </Typography>
 
       <Box mt={3}>
-        <Home3EyesViewReportGraph height={280} />
+        <AsyncComponent
+          loading={isLoading}
+          SkeletonComponent={<Skeleton variant="rectangular" height={280} />}
+        >
+          <Home3EyesViewReportGraph height={280} />
+        </AsyncComponent>
       </Box>
     </Paper>
   );
