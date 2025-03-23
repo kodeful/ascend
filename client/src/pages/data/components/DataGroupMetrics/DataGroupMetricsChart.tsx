@@ -50,28 +50,28 @@ const DataGroupMetricsChart: FC<DataGroupMetricsChartProps> = ({ height }) => {
           },
           {
             sets: ["A", "B"],
-            value: 1,
+            value: 6,
             name: "",
             color: "transparent",
             borderWidth: 0,
           }, // Overlap A and B
           {
             sets: ["B", "C"],
-            value: 1,
+            value: 6,
             name: "",
             color: "transparent",
             borderWidth: 0,
           }, // Overlap B and C
           {
             sets: ["A", "C"],
-            value: 2,
+            value: 6,
             name: "",
             color: "transparent",
             borderWidth: 0,
           }, // Overlap A and C
           {
             sets: ["A", "B", "C"],
-            value: 2,
+            value: 6,
             name: "",
             color: "transparent",
             borderWidth: 0,

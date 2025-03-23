@@ -3,7 +3,7 @@ import { Box, ButtonBase, Paper, Stack, Typography } from "@mui/material";
 import ExcelIMG from "assets/imgs/connections/excel.png";
 import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
 // import LearnDashIMG from "assets/imgs/connections/learn-dash.png";
-// import LuminaIMG from "assets/imgs/connections/lumina.png";
+import LuminaIMG from "assets/imgs/connections/lumina.png";
 // import MoodleIMG from "assets/imgs/connections/moodle.png";
 import { useHistory } from "react-router-dom";
 
@@ -24,16 +24,17 @@ const connectApps = [
   //   link: "/settings/connections/moodle",
   //   disabled: true,
   // },
-  // {
-  //   img: LuminaIMG,
-  //   title: "Lumina",
-  //   link: "/settings/connections/lumina",
-  //   disabled: true,
-  // },
+
   {
     img: GoogleSheetsIMG,
     title: "Google Sheets",
     link: "/settings/connections/google-sheets",
+    disabled: false,
+  },
+  {
+    img: LuminaIMG,
+    title: "Lumina",
+    link: "/settings/connections/lumina",
     disabled: false,
   },
 ];
