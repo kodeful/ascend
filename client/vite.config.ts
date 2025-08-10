@@ -1,4 +1,4 @@
-import legacy from "@vitejs/plugin-legacy";
+// import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import { loadEnv, type PluginOption } from "vite";
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
       }),
       svgr(), // load SVG's as React components
       tsconfigPaths(), // allows Vite to resolve imports mapped by ts
-      legacy(), // loads polyfills using @babel/preset-env and browserslist
+      // legacy(), // loads polyfills using @babel/preset-env and browserslist
       checker({
         typescript: true,
         eslint: {
