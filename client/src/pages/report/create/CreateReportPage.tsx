@@ -58,7 +58,6 @@ const CreateReportPage = () => {
           }}
           width="100%"
           flex={1}
-          overflow="hidden"
         >
           <Title
             title="Create Report"
@@ -74,7 +73,9 @@ const CreateReportPage = () => {
             ]}
           />
 
-          <ReportPDF />
+          <Stack overflow="scroll" className="scrollbar-hidden">
+            <ReportPDF />
+          </Stack>
         </Stack>
       </Stack>
     </FormikProvider>
