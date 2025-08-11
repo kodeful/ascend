@@ -80,7 +80,7 @@ export const SAMPLE_GROUP = {
   company: "Acme Corp",
   periodFrom: "2025-02-01",
   periodTo: "2025-07-25",
-  assessmentsIncluded: 3,
+  assessmentsIncluded: 2,
   // per skill: avg before / latest across cohort + % improved
   skills: SKILLS.map((s, i) => {
     const before = 7 + (i % 3); // 7..9
