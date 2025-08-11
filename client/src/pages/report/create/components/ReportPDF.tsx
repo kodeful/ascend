@@ -528,7 +528,6 @@ const ReportPDF: React.FC = () => {
                 : suggestion.startsWith("🔴")
                   ? "#FDECEA"
                   : "#FFF8E1";
-
               return (
                 <Stack
                   key={s.skill}
