@@ -23,8 +23,8 @@ import ReportCoverPage from "./ReportCoverPage";
 // import HomeGroupDeltaChangeGraph from "pages/home/components/HomeGroupDeltaChange/HomeGroupDeltaChangeGraph";
 
 import {
-  computeInsightsGroup,
-  computeInsightsIndividual,
+  // computeInsightsGroup,
+  // computeInsightsIndividual,
   // Page, // re-exported but only used by CoverPage internally
   SAMPLE_GROUP,
   SAMPLE_INDIVIDUAL,
@@ -109,7 +109,8 @@ const ReportPDF: React.FC = () => {
         key="group-ai"
         width={width}
         height={height}
-        insights={computeInsightsGroup(groupData.skills)}
+        // insights={computeInsightsGroup(groupData.skills)}
+        insights={[]}
       />,
     );
 
@@ -162,7 +163,8 @@ const ReportPDF: React.FC = () => {
         key="ind-ai"
         width={width}
         height={height}
-        lines={computeInsightsIndividual(individualData.globalTimeline)}
+        // lines={computeInsightsIndividual(individualData.globalTimeline)}
+        lines={[]}
       />,
     );
 
