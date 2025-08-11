@@ -1,57 +1,76 @@
 import type React from "react";
 import { useMemo } from "react";
-import { Avatar, Box, Chip, Divider, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Chip,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { useFormikContext } from "formik";
 import { find } from "lodash";
-import Home3EyesViewReportGraph from "pages/home/components/Home3EyesViewReport/Home3EyesViewReportGraph";
-import HomeGroupDeltaChangeGraph from "pages/home/components/HomeGroupDeltaChange/HomeGroupDeltaChangeGraph";
+
+// Charts intentionally omitted per request — leave TODO comments where needed
+// import Home3EyesViewReportGraph from "pages/home/components/Home3EyesViewReport/Home3EyesViewReportGraph";
+// import HomeGroupDeltaChangeGraph from "pages/home/components/HomeGroupDeltaChange/HomeGroupDeltaChangeGraph";
 
 import { ReportType } from "api/generated/models";
 import { useUserControllerFilterUsers } from "api/generated/user/user";
 import AscendIcon from "components/icons/AscendIcon";
 import AscendTextIcon from "components/icons/AscendTextIcon";
-import { userInitials } from "components/stores/MeStore";
+import { useMeStore, userInitials } from "components/stores/MeStore";
 
 /** ─────────────────────────────────────────────────────────────
- *  Helpers: sample matrices + recommendation rules
- *  (Replace these with your Google Sheet matrix lookups later)
- *  Group doc structure: Evaluation Assessments, Score Interpretation,
- *  3‑Eye View, AI Insights, Recommendations, ROI. (matches your spec)
- *  Individual doc structure: Overall Progress, Detailed Results,
- *  3‑Eye, AI Insights, Recommendations. (matches your spec)
+ *  Helpers: bands + recommendation rules (matrix-ready)
+ *  Replace hardcoded bands with Google Sheet lookups when wired.
  *  ─────────────────────────────────────────────────────────────
  */
 
-// Interpret latest score -> meaning (auto-mapped)
-// const interpretScoreMeaning = (latest: number) => {
-//   if (latest >= 12) return "Strong, consistently applied across contexts";
-//   if (latest >= 9) return "Developing—growing consistency across contexts";
-//   return "Needs attention—application may be situational";
-// };
+// Bands can be externalized to your matrix
+const GROUP_BANDS = {
+  strongMin: 12, // 12–15 strong
+  moderateMin: 9, // 9–11 moderate
+  declineDelta: -0.5, // customize per spec (e.g., declined 5–8 pts if on 0–15)
+};
+
+const INDIVIDUAL_BANDS = {
+  sustainMin: 3.8, // 0–5 scale example
+};
+
+// Interpret latest score -> meaning (auto-mapped) — placeholder for matrix lookup
+const interpretScoreMeaning = (latest: number) => {
+  if (latest >= GROUP_BANDS.strongMin)
+    return "Strong, consistently applied across contexts";
+  if (latest >= GROUP_BANDS.moderateMin)
+    return "Developing—growing consistency across contexts";
+  return "Needs attention—application may be situational";
+};
 
 // Delta -> trend label
-// const trendFromDelta = (delta: number) => {
-//   if (delta > 0.3) return "Improving";
-//   if (delta < -0.3) return "Declining";
-//   return "Stable";
-// };
+const trendFromDelta = (delta: number) => {
+  if (delta > 0.3) return "Improving";
+  if (delta < -0.3) return "Declining";
+  return "Stable";
+};
 
 // Quick, action‑oriented suggestions (group-level)
 const groupSuggestion = (latest: number, delta: number) => {
-  if (latest >= 12) {
+  if (latest >= GROUP_BANDS.strongMin) {
     return "🟢 High, sustain through peer mentoring & stretch roles";
   }
-  if (delta < -0.5) {
+  if (delta <= GROUP_BANDS.declineDelta) {
     return "🔴 Decline detected—reinforce via scenarios & coaching";
   }
-
   return "🟡 Under development—use peer feedback & shadowing to deepen application";
 };
 
 // Quick, action‑oriented suggestions (individual)
 const individualSuggestion = (latest: number, delta: number) => {
-  if (latest >= 3.8) return "🟢 Sustain—consider mentoring others";
+  if (latest >= INDIVIDUAL_BANDS.sustainMin)
+    return "🟢 Sustain—consider mentoring others";
   if (delta < 0) return "🔴 Reinforce—scenario practice & coached reps";
   return "🟡 Keep building—prompted reflection & peer feedback";
 };
@@ -201,6 +220,41 @@ const SectionHeader: React.FC<{ title: string; subtitle?: string }> = ({
 );
 
 /** ─────────────────────────────────────────────────────────────
+ *  Tiny insight helpers (no charts)
+ *  ─────────────────────────────────────────────────────────────
+ */
+
+const computeInsightsGroup = (skills: typeof SAMPLE_GROUP.skills) => {
+  // TODO: Replace with real logic + matrix-driven text
+  const mostImproved = [...skills].sort((a, b) => b.delta - a.delta)[0]?.skill;
+  return [
+    mostImproved
+      ? `Strongest improvement observed in ${mostImproved}.`
+      : undefined,
+    "Confidence appears to rise alongside application across most skills.",
+  ].filter(Boolean) as string[];
+};
+
+const computeInsightsIndividual = (
+  timeline: typeof SAMPLE_INDIVIDUAL.globalTimeline,
+) => {
+  // TODO: Replace with plateau/surge detection
+  if (timeline.length < 3)
+    return ["Additional assessments will clarify trend."];
+  const a1 = timeline[0].global;
+  const a2 = timeline[1].global;
+  const a3 = timeline[timeline.length - 1].global;
+  const plateau = a2 - a1 > 0 && a3 - a2 < 0.2;
+  const insights: string[] = [];
+  if (plateau)
+    insights.push(
+      "Growth plateaued after the second assessment—consider complexity increase.",
+    );
+  if (a3 - a1 > 2) insights.push("Substantial overall gains across the cycle.");
+  return insights.length ? insights : ["Steady growth across assessments."];
+};
+
+/** ─────────────────────────────────────────────────────────────
  *  MAIN (single component + dynamic page numbering)
  *  ─────────────────────────────────────────────────────────────
  */
@@ -212,14 +266,12 @@ const ReportPDF: React.FC = () => {
     if (values.horizontal) {
       return { width: 934, height: 660 };
     }
+
     return { width: 660, height: 934 };
   }, [values.horizontal]);
 
   const { data: learners } = useUserControllerFilterUsers(
-    {
-      limit: -1,
-      filter: "role::eq::Learner",
-    },
+    { limit: -1, filter: "role::eq::Learner" },
     {
       query: {
         queryKey: ["users", "learner"],
@@ -252,7 +304,7 @@ const ReportPDF: React.FC = () => {
   // Build pages (single place), then auto-number them
   const pages: React.ReactElement[] = [];
 
-  // GROUP PAGES
+  /** GROUP PAGES **/
   if (isGroup) {
     // Evaluation Assessments
     pages.push(
@@ -266,7 +318,8 @@ const ReportPDF: React.FC = () => {
             <Typography fontSize={13} color="#646C60" mb={1}>
               Average score by skill (latest across all completed assessments)
             </Typography>
-            <Box height={260}>{/* Placeholder for chart */}</Box>
+            {/* TODO: insert bar chart for average scores by skill */}
+            <Box height={260} />
 
             <Typography fontSize={13} color="#646C60" mt={2}>
               % of individuals who improved per skill
@@ -290,6 +343,34 @@ const ReportPDF: React.FC = () => {
               Score Interpretation + Meaning (auto‑mapped)
             </Typography>
 
+            {/* Non-table interpretation list */}
+            <Stack spacing={1.2}>
+              {groupData.skills.slice(0, values.horizontal ? 4 : 6).map((s) => (
+                <Stack
+                  key={s.skill}
+                  spacing={0.2}
+                  sx={{ p: 1, borderRadius: 1, bgcolor: "rgba(0,0,0,0.02)" }}
+                >
+                  <Typography
+                    fontSize={13}
+                    fontWeight={600}
+                    color="primary.dark"
+                  >
+                    {s.skill}
+                  </Typography>
+                  <Typography fontSize={12} color="#646C60">
+                    Latest: <b>{round1(s.latest)}</b> (
+                    {s.delta >= 0 ? "↑" : "↓"}
+                    {round1(Math.abs(s.delta))}) • Trend:{" "}
+                    {trendFromDelta(s.delta)}
+                  </Typography>
+                  <Typography fontSize={12} color="#646C60">
+                    Meaning: {interpretScoreMeaning(s.latest)}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
+
             <Box mt={2}>
               <Typography fontSize={13} color="#646C60" fontWeight={600}>
                 Group Transformation Score
@@ -300,7 +381,7 @@ const ReportPDF: React.FC = () => {
                   {round1(
                     mean(groupData.skills.map((s) => s.latest - s.before)),
                   )}
-                </b>{" "}
+                </b>
                 &nbsp;•&nbsp;
                 <i>
                   {(() => {
@@ -326,9 +407,11 @@ const ReportPDF: React.FC = () => {
         <Typography fontSize={13} color="#646C60" mb={1}>
           Aggregated global perspective (all skills combined)
         </Typography>
-        <Box sx={{ transform: "rotate(90deg)", height: 515, pl: 2 }}>
-          <Home3EyesViewReportGraph height={515} />
-        </Box>
+        {/* TODO: insert 3‑eye chart (group global) */}
+        <Box sx={{ height: 515, pl: 2 }} />
+        <Typography fontSize={12} color="#646C60" mt={1}>
+          Interpretation: {/* TODO: map 3‑eye alignment to matrix narrative */}
+        </Typography>
       </Page>,
     );
 
@@ -336,12 +419,14 @@ const ReportPDF: React.FC = () => {
     pages.push(
       <Page key="group-ai" width={width} height={height}>
         <SectionHeader title="AI‑Generated Insights" />
-        <Typography fontSize={13} color="#646C60">
-          • Most learners improved in decision‑making but show lower confidence
-          under pressure.
-          <br />• Strategic Thinking gains plateaued after the 2nd
-          assessment—consider stretch assignments to maintain momentum.
-        </Typography>
+        <Stack spacing={0.6}>
+          {computeInsightsGroup(groupData.skills).map((line, i) => (
+            <Typography key={i} fontSize={13} color="#646C60">
+              • {line}
+            </Typography>
+          ))}
+          {/* TODO: compute insights directly from cohort deltas and time windows */}
+        </Stack>
       </Page>,
     );
 
@@ -384,7 +469,7 @@ const ReportPDF: React.FC = () => {
     );
   }
 
-  // INDIVIDUAL PAGES
+  /** INDIVIDUAL PAGES **/
   if (isIndividual) {
     // Overall Progress
     pages.push(
@@ -393,7 +478,8 @@ const ReportPDF: React.FC = () => {
           title="Overall Progress Summary"
           subtitle="How your leadership capability evolved across assessments"
         />
-        <HomeGroupDeltaChangeGraph height={280} />
+        {/* TODO: insert global results line chart */}
+        <Box height={280} />
         {(() => {
           const latest =
             individualData.globalTimeline[
@@ -419,13 +505,83 @@ const ReportPDF: React.FC = () => {
       </Page>,
     );
 
-    // Detailed Results
+    // Detailed Results (non-table mini-cards)
     pages.push(
       <Page key="ind-details" width={width} height={height}>
         <SectionHeader
           title="Detailed Results by Skill"
           subtitle="Green = Strength, Yellow = Growth, Red = Focus Area"
         />
+        <Stack spacing={1.2} mt={1}>
+          {individualData.skills
+            .slice(0, values.horizontal ? 4 : 6)
+            .map((s) => {
+              const k = s.aspects.Knowledge;
+              const a = s.aspects.Application;
+              const c = s.aspects.Confidence;
+              const latestAvg = mean([k.end, a.end, c.end]);
+              const beginAvg = mean([k.begin, a.begin, c.begin]);
+              const delta = latestAvg - beginAvg;
+              const suggestion = individualSuggestion(latestAvg, delta);
+              const tone = suggestion.startsWith("🟢")
+                ? "#E6F4EA"
+                : suggestion.startsWith("🔴")
+                  ? "#FDECEA"
+                  : "#FFF8E1";
+
+              return (
+                <Stack
+                  key={s.skill}
+                  spacing={0}
+                  sx={{
+                    p: 1.2,
+                    borderRadius: 1,
+                    bgcolor: tone,
+                    border: "1px solid rgba(0,0,0,0.06)",
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <Typography
+                      fontSize={13}
+                      fontWeight={700}
+                      color="primary.dark"
+                    >
+                      {s.skill}
+                    </Typography>
+                    <Stack direction="row" alignItems="center" gap={1}>
+                      <Chip label={suggestion} size="small" />
+                    </Stack>
+                  </Stack>
+                  <Grid container spacing={1} mt={0.5}>
+                    <Grid item xs={6}>
+                      <Typography fontSize={12} color="#646C60">
+                        Knowledge — {k.begin} → <b>{k.end}</b> (Δ{" "}
+                        {round1(k.end - k.begin)})
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography fontSize={12} color="#646C60">
+                        Application — {a.begin} → <b>{a.end}</b> (Δ{" "}
+                        {round1(a.end - a.begin)})
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography fontSize={12} color="#646C60">
+                        Confidence — {c.begin} → <b>{c.end}</b> (Δ{" "}
+                        {round1(c.end - c.begin)})
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography fontSize={12} color="#646C60">
+                        Avg Δ: {round1(delta)}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Stack>
+              );
+            })}
+        </Stack>
+
         <Box mt={2}>
           <Typography fontSize={13} color="#646C60" fontWeight={600}>
             Transformation Score
@@ -457,9 +613,11 @@ const ReportPDF: React.FC = () => {
           title="3‑Eye Report"
           subtitle="Global alignment across Self, Peer & Facilitator"
         />
-        <Box sx={{ transform: "rotate(90deg)", height: 515, pl: 2 }}>
-          <Home3EyesViewReportGraph height={515} />
-        </Box>
+        {/* TODO: insert 3‑eye chart (individual global) */}
+        <Box sx={{ height: 515, pl: 2 }} />
+        <Typography fontSize={12} color="#646C60" mt={1}>
+          Interpretation: {/* TODO: derive narrative from 3‑eye differences */}
+        </Typography>
       </Page>,
     );
 
@@ -467,12 +625,16 @@ const ReportPDF: React.FC = () => {
     pages.push(
       <Page key="ind-ai" width={width} height={height}>
         <SectionHeader title="AI‑Generated Insights" />
-        <Typography fontSize={13} color="#646C60">
-          • Confidence in real‑world application accelerated after A2—capitalize
-          with stretch reps.
-          <br />• Strategic Thinking growth slowed post‑A2—plan a complexity
-          jump to re‑ignite gains.
-        </Typography>
+        <Stack spacing={0.6}>
+          {computeInsightsIndividual(individualData.globalTimeline).map(
+            (line, i) => (
+              <Typography key={i} fontSize={13} color="#646C60">
+                • {line}
+              </Typography>
+            ),
+          )}
+          {/* TODO: compute insights directly from individual deltas and confidence timeline */}
+        </Stack>
       </Page>,
     );
 
@@ -500,7 +662,7 @@ const ReportPDF: React.FC = () => {
     );
   }
 
-  // Render with auto page numbers (1..N) including the cover
+  // Render with auto page numbers (1..N) for content pages. Cover remains without footer.
   return (
     <Stack
       mt={3}
@@ -546,8 +708,12 @@ const ReportPDF: React.FC = () => {
           )}
           {values.reportType && (
             <Typography fontSize={42} fontWeight={600} color="primary.dark">
-              {isIndividual && "Individual Report"}
-              {isGroup && "Group Report"}
+              {(values.reportType === "individual-report" ||
+                values.reportType === ReportType.Individual_Report) &&
+                "Individual Report"}
+              {(values.reportType === "group-report" ||
+                values.reportType === ReportType.Group_Report) &&
+                "Group Report"}
             </Typography>
           )}
           <Box
@@ -559,6 +725,21 @@ const ReportPDF: React.FC = () => {
               {values.subtitle}
             </Typography>
           )}
+
+          {/* Snapshot block (spec) */}
+          <Stack spacing={0.5} mt={2}>
+            <Typography fontSize={13} color="#646C60">
+              <b>Company:</b> {useMeStore.getState().organisation?.name}
+            </Typography>
+
+            {isGroup && (
+              <Typography fontSize={13} color="#646C60">
+                <b>Assessments included:</b> {SAMPLE_GROUP.assessmentsIncluded}
+              </Typography>
+            )}
+          </Stack>
+
+          {/* Learner pill for individual */}
           {values.learner && isIndividual && (
             <Stack direction="row" alignItems="center" spacing={1} mt={2}>
               <Avatar
@@ -585,8 +766,7 @@ const ReportPDF: React.FC = () => {
         <Stack textAlign="center" alignItems="center">
           {values.rangeDate && (
             <Typography fontSize={14} color="#646C60">
-              <b>Range:</b> {values.rangeDate === "last-week" && "Last week"}
-              {values.rangeDate === "last-month" && "Last month"}
+              <b>Period:</b> {values.rangeDate}
             </Typography>
           )}
           <Typography fontSize={12} color="#646C60">
@@ -595,15 +775,15 @@ const ReportPDF: React.FC = () => {
         </Stack>
       </Page>
 
+      {/* CONTENT PAGES WITH DYNAMIC FOOTERS */}
       {pages.map(
         (el, idx) =>
-          // Clone to inject the dynamic footer without separate components
-
           ({
             ...el,
             key: el.key ?? idx,
             props: {
               ...el.props,
+              pt: 1,
               footer: `Page ${idx + 1} of ${pages.length}`,
             },
           }) as any,

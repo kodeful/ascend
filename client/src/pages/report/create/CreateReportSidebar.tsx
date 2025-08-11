@@ -24,12 +24,12 @@ const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
     useUserControllerFilterUsers(
       {
         limit: -1,
-        filter: "role::eq::Learner",
+        filter: "workspaces.role::eq::Learner",
       },
       {
         query: {
           queryKey: ["users", "learner"],
-          enabled: values.reportType === "individual-report",
+          enabled: values.reportType === ReportType.Individual_Report,
         },
       },
     );
