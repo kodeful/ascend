@@ -24,18 +24,18 @@ import { userInitials } from "components/stores/MeStore";
  */
 
 // Interpret latest score -> meaning (auto-mapped)
-const interpretScoreMeaning = (latest: number) => {
-  if (latest >= 12) return "Strong, consistently applied across contexts";
-  if (latest >= 9) return "Developing—growing consistency across contexts";
-  return "Needs attention—application may be situational";
-};
+// const interpretScoreMeaning = (latest: number) => {
+//   if (latest >= 12) return "Strong, consistently applied across contexts";
+//   if (latest >= 9) return "Developing—growing consistency across contexts";
+//   return "Needs attention—application may be situational";
+// };
 
 // Delta -> trend label
-const trendFromDelta = (delta: number) => {
-  if (delta > 0.3) return "Improving";
-  if (delta < -0.3) return "Declining";
-  return "Stable";
-};
+// const trendFromDelta = (delta: number) => {
+//   if (delta > 0.3) return "Improving";
+//   if (delta < -0.3) return "Declining";
+//   return "Stable";
+// };
 
 // Quick, action‑oriented suggestions (group-level)
 const groupSuggestion = (latest: number, delta: number) => {
@@ -201,343 +201,11 @@ const SectionHeader: React.FC<{ title: string; subtitle?: string }> = ({
 );
 
 /** ─────────────────────────────────────────────────────────────
- *  GROUP PAGES (doc: Group People Intelligence Report)
+ *  MAIN (single component + dynamic page numbering)
  *  ─────────────────────────────────────────────────────────────
  */
 
-const Group_EvaluationAssessments: React.FC<{
-  width: number;
-  height: number;
-  data: typeof SAMPLE_GROUP;
-}> = ({ width, height, data }) => {
-  // const chartData = data.skills.map((s) => ({
-  //   skill: s.skill,
-  //   Average: round1(s.latest),
-  // }));
-
-  return (
-    <Page width={width} height={height} footer="Page 1 of 5">
-      <SectionHeader
-        title="Evaluation Assessments"
-        subtitle="Where change is happening across the cohort"
-      />
-      <Stack direction="row" spacing={4} sx={{ height: "100%" }}>
-        <Box flex={1}>
-          <Typography fontSize={13} color="#646C60" mb={1}>
-            Average score by skill (latest across all completed assessments)
-          </Typography>
-          <Box height={260}>
-            {/* <ResponsiveContainer>
-              <BarChart
-                data={chartData}
-                margin={{ top: 10, right: 16, left: 0, bottom: 10 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="skill" tick={{ fontSize: 11 }} />
-                <YAxis domain={[0, 15]} tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="Average" />
-              </BarChart>
-            </ResponsiveContainer> */}
-          </Box>
-
-          <Typography fontSize={13} color="#646C60" mt={2}>
-            % of individuals who improved per skill
-          </Typography>
-          <Stack direction="row" flexWrap="wrap" gap={1.2} mt={1.2}>
-            {data.skills.map((s) => (
-              <Chip
-                key={s.skill}
-                label={`${s.skill}: ${pct(s.improvedShare * 100)}`}
-                size="small"
-                sx={{ bgcolor: "rgba(0,0,0,0.04)" }}
-              />
-            ))}
-          </Stack>
-        </Box>
-
-        <Divider orientation="vertical" flexItem />
-
-        <Box flex={1.1}>
-          <Typography fontSize={13} color="#646C60" mb={1}>
-            Score Interpretation + Meaning (auto‑mapped)
-          </Typography>
-          {/* <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Skill</TableCell>
-                <TableCell>Latest</TableCell>
-                <TableCell>Trend</TableCell>
-                <TableCell>What it means</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.skills.map((s) => (
-                <TableRow key={s.skill}>
-                  <TableCell>{s.skill}</TableCell>
-                  <TableCell>
-                    {round1(s.latest)} ({s.delta >= 0 ? "↑" : "↓"}
-                    {Math.abs(round1(s.delta))})
-                  </TableCell>
-                  <TableCell>{trendFromDelta(s.delta)}</TableCell>
-                  <TableCell>{interpretScoreMeaning(s.latest)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table> */}
-
-          <Box mt={2}>
-            <Typography fontSize={13} color="#646C60" fontWeight={600}>
-              Group Transformation Score
-            </Typography>
-            <Typography fontSize={13} color="#646C60">
-              Avg Global Score Delta (After – Before):{" "}
-              <b>{round1(mean(data.skills.map((s) => s.latest - s.before)))}</b>{" "}
-              &nbsp;•&nbsp;
-              <i>
-                {(() => {
-                  const val = mean(data.skills.map((s) => s.latest - s.before));
-                  if (val >= 2) return "High transformation";
-                  if (val >= 1) return "Moderate transformation";
-                  return "Early signs of change";
-                })()}
-              </i>
-            </Typography>
-          </Box>
-        </Box>
-      </Stack>
-    </Page>
-  );
-};
-
-const Group_ThreeEye_AI_Recs_ROI: React.FC<{
-  width: number;
-  height: number;
-  data: typeof SAMPLE_GROUP;
-}> = ({ width, height, data }) => {
-  // const threeEyeData = [
-  //   { view: "Self", Score: data.threeEye.self },
-  //   { view: "Peer", Score: data.threeEye.peer },
-  //   { view: "Facilitator", Score: data.threeEye.facilitator },
-  // ];
-
-  // Simple ROI proxy using transformation magnitude (replace with your calc)
-  const avgDelta = mean(data.skills.map((s) => s.delta));
-  const roiNarrative =
-    avgDelta >= 2
-      ? "Strong measurable behavior change—high program ROI"
-      : avgDelta >= 1
-        ? "Meaningful gains—solid ROI with room to scale"
-        : "Emerging value—reinforce to unlock ROI";
-
-  return (
-    <>
-      <Page width={width} height={height} footer="Page 2 of 5">
-        <SectionHeader title="3‑Eye View: Self, Peer & Facilitator" />
-        <Typography fontSize={13} color="#646C60" mb={1}>
-          Aggregated global perspective (all skills combined)
-        </Typography>
-        <Box sx={{ transform: "rotate(90deg)", height: 515, pl: 2 }}>
-          {/* TODO: Replace with actual data */}
-          <Home3EyesViewReportGraph height={515} />
-        </Box>
-      </Page>
-
-      <Page width={width} height={height} footer="Page 3 of 5">
-        <SectionHeader title="AI‑Generated Insights" />
-        <Typography fontSize={13} color="#646C60">
-          • Most learners improved in decision‑making but show lower confidence
-          under pressure. <br />• Strategic Thinking gains plateaued after the
-          2nd assessment—consider stretch assignments to maintain momentum.
-        </Typography>
-      </Page>
-
-      <Page width={width} height={height} footer="Page 4 of 5">
-        <SectionHeader title="Suggested Focus Areas / Recommendations" />
-        <Stack direction="row" flexWrap="wrap" gap={1.2}>
-          {data.skills.map((s) => (
-            <Chip
-              key={s.skill}
-              label={`${s.skill}: ${groupSuggestion(s.latest, s.delta)}`}
-            />
-          ))}
-        </Stack>
-      </Page>
-
-      <Page width={width} height={height} footer="Page 5 of 5">
-        <SectionHeader title="ROI: Return on Leadership Development" />
-        <Typography fontSize={13} color="#646C60">
-          Measured using pre/post deltas at the group level to quantify
-          transformation. <b>{roiNarrative}</b>. Track leading indicators
-          (manager check‑ins, project scope increases) to connect behavioral
-          change with business value.
-        </Typography>
-      </Page>
-    </>
-  );
-};
-
-/** ─────────────────────────────────────────────────────────────
- *  INDIVIDUAL PAGES (doc: Individual People Intelligence Report)
- *  ─────────────────────────────────────────────────────────────
- */
-
-const Individual_GlobalProgress: React.FC<{
-  width: number;
-  height: number;
-  data: typeof SAMPLE_INDIVIDUAL;
-}> = ({ width, height, data }) => {
-  const latest = data.globalTimeline[data.globalTimeline.length - 1];
-  const first = data.globalTimeline[0];
-  const delta = latest.global - first.global;
-  const pctImprovement = Math.max(
-    0,
-    (delta / Math.max(1e-9, first.global)) * 100,
-  );
-
-  return (
-    <Page width={width} height={height} footer="Page 1 of 4">
-      <SectionHeader
-        title="Overall Progress Summary"
-        subtitle="How your leadership capability evolved across assessments"
-      />
-
-      {/* TODO: Replace with actual data */}
-      <HomeGroupDeltaChangeGraph height={280} />
-
-      <Typography fontSize={13} color="#646C60" mt={1}>
-        Results indicate steady growth with notable confidence gains. Latest
-        global score: <b>{round1(latest.global)}</b> (Δ {delta >= 0 ? "↑" : "↓"}
-        {round1(Math.abs(delta))}). Approx. <b>{Math.round(pctImprovement)}%</b>{" "}
-        improvement since first assessment.
-      </Typography>
-    </Page>
-  );
-};
-
-const Individual_DetailedResults_ThreeEye_Recs: React.FC<{
-  width: number;
-  height: number;
-  data: typeof SAMPLE_INDIVIDUAL;
-}> = ({ width, height, data }) => {
-  const tableRows = data.skills.map((s) => {
-    const k = s.aspects.Knowledge;
-    const a = s.aspects.Application;
-    const c = s.aspects.Confidence;
-    const latestAvg = mean([k.end, a.end, c.end]);
-    const beginAvg = mean([k.begin, a.begin, c.begin]);
-    const delta = latestAvg - beginAvg;
-    return { skill: s.skill, k, a, c, latestAvg, delta };
-  });
-
-  const threeEye = [
-    { view: "Self", Score: data.threeEye.self },
-    { view: "Peer", Score: data.threeEye.peer },
-    { view: "Facilitator", Score: data.threeEye.facilitator },
-  ];
-
-  const firstGlobal = data.globalTimeline[0].global;
-  const lastGlobal = data.globalTimeline[data.globalTimeline.length - 1].global;
-  const transformationScore =
-    (lastGlobal - firstGlobal) / Math.max(1e-9, lastGlobal);
-
-  return (
-    <>
-      <Page width={width} height={height} footer="Page 2 of 4">
-        <SectionHeader
-          title="Detailed Results by Skill"
-          subtitle="Green = Strength, Yellow = Growth, Red = Focus Area"
-        />
-        {/* <Table size="small" sx={{ width: "100%" }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Skill</TableCell>
-            <TableCell align="center">Knowledge (B → E)</TableCell>
-            <TableCell align="center">Application (B → E)</TableCell>
-            <TableCell align="center">Confidence (B → E)</TableCell>
-            <TableCell align="center">Δ Avg</TableCell>
-            <TableCell>Suggestion</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tableRows.map((r) => (
-            <TableRow key={r.skill}>
-              <TableCell>{r.skill}</TableCell>
-              <TableCell align="center">
-                {r.k.begin} → <b>{r.k.end}</b>
-              </TableCell>
-              <TableCell align="center">
-                {r.a.begin} → <b>{r.a.end}</b>
-              </TableCell>
-              <TableCell align="center">
-                {r.c.begin} → <b>{r.c.end}</b>
-              </TableCell>
-              <TableCell align="center">
-                {r.delta >= 0 ? "↑" : "↓"}
-                {round1(Math.abs(r.delta))}
-              </TableCell>
-              <TableCell>
-                {individualSuggestion(r.latestAvg, r.delta)}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table> */}
-
-        <Box mt={2}>
-          <Typography fontSize={13} color="#646C60" fontWeight={600}>
-            Transformation Score
-          </Typography>
-          <Typography fontSize={13} color="#646C60">
-            (After – Before) / After ={" "}
-            <b>{round1(transformationScore * 100)}%</b> overall improvement
-            indicator.
-          </Typography>
-        </Box>
-      </Page>
-
-      <Page width={width} height={height} footer="Page 3 of 4">
-        <SectionHeader
-          title="3‑Eye Report"
-          subtitle="Global alignment across Self, Peer & Facilitator"
-        />
-        <Box sx={{ transform: "rotate(90deg)", height: 515, pl: 2 }}>
-          {/* TODO: Replace with actual data */}
-          <Home3EyesViewReportGraph height={515} />
-        </Box>
-      </Page>
-
-      <Page width={width} height={height} footer="Page 4 of 4">
-        <SectionHeader title="AI‑Generated Insights" />
-        <Typography fontSize={13} color="#646C60">
-          • Confidence in real‑world application accelerated after A2—capitalize
-          with stretch reps. <br />• Strategic Thinking growth slowed
-          post‑A2—plan a complexity jump to re‑ignite gains.
-        </Typography>
-      </Page>
-
-      <Page width={width} height={height} footer="Page 5 of 5">
-        <SectionHeader title="Suggested Focus Areas / Next Steps" />
-        <Stack direction="row" flexWrap="wrap" gap={1.2}>
-          {tableRows.map((r) => (
-            <Chip
-              key={r.skill}
-              label={`${r.skill}: ${individualSuggestion(r.latestAvg, r.delta)}`}
-            />
-          ))}
-        </Stack>
-      </Page>
-    </>
-  );
-};
-
-/** ─────────────────────────────────────────────────────────────
- *  MAIN: Existing Cover + conditional pages
- *  ─────────────────────────────────────────────────────────────
- */
-
-const ReportPDF = () => {
+const ReportPDF: React.FC = () => {
   const { values } = useFormikContext() as any;
 
   const { width, height } = useMemo(() => {
@@ -581,6 +249,258 @@ const ReportPDF = () => {
     learnerName: learner?.fullName || SAMPLE_INDIVIDUAL.learnerName,
   };
 
+  // Build pages (single place), then auto-number them
+  const pages: React.ReactElement[] = [];
+
+  // GROUP PAGES
+  if (isGroup) {
+    // Evaluation Assessments
+    pages.push(
+      <Page key="group-eval" width={width} height={height}>
+        <SectionHeader
+          title="Evaluation Assessments"
+          subtitle="Where change is happening across the cohort"
+        />
+        <Stack direction="row" spacing={4} sx={{ height: "100%" }}>
+          <Box flex={1}>
+            <Typography fontSize={13} color="#646C60" mb={1}>
+              Average score by skill (latest across all completed assessments)
+            </Typography>
+            <Box height={260}>{/* Placeholder for chart */}</Box>
+
+            <Typography fontSize={13} color="#646C60" mt={2}>
+              % of individuals who improved per skill
+            </Typography>
+            <Stack direction="row" flexWrap="wrap" gap={1.2} mt={1.2}>
+              {groupData.skills.map((s) => (
+                <Chip
+                  key={s.skill}
+                  label={`${s.skill}: ${pct(s.improvedShare * 100)}`}
+                  size="small"
+                  sx={{ bgcolor: "rgba(0,0,0,0.04)" }}
+                />
+              ))}
+            </Stack>
+          </Box>
+
+          <Divider orientation="vertical" flexItem />
+
+          <Box flex={1.1}>
+            <Typography fontSize={13} color="#646C60" mb={1}>
+              Score Interpretation + Meaning (auto‑mapped)
+            </Typography>
+
+            <Box mt={2}>
+              <Typography fontSize={13} color="#646C60" fontWeight={600}>
+                Group Transformation Score
+              </Typography>
+              <Typography fontSize={13} color="#646C60">
+                Avg Global Score Delta (After – Before):{" "}
+                <b>
+                  {round1(
+                    mean(groupData.skills.map((s) => s.latest - s.before)),
+                  )}
+                </b>{" "}
+                &nbsp;•&nbsp;
+                <i>
+                  {(() => {
+                    const val = mean(
+                      groupData.skills.map((s) => s.latest - s.before),
+                    );
+                    if (val >= 2) return "High transformation";
+                    if (val >= 1) return "Moderate transformation";
+                    return "Early signs of change";
+                  })()}
+                </i>
+              </Typography>
+            </Box>
+          </Box>
+        </Stack>
+      </Page>,
+    );
+
+    // 3‑Eye View
+    pages.push(
+      <Page key="group-3eye" width={width} height={height}>
+        <SectionHeader title="3‑Eye View: Self, Peer & Facilitator" />
+        <Typography fontSize={13} color="#646C60" mb={1}>
+          Aggregated global perspective (all skills combined)
+        </Typography>
+        <Box sx={{ transform: "rotate(90deg)", height: 515, pl: 2 }}>
+          <Home3EyesViewReportGraph height={515} />
+        </Box>
+      </Page>,
+    );
+
+    // AI‑Generated Insights
+    pages.push(
+      <Page key="group-ai" width={width} height={height}>
+        <SectionHeader title="AI‑Generated Insights" />
+        <Typography fontSize={13} color="#646C60">
+          • Most learners improved in decision‑making but show lower confidence
+          under pressure.
+          <br />• Strategic Thinking gains plateaued after the 2nd
+          assessment—consider stretch assignments to maintain momentum.
+        </Typography>
+      </Page>,
+    );
+
+    // Recommendations
+    pages.push(
+      <Page key="group-recs" width={width} height={height}>
+        <SectionHeader title="Suggested Focus Areas / Recommendations" />
+        <Stack direction="row" flexWrap="wrap" gap={1.2}>
+          {groupData.skills.map((s) => (
+            <Chip
+              key={s.skill}
+              label={`${s.skill}: ${groupSuggestion(s.latest, s.delta)}`}
+            />
+          ))}
+        </Stack>
+      </Page>,
+    );
+
+    // ROI
+    pages.push(
+      <Page key="group-roi" width={width} height={height}>
+        <SectionHeader title="ROI: Return on Leadership Development" />
+        <Typography fontSize={13} color="#646C60">
+          Measured using pre/post deltas at the group level to quantify
+          transformation.{" "}
+          <b>
+            {(() => {
+              const avgDelta = mean(groupData.skills.map((s) => s.delta));
+              if (avgDelta >= 2)
+                return "Strong measurable behavior change—high program ROI";
+              if (avgDelta >= 1)
+                return "Meaningful gains—solid ROI with room to scale";
+              return "Emerging value—reinforce to unlock ROI";
+            })()}
+          </b>
+          . Track leading indicators (manager check‑ins, project scope
+          increases) to connect behavioral change with business value.
+        </Typography>
+      </Page>,
+    );
+  }
+
+  // INDIVIDUAL PAGES
+  if (isIndividual) {
+    // Overall Progress
+    pages.push(
+      <Page key="ind-progress" width={width} height={height}>
+        <SectionHeader
+          title="Overall Progress Summary"
+          subtitle="How your leadership capability evolved across assessments"
+        />
+        <HomeGroupDeltaChangeGraph height={280} />
+        {(() => {
+          const latest =
+            individualData.globalTimeline[
+              individualData.globalTimeline.length - 1
+            ];
+          const first = individualData.globalTimeline[0];
+          const delta = latest.global - first.global;
+          const pctImprovement = Math.max(
+            0,
+            (delta / Math.max(1e-9, first.global)) * 100,
+          );
+          return (
+            <Typography fontSize={13} color="#646C60" mt={1}>
+              Results indicate steady growth with notable confidence gains.
+              Latest global score: <b>{round1(latest.global)}</b> (Δ{" "}
+              {delta >= 0 ? "↑" : "↓"}
+              {round1(Math.abs(delta))}). Approx.{" "}
+              <b>{Math.round(pctImprovement)}%</b> improvement since first
+              assessment.
+            </Typography>
+          );
+        })()}
+      </Page>,
+    );
+
+    // Detailed Results
+    pages.push(
+      <Page key="ind-details" width={width} height={height}>
+        <SectionHeader
+          title="Detailed Results by Skill"
+          subtitle="Green = Strength, Yellow = Growth, Red = Focus Area"
+        />
+        <Box mt={2}>
+          <Typography fontSize={13} color="#646C60" fontWeight={600}>
+            Transformation Score
+          </Typography>
+          {(() => {
+            const firstGlobal = individualData.globalTimeline[0].global;
+            const lastGlobal =
+              individualData.globalTimeline[
+                individualData.globalTimeline.length - 1
+              ].global;
+            const transformationScore =
+              (lastGlobal - firstGlobal) / Math.max(1e-9, lastGlobal);
+            return (
+              <Typography fontSize={13} color="#646C60">
+                (After – Before) / After ={" "}
+                <b>{round1(transformationScore * 100)}%</b> overall improvement
+                indicator.
+              </Typography>
+            );
+          })()}
+        </Box>
+      </Page>,
+    );
+
+    // 3‑Eye Report
+    pages.push(
+      <Page key="ind-3eye" width={width} height={height}>
+        <SectionHeader
+          title="3‑Eye Report"
+          subtitle="Global alignment across Self, Peer & Facilitator"
+        />
+        <Box sx={{ transform: "rotate(90deg)", height: 515, pl: 2 }}>
+          <Home3EyesViewReportGraph height={515} />
+        </Box>
+      </Page>,
+    );
+
+    // AI Insights
+    pages.push(
+      <Page key="ind-ai" width={width} height={height}>
+        <SectionHeader title="AI‑Generated Insights" />
+        <Typography fontSize={13} color="#646C60">
+          • Confidence in real‑world application accelerated after A2—capitalize
+          with stretch reps.
+          <br />• Strategic Thinking growth slowed post‑A2—plan a complexity
+          jump to re‑ignite gains.
+        </Typography>
+      </Page>,
+    );
+
+    // Recommendations
+    pages.push(
+      <Page key="ind-recs" width={width} height={height}>
+        <SectionHeader title="Suggested Focus Areas / Next Steps" />
+        <Stack direction="row" flexWrap="wrap" gap={1.2}>
+          {individualData.skills.map((s) => {
+            const k = s.aspects.Knowledge;
+            const a = s.aspects.Application;
+            const c = s.aspects.Confidence;
+            const latestAvg = mean([k.end, a.end, c.end]);
+            const beginAvg = mean([k.begin, a.begin, c.begin]);
+            const delta = latestAvg - beginAvg;
+            return (
+              <Chip
+                key={s.skill}
+                label={`${s.skill}: ${individualSuggestion(latestAvg, delta)}`}
+              />
+            );
+          })}
+        </Stack>
+      </Page>,
+    );
+  }
+
+  // Render with auto page numbers (1..N) including the cover
   return (
     <Stack
       mt={3}
@@ -589,8 +509,8 @@ const ReportPDF = () => {
       alignItems="center"
       spacing={3}
     >
-      {/* STARTING PAGE (your original, lightly wrapped in Page for consistency) */}
-      <Page width={width} height={height} pt={10} pb={8} px={9}>
+      {/* COVER */}
+      <Page key="cover" width={width} height={height} pt={10} pb={8} px={9}>
         {/* HEADER */}
         <Stack
           direction="row"
@@ -675,36 +595,18 @@ const ReportPDF = () => {
         </Stack>
       </Page>
 
-      {/* GROUP PAGES */}
-      {isGroup && (
-        <>
-          <Group_EvaluationAssessments
-            width={width}
-            height={height}
-            data={groupData}
-          />
-          <Group_ThreeEye_AI_Recs_ROI
-            width={width}
-            height={height}
-            data={groupData}
-          />
-        </>
-      )}
+      {pages.map(
+        (el, idx) =>
+          // Clone to inject the dynamic footer without separate components
 
-      {/* INDIVIDUAL PAGES */}
-      {isIndividual && (
-        <>
-          <Individual_GlobalProgress
-            width={width}
-            height={height}
-            data={individualData}
-          />
-          <Individual_DetailedResults_ThreeEye_Recs
-            width={width}
-            height={height}
-            data={individualData}
-          />
-        </>
+          ({
+            ...el,
+            key: el.key ?? idx,
+            props: {
+              ...el.props,
+              footer: `Page ${idx + 1} of ${pages.length}`,
+            },
+          }) as any,
       )}
     </Stack>
   );
