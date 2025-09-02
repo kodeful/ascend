@@ -87,7 +87,7 @@ const ReportCoverPage: React.FC<Props> = ({
 
         {isGroup && (
           <Typography fontSize={13} color="#646C60">
-            <b>Assessments included:</b> {assessmentsIncluded}
+            <b>Learner&apos;s included:</b> {assessmentsIncluded}
           </Typography>
         )}
       </Stack>
