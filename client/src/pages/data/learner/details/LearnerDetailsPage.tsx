@@ -18,7 +18,7 @@ const LearnerDetailsPage = () => {
       }}
     >
       <Title
-        title="Learner"
+        title="PAGE.TITLE.LEARNER"
         breadcrumbs={[
           {
             title: "Data",

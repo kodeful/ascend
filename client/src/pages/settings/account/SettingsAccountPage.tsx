@@ -22,7 +22,7 @@ const SettingsAccountPage = () => {
         width="100%"
         flex={1}
       >
-        <Title title="Account" />
+        <Title title="PAGE.TITLE.ACCOUNT" />
 
         <Stack direction="column" mt={3} width="100%" spacing={2}>
           <Paper sx={{ p: 2 }}>

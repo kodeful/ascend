@@ -29,7 +29,7 @@ const SettingsConnectionsLuminaPage = () => {
         flex={1}
       >
         <Title
-          title="New connection"
+          title="PAGE.TITLE.NEW_CONNECTION"
           breadcrumbs={[
             {
               title: "Connections",

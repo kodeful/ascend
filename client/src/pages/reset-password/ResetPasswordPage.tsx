@@ -10,7 +10,7 @@ const ResetPasswordPage = () => {
   return (
     <SignInLayout>
       <Box mb={1}>
-        <Title title="Reset password" />
+        <Title title="PAGE.TITLE.RESET_PASSWORD" />
       </Box>
 
       <ResetPasswordForm />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Stack } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import FormikTextField from "components/forms/FormikTextField";
 import { openModal } from "components/modals/ModalsStore";
@@ -10,6 +11,8 @@ import SettingsPageLayout from "../SettingsPageLayout";
 import GroupUsersDataGrid from "./components/GroupUsersDataGrid";
 
 const SettingsGroupSettingsPage = () => {
+  const intl = useIntl();
+
   const formik = useFormik({
     initialValues: {
       search: "",
@@ -27,7 +30,7 @@ const SettingsGroupSettingsPage = () => {
         flex={1}
         overflow="hidden"
       >
-        <Title title="Group settings" />
+        <Title title="PAGE.TITLE.GROUP_SETTINGS" />
 
         <Stack direction="column" mt={3} width="100%" spacing={2}>
           <FormikProvider value={formik}>
@@ -42,7 +45,9 @@ const SettingsGroupSettingsPage = () => {
                   <FormikTextField
                     name="search"
                     label=""
-                    placeholder="Search user"
+                    placeholder={intl.formatMessage({
+                      id: "PAGE.GROUP_SETTINGS.SEARCH_USER_PLACEHOLDER",
+                    })}
                     fullWidth
                   />
                 </Box>
@@ -60,7 +65,7 @@ const SettingsGroupSettingsPage = () => {
                       openModal("user-add");
                     }}
                   >
-                    Add User
+                    <FormattedMessage id="PAGE.GROUP_SETTINGS.ADD_USER" />
                   </Button>
                 </Box>
               </Stack>

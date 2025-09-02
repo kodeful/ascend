@@ -61,7 +61,7 @@ const SettingsConnectionsPage = () => {
         width="100%"
         flex={1}
       >
-        <Title title="Connections" />
+        <Title title="PAGE.TITLE.CONNECTIONS" />
 
         <Stack direction="column" mt={3} width="100%" spacing={2}>
           <Typography variant="h5" color="#4D4D4D">

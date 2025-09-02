@@ -1,5 +1,6 @@
 import React, { type FC } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 
 import AscendIcon from "components/icons/AscendIcon";
 import AscendTextIcon from "components/icons/AscendTextIcon";
@@ -100,7 +101,7 @@ const SignInLayout: FC<WithChildren<{}>> = ({ children }) => {
         {/* Request an Account */}
         <Stack textAlign="center">
           <Typography fontSize={14} mb={2} color="#646C60">
-            Don&apos;t have an Account?
+            <FormattedMessage id="PAGE.SIGN_IN.NO_ACCOUNT" />
           </Typography>
 
           <Stack direction="row" spacing={1.5}>
@@ -113,7 +114,7 @@ const SignInLayout: FC<WithChildren<{}>> = ({ children }) => {
                 color: "#FFF",
               }}
             >
-              Request Account
+              <FormattedMessage id="PAGE.SIGN_IN.REQUEST_ACCOUNT" />
             </Button>
             <Button
               variant="contained"
@@ -125,7 +126,7 @@ const SignInLayout: FC<WithChildren<{}>> = ({ children }) => {
                 color: "#000",
               }}
             >
-              Book a Demo
+              <FormattedMessage id="PAGE.SIGN_IN.BOOK_DEMO" />
             </Button>
           </Stack>
         </Stack>

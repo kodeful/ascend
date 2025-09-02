@@ -15,7 +15,7 @@ const ChatAiPage = () => {
       }}
       height="100%"
     >
-      <Title title="Chat" />
+      <Title title="PAGE.TITLE.CHAT" />
 
       <Grid container spacing={2} mt={2} height="100%">
         <Grid item xs={8}>

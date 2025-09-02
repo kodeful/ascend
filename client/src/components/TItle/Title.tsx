@@ -1,6 +1,7 @@
 import React, { type FC } from "react";
 import { ChevronRight } from "@mui/icons-material";
 import { Link, Stack, Typography } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 import { Link as RouteLink } from "react-router-dom";
 
 interface TitleProps {
@@ -12,7 +13,8 @@ const Title: FC<TitleProps> = ({ title, breadcrumbs }) => {
   return (
     <Stack direction="row" alignItems="flex-end" spacing={3}>
       <Typography variant="h1" color="primary.main">
-        {title}
+        {/* {title} */}
+        <FormattedMessage id={title} />
       </Typography>
 
       <Stack

@@ -20,6 +20,7 @@ import SplashScreenProvider from "./components/providers/SplashScreenProvider";
 import "components/forms/yupErrorMessages";
 
 import ModalsStoreComponent from "components/modals/ModalsStoreComponent";
+import I18nProvider from "components/providers/I18nProvider";
 
 type ProvidersProps = WithChildren<{ history: H.History }>;
 
@@ -28,25 +29,27 @@ const Providers: FC<ProvidersProps> = ({ children, history }) => {
     <>
       <CssBaseline />
       <ThemeProvider theme={lightTheme}>
-        <SEOProvider />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <GlobalErrorBoundary>
-            <SplashScreenProvider>
-              <Suspense fallback={<></>}>
-                {/* 
+        <I18nProvider>
+          <SEOProvider />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <GlobalErrorBoundary>
+              <SplashScreenProvider>
+                <Suspense fallback={<></>}>
+                  {/* 
                     // @ts-ignore */}
-                <Router history={history}>
-                  <SnackbarProvider>
-                    <ReactQueryProvider>
-                      <ModalsStoreComponent />
-                      {children}
-                    </ReactQueryProvider>
-                  </SnackbarProvider>
-                </Router>
-              </Suspense>
-            </SplashScreenProvider>
-          </GlobalErrorBoundary>
-        </LocalizationProvider>
+                  <Router history={history}>
+                    <SnackbarProvider>
+                      <ReactQueryProvider>
+                        <ModalsStoreComponent />
+                        {children}
+                      </ReactQueryProvider>
+                    </SnackbarProvider>
+                  </Router>
+                </Suspense>
+              </SplashScreenProvider>
+            </GlobalErrorBoundary>
+          </LocalizationProvider>
+        </I18nProvider>
       </ThemeProvider>
     </>
   );

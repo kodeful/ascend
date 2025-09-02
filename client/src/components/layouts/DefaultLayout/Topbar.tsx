@@ -15,8 +15,13 @@ import {
 import { useIsFetching } from "@tanstack/react-query";
 
 import NotificationIcon from "components/icons/NotificationIcon";
+import {
+  getLanguageFlag,
+  useLanguageStore,
+} from "components/stores/LanguageStore";
 import { useMeStore, userInitials } from "components/stores/MeStore";
 
+import LanguageDrawer from "./Drawers/LanguageDrawer";
 import NotificationDrawer from "./Drawers/NotificationDrawer";
 import UserDrawer from "./Drawers/UserDrawer";
 
@@ -31,12 +36,18 @@ const Topbar: FC<{}> = () => {
   const toggleNotificationDrawer = () =>
     setIsNotificationDrawerOpen((prev) => !prev);
 
+  const [isLanguageDrawerOpen, setIsLanguageDrawerOpen] =
+    useState<boolean>(false);
+  const toggleLanguageDrawer = () => setIsLanguageDrawerOpen((prev) => !prev);
+
   const [isUserDrawerOpen, setIsUserDrawerOpen] = useState<boolean>(false);
   const toggleUserDrawer = () => setIsUserDrawerOpen((prev) => !prev);
 
   const name = useMeStore((s) => s.me?.fullName);
   const firstName = useMeStore((s) => s.me?.firstName);
   const initials = userInitials(name);
+
+  const currentLanguage = useLanguageStore((s) => s.language);
 
   return (
     <AppBar
@@ -74,6 +85,40 @@ const Topbar: FC<{}> = () => {
                   height: 36,
                   bgcolor: "#DC7C65",
                   color: "#FFF",
+                  mx: 0.5,
+                }}
+                onClick={toggleLanguageDrawer}
+              >
+                <Box
+                  width={24}
+                  height={24}
+                  bgcolor="#FFF"
+                  borderRadius="50%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{
+                    backgroundImage: `url('${getLanguageFlag(currentLanguage)}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              </IconButton>
+              <LanguageDrawer
+                isOpen={isLanguageDrawerOpen}
+                onClose={toggleLanguageDrawer}
+              />
+            </Box>
+
+            {/* Notifications */}
+            <Box>
+              <IconButton
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: "#DC7C65",
+                  color: "#FFF",
+                  mx: 0.5,
                 }}
                 onClick={toggleNotificationDrawer}
               >
@@ -113,7 +158,7 @@ const Topbar: FC<{}> = () => {
                       backgroundColor: "primary.main",
                       color: "#FFF",
                       border: "2px solid #FFF",
-                      fontSize: Math.min(30, 35 / initials.length),
+                      fontSize: Math.min(25, 30 / initials.length),
                       fontWeight: 600,
                     }}
                     variant="circular"

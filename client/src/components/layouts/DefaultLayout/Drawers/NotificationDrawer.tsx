@@ -81,7 +81,7 @@ const NotificationDrawer: FC<NotificationDrawerProps> = ({
         />
       </Stack>
 
-      <Title title="Notifications" />
+      <Title title="DRAWER.TITLE.NOTIFICATIONS" />
 
       <Stack direction="column" spacing={2} mt={2}>
         <Typography fontSize={16} fontWeight={600} color="#6C6B67">

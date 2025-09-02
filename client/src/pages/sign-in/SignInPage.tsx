@@ -10,7 +10,7 @@ const SignInPage = () => {
   return (
     <SignInLayout>
       <Box mb={1}>
-        <Title title="Sign in" />
+        <Title title="PAGE.TITLE.SIGN_IN" />
       </Box>
 
       <SignInForm />

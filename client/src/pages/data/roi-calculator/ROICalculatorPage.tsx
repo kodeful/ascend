@@ -15,7 +15,7 @@ const ROICalculatorPage = () => {
       }}
     >
       <Title
-        title="ROI Calculator"
+        title="PAGE.TITLE.ROI_CALCULATOR"
         breadcrumbs={[
           {
             title: "Data",

@@ -29,13 +29,13 @@ const GroupThreeEye: React.FC<Props> = ({ width, height }) => {
   const { values } = useFormikContext() as any; // for horizontal layout toggle
 
   const categories = ["Self", "Peer", "Facilitator"];
-  const palette = ["#EC762E", "#F1B136", "#AEAC95"]; // match other 3-eye charts
+  // const palette = ["#EC762E", "#F1B136", "#AEAC95"]; // match other 3-eye charts
 
-  const points: Highcharts.PointOptionsObject[] = [
-    { y: 11.1, color: palette[0] },
-    { y: 10.6, color: palette[1] },
-    { y: 10.9, color: palette[2] },
-  ];
+  // const points: Highcharts.PointOptionsObject[] = [
+  //   { y: 11.1, color: palette[0] },
+  //   { y: 10.6, color: palette[1] },
+  //   { y: 10.9, color: palette[2] },
+  // ];
 
   const spread = Math.max(11.1, 10.6, 10.9) - Math.min(11.1, 10.6, 10.9);
 

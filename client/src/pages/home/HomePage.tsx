@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 
 import Title from "components/TItle/Title";
 
@@ -18,12 +19,12 @@ const HomePage = () => {
         py: 2,
       }}
     >
-      <Title title="Dashboard" />
+      <Title title="PAGE.TITLE.DASHBOARD" />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>
           <Typography variant="h5" color="#4D4D4D">
-            Metrics
+            <FormattedMessage id="PAGE.HOME.METRICS" />
           </Typography>
 
           {/* Metrics */}
@@ -40,7 +41,7 @@ const HomePage = () => {
           </Grid>
 
           <Typography variant="h5" color="#4D4D4D" mt={3}>
-            Recent Reports
+            <FormattedMessage id="PAGE.HOME.RECENT_REPORTS" />
           </Typography>
 
           {/* Recent Reports */}
@@ -53,7 +54,7 @@ const HomePage = () => {
         <Grid item xs={4}>
           <Box position="sticky" top={10}>
             <Typography variant="h5" color="#4D4D4D">
-              Learners
+              <FormattedMessage id="PAGE.HOME.LEARNERS" />
             </Typography>
 
             <Grid container pt={1} spacing={2}>

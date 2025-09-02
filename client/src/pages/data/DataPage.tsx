@@ -18,7 +18,7 @@ const DataPage = () => {
         py: 2,
       }}
     >
-      <Title title="Group metrics" />
+      <Title title="PAGE.TITLE.GROUP_METRICS" />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>

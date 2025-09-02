@@ -60,7 +60,7 @@ const CreateReportPage = () => {
           flex={1}
         >
           <Title
-            title="Create Report"
+            title="PAGE.TITLE.CREATE_REPORT"
             breadcrumbs={[
               {
                 title: "Report",

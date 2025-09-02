@@ -25,7 +25,7 @@ const ReportPage = () => {
         py: 2,
       }}
     >
-      <Title title="Report builder" />
+      <Title title="PAGE.TITLE.REPORT_BUILDER" />
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>
