@@ -1,6 +1,7 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { useIntl } from "react-intl";
 
 import { useMetricsControllerGetMetricsStatisticsByMetric } from "api/generated/metrics/metrics";
 
@@ -11,6 +12,7 @@ interface HomeGroupDeltaChangeGraphProps {
 const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
   height,
 }) => {
+  const intl = useIntl();
   const { data: metrics } = useMetricsControllerGetMetricsStatisticsByMetric({
     query: {
       queryKey: ["metrics", "statistics", "by-metric"],
@@ -29,7 +31,11 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
       text: "",
     },
     xAxis: {
-      categories: ["Knowledge", "Confidence", "Application"],
+      categories: [
+        intl.formatMessage({ id: "PAGE.HOME.KNOWLEDGE" }),
+        intl.formatMessage({ id: "PAGE.HOME.CONFIDENCE" }),
+        intl.formatMessage({ id: "PAGE.HOME.APPLICATION" }),
+      ],
       lineWidth: 0,
       startOnTick: false,
       endOnTick: false,
@@ -61,7 +67,7 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
     series: [
       {
         type: "areaspline",
-        name: "After",
+        name: intl.formatMessage({ id: "PAGE.HOME.AFTER" }),
         // @ts-expect-error
         data: metrics?.after || [],
         color: "#EE4F28", // Red for "After"
@@ -75,7 +81,7 @@ const HomeGroupDeltaChangeGraph: FC<HomeGroupDeltaChangeGraphProps> = ({
       },
       {
         type: "areaspline",
-        name: "Before",
+        name: intl.formatMessage({ id: "PAGE.HOME.BEFORE" }),
         // @ts-expect-error
         data: metrics?.before || [],
         color: "#AEAC95", // Gray for "Before"

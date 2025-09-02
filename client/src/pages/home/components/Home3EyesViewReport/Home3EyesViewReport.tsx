@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Paper, Skeleton, Typography } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 
 import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
@@ -26,10 +27,10 @@ const Home3EyesViewReport = () => {
       }}
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-        3-Eyes View Report
+        <FormattedMessage id="PAGE.HOME.3_EYES_VIEW_REPORT" />
       </Typography>
       <Typography fontSize={14} fontWeight={500} color="#646C60">
-        Group Leadership Skills Assessment Comparison
+        <FormattedMessage id="PAGE.HOME.GROUP_LEADERSHIP_SKILLS_ASSESSMENT_COMPARISON" />
       </Typography>
 
       <Box mt={3}>

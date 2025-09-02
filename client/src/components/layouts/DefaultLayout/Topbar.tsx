@@ -13,6 +13,7 @@ import {
   type Theme,
 } from "@mui/material";
 import { useIsFetching } from "@tanstack/react-query";
+import { FormattedMessage } from "react-intl";
 
 import NotificationIcon from "components/icons/NotificationIcon";
 import {
@@ -167,7 +168,7 @@ const Topbar: FC<{}> = () => {
                   </Avatar>
 
                   <Typography fontWeight={400} fontSize={16} color="#FFF">
-                    Hey <b>{firstName}</b>
+                    <FormattedMessage id="TOPBAR.HEY" /> <b>{firstName}</b>
                   </Typography>
                 </Stack>
               </Button>

@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import FilePDFIMG from "assets/imgs/files/file-pdf.png";
+import { FormattedMessage } from "react-intl";
 
 import { useReportControllerFilterReports } from "api/generated/report/report";
 import DataGrid from "components/DataGrid/DataGrid";
@@ -84,8 +85,13 @@ const HomeRecentReportsDataGrid = () => {
           opacity: 0.5,
         }}
       >
-        Showing <b>{reports?.data?.length}</b> of{" "}
-        <b>{reports?.meta?.pagination?.totalResults}</b> reports
+        <FormattedMessage
+          id="PAGE.HOME.SHOWING_REPORTS"
+          values={{
+            count: <b>{reports?.data?.length}</b>,
+            total: <b>{reports?.meta?.pagination?.totalResults}</b>,
+          }}
+        />
       </Typography>
     </>
   );

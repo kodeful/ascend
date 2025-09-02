@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { range } from "lodash";
+import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 
 import { useUserControllerFilterUsers } from "api/generated/user/user";
@@ -70,7 +71,7 @@ const HomeLearners = () => {
               textAlign="center"
               py={2}
             >
-              No active learners found
+              <FormattedMessage id="PAGE.HOME.NO_ACTIVE_LEARNERS" />
             </Typography>
           )}
 

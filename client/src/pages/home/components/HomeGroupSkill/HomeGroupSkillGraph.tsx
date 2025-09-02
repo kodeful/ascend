@@ -1,6 +1,7 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { useIntl } from "react-intl";
 
 import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
 
@@ -13,6 +14,8 @@ const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({
   height,
   skill,
 }) => {
+  const intl = useIntl();
+
   const { data: metrics } = useMetricsControllerGetMetricsStatisticsBySkill(
     {
       skill,
@@ -78,21 +81,23 @@ const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({
     series: [
       {
         type: "bar",
-        name: "Peer evaluation",
+        // name: "Peer evaluation",
+        name: intl.formatMessage({ id: "PAGE.HOME.PEER_EVALUATION" }),
         // @ts-expect-error
         data: metrics?.peerEvaluations || [],
         color: "#F1B136",
       },
       {
         type: "bar",
-        name: "Self-evaluation",
+        // name: "Self-evaluation",
+        name: intl.formatMessage({ id: "PAGE.HOME.SELF_EVALUATION" }),
         // @ts-expect-error
         data: metrics?.selfEvaluations || [],
         color: "#EC762E",
       },
       {
         type: "bar",
-        name: "Facilitator evaluation",
+        name: intl.formatMessage({ id: "PAGE.HOME.FACILITATOR_EVALUATION" }),
         // @ts-expect-error
         data: metrics?.facilitatorEvaluations || [],
         color: "#AEAC95",

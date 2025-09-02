@@ -2,6 +2,7 @@ import React from "react";
 import { TrendingDown, TrendingUp } from "@mui/icons-material";
 import { Paper, Skeleton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
+import { FormattedMessage } from "react-intl";
 
 import { useMetricsControllerGetMetricsStatisticsByMetric } from "api/generated/metrics/metrics";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
@@ -25,7 +26,7 @@ const HomeGroupDeltaChange = () => {
       }}
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-        Showing Group Delta Change
+        <FormattedMessage id="PAGE.HOME.GROUP_DELTA_CHANGE" />
       </Typography>
 
       <AsyncComponent
@@ -41,7 +42,8 @@ const HomeGroupDeltaChange = () => {
           SkeletonComponent={<Skeleton variant="text" width={160} />}
         >
           <Typography fontSize={14} fontWeight={600} color="#1C2024">
-            Total increase up by {/* @ts-expect-error */}
+            <FormattedMessage id="PAGE.HOME.TOTAL_INCREASE_UP_BY" />
+            {/* @ts-expect-error */}
             <Counter count={metrics?.increasePercentage * 100} step={0.1} />%
           </Typography>
 

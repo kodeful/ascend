@@ -1,12 +1,10 @@
 import React from "react";
-// import { TrendingUp } from "@mui/icons-material";
 import { Grid, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
+import { FormattedMessage } from "react-intl";
 
 import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
-
-// import Counter from "components/Counter/Counter";
 
 import HomeGroupTestGraph from "./HomeGroupSkillGraph";
 import SkillAutocomplete from "./SkillAutocomplete";
@@ -49,7 +47,7 @@ const HomeGroupSkill = () => {
             spacing={1}
           >
             <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-              Group Skill
+              <FormattedMessage id="PAGE.HOME.GROUP_SKILL" />
             </Typography>
 
             <FormikProvider value={formik}>
@@ -71,7 +69,7 @@ const HomeGroupSkill = () => {
               textAlign="center"
               py={2}
             >
-              Select a skill to see the graph
+              <FormattedMessage id="PAGE.HOME.SELECT_SKILL_TO_SEE_GRAPH" />
             </Typography>
           )}
 

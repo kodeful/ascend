@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { Divider, MenuList, Stack } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 
 import ChatIcon from "components/icons/ChatIcon";
 import DataIcon from "components/icons/DataIcon";
@@ -8,8 +9,6 @@ import LogoutIcon from "components/icons/LogoutIcon";
 import ReportIcon from "components/icons/ReportIcon";
 import SettingsIcon from "components/icons/SettingsIcon";
 import { openModal } from "components/modals/ModalsStore";
-
-// import { FormattedMessage } from "react-intl";
 
 // import type { UserOrgTypeRoleType } from "api/user/types";
 // import { hasPermissions, hasRole } from "components/stores/UserStore";
@@ -27,25 +26,25 @@ const sidebarMenuList: SidebarMenuListChild = [
   {
     id: "home",
     icon: <HomeIcon />,
-    text: "Home",
+    text: <FormattedMessage id="SIDEBAR.HOME" />,
     link: "/home",
   },
   {
     id: "data",
     icon: <DataIcon />,
-    text: "Data",
+    text: <FormattedMessage id="SIDEBAR.DATA" />,
     link: "/data",
   },
   {
     id: "report",
     icon: <ReportIcon />,
-    text: "Report",
+    text: <FormattedMessage id="SIDEBAR.REPORT" />,
     link: "/report",
   },
   {
     id: "chat-ai",
     icon: <ChatIcon />,
-    text: "Chat Ai",
+    text: <FormattedMessage id="SIDEBAR.CHAT_AI" />,
     link: "/chat-ai",
   },
 ];
@@ -54,13 +53,13 @@ const sidebarMenuListBottom: SidebarMenuListChild = [
   {
     id: "settings",
     icon: <SettingsIcon />,
-    text: "Settings",
+    text: <FormattedMessage id="SIDEBAR.SETTINGS" />,
     link: "/settings",
   },
   {
     id: "logout",
     icon: <LogoutIcon />,
-    text: "Logout",
+    text: <FormattedMessage id="SIDEBAR.LOGOUT" />,
     onClick: () => {
       openModal("logout");
     },

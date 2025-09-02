@@ -1,6 +1,7 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { useIntl } from "react-intl";
 
 import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
 
@@ -11,6 +12,7 @@ interface Home3EyesViewReportGraphProps {
 const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
   height,
 }) => {
+  const intl = useIntl();
   const { data: metrics } = useMetricsControllerGetMetricsStatisticsBySkill(
     {
       skill: undefined,
@@ -76,7 +78,7 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
     series: [
       {
         type: "column",
-        name: "Peer evaluation",
+        name: intl.formatMessage({ id: "PAGE.HOME.PEER_EVALUATION" }),
         // @ts-expect-error
         data: metrics?.peerEvaluations || [],
         color: "#F1B136",
@@ -84,7 +86,7 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
       {
         type: "column",
 
-        name: "Self-evaluation",
+        name: intl.formatMessage({ id: "PAGE.HOME.SELF_EVALUATION" }),
         // @ts-expect-error
         data: metrics?.selfEvaluations || [],
         color: "#EC762E",
@@ -92,7 +94,7 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
       {
         type: "column",
 
-        name: "Facilitator evaluation",
+        name: intl.formatMessage({ id: "PAGE.HOME.FACILITATOR_EVALUATION" }),
         // @ts-expect-error
         data: metrics?.facilitatorEvaluations || [],
         color: "#AEAC95",

@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Paper, Stack, Typography } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 
 import Counter from "components/Counter/Counter";
 
@@ -21,11 +22,13 @@ const HomeGroupActivity = () => {
         mb={2}
       >
         <Typography fontSize={18} fontWeight={500} color="#60646C">
-          Group Activity
+          <FormattedMessage id="PAGE.HOME.GROUP_ACTIVITY" />
         </Typography>
 
         <Typography fontSize={14} fontWeight={500} color="#60646C">
-          <Counter count={23.9} fontWeight={600} /> hours spent
+          <FormattedMessage id="PAGE.HOME.HOURS_SPENT" />
+          <Counter count={23.9} fontWeight={600} />
+          <FormattedMessage id="PAGE.HOME.HOURS" />
         </Typography>
       </Stack>
 

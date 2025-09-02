@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 
 import Counter from "components/Counter/Counter";
 
@@ -12,7 +13,7 @@ const HomeProgressStatistics = () => {
       }}
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-        Progress statistics LMS
+        <FormattedMessage id="PAGE.HOME.PROGRESS_STATISTICS" />
       </Typography>
 
       <Grid container>
@@ -26,10 +27,11 @@ const HomeProgressStatistics = () => {
             ></Stack>
             <Box>
               <Typography fontSize={16} fontWeight={600} color="#2A2A2A">
-                <Counter count={20} step={1} digits={0} /> quizzes
+                <Counter count={20} step={1} digits={0} />{" "}
+                <FormattedMessage id="PAGE.HOME.QUIZZES" />
               </Typography>
               <Typography fontSize={11} lineHeight={1} color="#2A2A2A">
-                In Progress
+                <FormattedMessage id="PAGE.HOME.IN_PROGRESS" />
               </Typography>
             </Box>
           </Stack>
@@ -44,10 +46,11 @@ const HomeProgressStatistics = () => {
             ></Stack>
             <Box>
               <Typography fontSize={16} fontWeight={600} color="#2A2A2A">
-                <Counter count={10} step={1} digits={0} /> quizzes
+                <Counter count={10} step={1} digits={0} />{" "}
+                <FormattedMessage id="PAGE.HOME.QUIZZES" />
               </Typography>
               <Typography fontSize={11} lineHeight={1} color="#2A2A2A">
-                Completed
+                <FormattedMessage id="PAGE.HOME.COMPLETED" />
               </Typography>
             </Box>
           </Stack>
@@ -62,10 +65,11 @@ const HomeProgressStatistics = () => {
             ></Stack>
             <Box>
               <Typography fontSize={16} fontWeight={600} color="#2A2A2A">
-                <Counter count={5} step={1} digits={0} /> videos
+                <Counter count={5} step={1} digits={0} />{" "}
+                <FormattedMessage id="PAGE.HOME.VIDEOS" />
               </Typography>
               <Typography fontSize={11} lineHeight={1} color="#2A2A2A">
-                Pending
+                <FormattedMessage id="PAGE.HOME.PENDING" />
               </Typography>
             </Box>
           </Stack>

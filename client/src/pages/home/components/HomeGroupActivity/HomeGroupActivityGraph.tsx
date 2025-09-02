@@ -1,6 +1,7 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { useIntl } from "react-intl";
 
 interface HomeGroupActivityGraphProps {
   height: number;
@@ -9,6 +10,8 @@ interface HomeGroupActivityGraphProps {
 const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
   height,
 }) => {
+  const intl = useIntl();
+
   const options: Highcharts.Options = {
     chart: {
       type: "column",
@@ -18,7 +21,7 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
       enabled: false,
     },
     title: {
-      text: "", // No chart title
+      text: "",
     },
     xAxis: {
       categories: ["M", "T", "W", "T", "F", "S", "S"],
@@ -26,7 +29,7 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
       lineWidth: 0,
     },
     yAxis: {
-      min: 0, // Start y-axis at 0
+      min: 0,
       title: {
         text: "",
       },
@@ -49,7 +52,7 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
     series: [
       {
         type: "column",
-        name: "Data",
+        name: intl.formatMessage({ id: "PAGE.HOME.DATA" }),
         data: [5, 10, 8, 4, 6, 2, 2],
         color: "#AEAC95",
       },
