@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
+import { useIntl } from "react-intl";
 import * as yup from "yup";
 
 import AddCircleIcon from "components/icons/AddCircleIcon";
@@ -18,6 +19,7 @@ type ChatInputProps = {
 };
 
 const ChatInput: FC<ChatInputProps> = ({ onSend }) => {
+  const intl = useIntl();
   const formik = useFormik({
     initialValues: {
       message: "",
@@ -52,7 +54,7 @@ const ChatInput: FC<ChatInputProps> = ({ onSend }) => {
             spacing={1}
           >
             <InputBase
-              placeholder="Type your questions here"
+              placeholder={intl.formatMessage({ id: "PAGE.CHAT.CHAT_INPUT" })}
               value={formik.values.message}
               onChange={(e) => {
                 setFieldValue("message", e.target.value);
@@ -97,7 +99,9 @@ const ChatInput: FC<ChatInputProps> = ({ onSend }) => {
                 }}
               />
               <Typography fontSize={12} color="#535851" fontWeight={600}>
-                Adjunct report
+                {intl.formatMessage({
+                  id: "PAGE.CHAT.CHAT_INPUT.ADJUNCT_REPORT",
+                })}
               </Typography>
             </Stack>
           </Stack>

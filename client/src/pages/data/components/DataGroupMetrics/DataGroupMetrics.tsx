@@ -1,9 +1,11 @@
 import React from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
+import { useIntl } from "react-intl";
 
 import DataGroupMetricsChart from "./DataGroupMetricsChart";
 
 const DataGroupMetrics = () => {
+  const intl = useIntl();
   return (
     <Paper
       sx={{
@@ -14,12 +16,16 @@ const DataGroupMetrics = () => {
       <Grid container spacing={1}>
         <Grid item xs={6}>
           <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-            Group Transformation Capacity
+            {intl.formatMessage({
+              id: "PAGE.GROUP_METRICS_GROUP_CAPACITY",
+            })}
           </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-            Group Self-Awareness
+            {intl.formatMessage({
+              id: "PAGE.GROUP_METRICS_GROUP_AWARENESS",
+            })}
           </Typography>
         </Grid>
         <Grid item xs={6}>

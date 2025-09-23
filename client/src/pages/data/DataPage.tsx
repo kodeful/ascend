@@ -4,6 +4,7 @@ import ROICalculatorWidget from "pages/data/roi-calculator/components/ROICalcula
 import Home3EyesViewReport from "pages/home/components/Home3EyesViewReport/Home3EyesViewReport";
 import HomeGroupTrust from "pages/home/components/HomeGroupSkill/HomeGroupSkill";
 import HomeLearners from "pages/home/components/HomeLearners";
+import { useIntl } from "react-intl";
 
 import Title from "components/TItle/Title";
 
@@ -11,6 +12,7 @@ import DataGroupMetrics from "./components/DataGroupMetrics/DataGroupMetrics";
 import DataLuminaGroupEvaluation from "./components/DataLumina/DataLuminaGroupEvaluation";
 
 const DataPage = () => {
+  const intl = useIntl();
   return (
     <Stack
       sx={{
@@ -23,7 +25,9 @@ const DataPage = () => {
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>
           <Typography variant="h5" color="#4D4D4D">
-            Metrics
+            {intl.formatMessage({
+              id: "PAGE.GROUP_METRICS",
+            })}
           </Typography>
 
           {/* Metrics */}
@@ -53,7 +57,9 @@ const DataPage = () => {
         <Grid item xs={4}>
           <Box position="sticky" top={10}>
             <Typography variant="h5" color="#4D4D4D">
-              Learners
+              {intl.formatMessage({
+                id: "PAGE.GROUP_LEARNERS",
+              })}
             </Typography>
 
             {/* Learners */}
@@ -64,7 +70,9 @@ const DataPage = () => {
             </Grid>
 
             <Typography variant="h5" color="#4D4D4D" sx={{ mt: 2 }}>
-              ROI Calculator
+              {intl.formatMessage({
+                id: "PAGE.GROUP_ROICALCULATOR",
+              })}
             </Typography>
 
             {/* ROI Calculator */}

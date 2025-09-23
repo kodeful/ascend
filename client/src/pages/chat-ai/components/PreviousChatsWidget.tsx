@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 
 import { useChatControllerFilterChats } from "api/generated/chat/chat";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
+import { useLanguageStore } from "components/stores/LanguageStore";
 import dayjs from "utils/dayjs";
 
 import PreviousChatsWidgetSkeleton from "./PreviousChatsWidgetSkeleton";
@@ -15,6 +16,7 @@ type PreviousChatsWidgetProps = {
 
 const PreviousChatsWidget: FC<PreviousChatsWidgetProps> = ({ selected }) => {
   const history = useHistory();
+  const currentLanguage = useLanguageStore((s) => s.language);
 
   const { data: chats, isLoading: isChatsLoading } =
     useChatControllerFilterChats(
@@ -30,9 +32,10 @@ const PreviousChatsWidget: FC<PreviousChatsWidgetProps> = ({ selected }) => {
 
   const chatGroups = useMemo(
     () =>
-      groupBy(chats?.data ?? [], (chat) => dayjs(chat.createdAt).fromNow()) ||
-      [],
-    [chats],
+      groupBy(chats?.data ?? [], (chat) =>
+        dayjs(chat.createdAt).locale(currentLanguage).fromNow(),
+      ) || [],
+    [chats, currentLanguage],
   );
 
   return (

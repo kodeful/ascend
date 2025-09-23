@@ -1,9 +1,11 @@
 import React from "react";
 import { Grid, Paper, Typography } from "@mui/material";
+import { useIntl } from "react-intl";
 
 import DataLuminaChart from "./DataLuminaChart";
 
 const DataLuminaGroupEvaluation = () => {
+  const intl = useIntl();
   return (
     <Paper
       sx={{
@@ -12,7 +14,9 @@ const DataLuminaGroupEvaluation = () => {
       }}
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-        Lumina Group Evaluation
+        {intl.formatMessage({
+          id: "PAGE.GROUP_LUMIA_GROUP_EVALUATION",
+        })}
       </Typography>
 
       <Grid container spacing={2}>

@@ -2,10 +2,11 @@ import React, { useMemo } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import FilePDFIMG from "assets/imgs/files/file-pdf.png";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import { useReportControllerFilterReports } from "api/generated/report/report";
 import DataGrid from "components/DataGrid/DataGrid";
+import { useLanguageStore } from "components/stores/LanguageStore";
 import dayjs from "utils/dayjs";
 
 const HomeRecentReportsDataGrid = () => {
@@ -19,12 +20,16 @@ const HomeRecentReportsDataGrid = () => {
       },
     },
   );
+  const intl = useIntl();
+  const currentLanguage = useLanguageStore((s) => s.language);
 
   const columns = useMemo<GridColDef<any, any>[]>(
     () => [
       {
         field: "title",
-        headerName: "Title",
+        headerName: intl.formatMessage({
+          id: "PAGE.HOME.RECENT_REPORTS_TITLE",
+        }),
         // headerAlign: "center",
         // type: "boolean",
         // width: 120,
@@ -48,25 +53,53 @@ const HomeRecentReportsDataGrid = () => {
       },
       {
         field: "createdAt",
-        headerName: "Date",
+        headerName: intl.formatMessage({
+          id: "PAGE.HOME.RECENT_REPORTS_DATE",
+        }),
         // headerAlign: "center",
         // type: "boolean",
         // width: 120,
         // editable: true,
         flex: 1,
-        valueFormatter: (value) => dayjs(value).format("DD MMM, YYYY HH:mm"),
+        valueFormatter: (value) => {
+          const formatted = dayjs(value)
+            .locale(currentLanguage)
+            .format("DD MMM, YYYY HH:mm");
+          if (currentLanguage === "es") {
+            return formatted.replace(
+              /(\d{2} )([a-z])/,
+              (match, day, firstLetter) => day + firstLetter.toUpperCase(),
+            );
+          }
+          return formatted;
+        },
       },
       {
         field: "type",
-        headerName: "Type",
+        headerName: intl.formatMessage({
+          id: "PAGE.HOME.RECENT_REPORTS_TYPE",
+        }),
         // headerAlign: "center",
         // type: "boolean",
         // width: 120,
         // editable: true,
         flex: 1,
+        valueFormatter: (value) => {
+          if (value === "Group Report") {
+            return intl.formatMessage({
+              id: "PAGE.HOME.RECENT_REPORTS_TYPE_GROUP",
+            });
+          }
+          if (value === "Individual Report") {
+            return intl.formatMessage({
+              id: "PAGE.HOME.RECENT_REPORTS_TYPE_INDIVIDUAL",
+            });
+          }
+          return value;
+        },
       },
     ],
-    [],
+    [currentLanguage],
   );
 
   return (

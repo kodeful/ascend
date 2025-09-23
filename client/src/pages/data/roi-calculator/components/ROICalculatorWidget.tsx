@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { isNil } from "lodash";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 
 import { useROICalculatorControllerFindROI } from "api/generated/roi-calculator/roi-calculator";
@@ -22,6 +23,7 @@ type ROICalculatorWidgetProps = {
 
 const ROICalculatorWidget: FC<ROICalculatorWidgetProps> = ({ link }) => {
   const history = useHistory();
+  const intl = useIntl();
 
   const { data: roiCalculator, isLoading } = useROICalculatorControllerFindROI({
     query: {
@@ -84,10 +86,14 @@ const ROICalculatorWidget: FC<ROICalculatorWidgetProps> = ({ link }) => {
       >
         <Box>
           <Typography fontSize={18} color="#60646C">
-            ROI Results
+            {intl.formatMessage({
+              id: "PAGE.GROUP_ROIRESULTS",
+            })}
           </Typography>
           <Typography fontSize={14} color="#646C60">
-            Last calculation
+            {intl.formatMessage({
+              id: "PAGE.GROUP_ROILASTCALCULATION",
+            })}
           </Typography>
         </Box>
 

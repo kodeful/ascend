@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { TrendingDown, TrendingUp } from "@mui/icons-material";
 import { Paper, Skeleton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
@@ -7,6 +7,7 @@ import { FormattedMessage } from "react-intl";
 import { useMetricsControllerGetMetricsStatisticsByMetric } from "api/generated/metrics/metrics";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 import Counter from "components/Counter/Counter";
+import { useLanguageStore } from "components/stores/LanguageStore";
 
 import HomeGroupDeltaChangeGraph from "./HomeGroupDeltaChangeGraph";
 
@@ -17,6 +18,29 @@ const HomeGroupDeltaChange = () => {
         queryKey: ["metrics", "statistics", "by-metric"],
       },
     });
+
+  const currentLanguage = useLanguageStore((s) => s.language);
+
+  // Memoize the date range to re-calculate when language changes
+  const dateRange = useMemo(() => {
+    // Use locale() method to explicitly set locale for this formatting
+    const prevMonth = dayjs()
+      .subtract(1, "month")
+      .locale(currentLanguage)
+      .format("MMMM YYYY");
+    const currentMonth = dayjs().locale(currentLanguage).format("MMMM YYYY");
+
+    if (currentLanguage === "es") {
+      // Capitalize first letter for Spanish
+      const prevFormatted =
+        prevMonth.charAt(0).toUpperCase() + prevMonth.slice(1);
+      const currentFormatted =
+        currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
+      return `${prevFormatted} - ${currentFormatted}`;
+    }
+
+    return `${prevMonth} - ${currentMonth}`;
+  }, [currentLanguage]);
 
   return (
     <Paper
@@ -57,8 +81,7 @@ const HomeGroupDeltaChange = () => {
       </Stack>
 
       <Typography fontSize={14} color="#60646C">
-        {dayjs().subtract(1, "month").format("MMMM YYYY")} -{" "}
-        {dayjs().format("MMMM YYYY")}
+        {dateRange}
       </Typography>
     </Paper>
   );

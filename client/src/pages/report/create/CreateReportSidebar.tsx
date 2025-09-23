@@ -1,6 +1,7 @@
-import type { FC } from "react";
+import { useMemo, type FC } from "react";
 import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import { Form, useFormikContext } from "formik";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 
 import { ReportRangeDate, ReportType } from "api/generated/models";
@@ -17,8 +18,41 @@ type CreateReportSidebarProps = {
 
 const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
   const history = useHistory();
+  const intl = useIntl();
 
   const { values } = useFormikContext() as any;
+
+  // Create translated options for ReportType
+  const reportTypeOptions = useMemo(
+    () => [
+      {
+        value: ReportType.Group_Report,
+        label: intl.formatMessage({
+          id: "PAGE.HOME.RECENT_REPORTS_TYPE_GROUP",
+        }),
+      },
+      {
+        value: ReportType.Individual_Report,
+        label: intl.formatMessage({
+          id: "PAGE.HOME.RECENT_REPORTS_TYPE_INDIVIDUAL",
+        }),
+      },
+    ],
+    [intl],
+  );
+
+  // Create translated options for ReportRangeDate
+  const reportRangeDateOptions = useMemo(
+    () => [
+      {
+        value: ReportRangeDate.Last_Week,
+        label: intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE_LAST_WEEK",
+        }),
+      },
+    ],
+    [intl],
+  );
 
   const { data: learners, isLoading: isLoadingLearners } =
     useUserControllerFilterUsers(
@@ -43,27 +77,39 @@ const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
       py={2}
       component={Form}
     >
-      <FormikTextField name="title" label="Title" placeholder="Write a title" />
+      <FormikTextField
+        name="title"
+        label={intl.formatMessage({ id: "PAGE.REPORT.CREATE_REPORT_TITLE" })}
+        placeholder={intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT_TITLE.PLACEHOLDER",
+        })}
+      />
 
       <FormikTextField
         name="subtitle"
-        label="Subtitle"
-        placeholder="Write a subtitle"
+        label={intl.formatMessage({ id: "PAGE.REPORT.CREATE_REPORT_SUBTITLE" })}
+        placeholder={intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT_SUBTITLE.PLACEHOLDER",
+        })}
       />
 
       <Divider sx={{ my: 2 }} />
 
       <FormikAutocomplete
         name="reportType"
-        label="Select report type"
-        options={valueOptions(Object.values(ReportType))}
+        label={intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.REPORT_TYPE",
+        })}
+        options={reportTypeOptions}
         sx={{ mb: 0.5 }}
       />
 
       {values.reportType === ReportType.Individual_Report && (
         <FormikAutocomplete
           name="learner"
-          label="Select learner"
+          label={intl.formatMessage({
+            id: "PAGE.REPORT.CREATE_REPORT.SELECT_LEARNER",
+          })}
           options={(learners?.data || []).map((learner) => ({
             value: learner._id,
             label: learner.fullName!,
@@ -76,21 +122,29 @@ const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
 
       <FormikAutocomplete
         name="rangeDate"
-        label="Range Date"
-        options={valueOptions(Object.values(ReportRangeDate))}
+        label={intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE",
+        })}
+        options={reportRangeDateOptions}
       />
 
       <Divider sx={{ my: 2 }} />
 
       <Typography fontSize={16} fontWeight={700} color="#60646C" pb={1}>
-        Export format
+        {intl.formatMessage({ id: "PAGE.REPORT.CREATE_REPORT.EXPORT_FORMAT" })}
       </Typography>
 
-      <FormikSwitch name="horizontal" label="Horizontal orientation" />
+      <FormikSwitch
+        name="horizontal"
+        label={intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.EXPORT_FORMAT.HORIZONTAL_ORIENTATION",
+        })}
+      />
 
       <Typography fontSize={12} fontWeight={500} color="#808080" mt={0.5}>
-        If selected, the pages of the report will be changed to a horizontal
-        layout
+        {intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.EXPORT_FORMAT.HORIZONTAL_ORIENTATION_DESCRI",
+        })}
       </Typography>
 
       <Box mt="auto">
@@ -109,7 +163,7 @@ const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
                 history.push("/report");
               }}
             >
-              Cancel
+              {intl.formatMessage({ id: "PAGE.REPORT.CREATE_REPORT.CANCEL" })}
             </Button>
           </Grid>
           <Grid item xs={6}>
@@ -119,7 +173,7 @@ const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
               type="submit"
               disabled={isLoading}
             >
-              Save
+              {intl.formatMessage({ id: "PAGE.REPORT.CREATE_REPORT.SAVE" })}
             </Button>
           </Grid>
         </Grid>

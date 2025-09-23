@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
+import { useIntl } from "react-intl";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { useReportControllerCreateReport } from "api/generated/report/report";
@@ -12,6 +13,7 @@ import CreateReportSidebar from "./CreateReportSidebar";
 const CreateReportPage = () => {
   const location = useLocation();
   const history = useHistory();
+  const intl = useIntl();
   const locationState = (location.state || {}) as any;
 
   const formik = useFormik({
@@ -63,11 +65,15 @@ const CreateReportPage = () => {
             title="PAGE.TITLE.CREATE_REPORT"
             breadcrumbs={[
               {
-                title: "Report",
+                title: intl.formatMessage({
+                  id: "PAGE.REPORT.CREATE_REPORT.BREADCRUMBS_REPORT",
+                }),
                 link: "/report",
               },
               {
-                title: "Create Report",
+                title: intl.formatMessage({
+                  id: "PAGE.REPORT.CREATE_REPORT.BREADCRUMBS_CREATE_REPORT",
+                }),
                 link: "/report/create",
               },
             ]}

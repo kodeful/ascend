@@ -3,6 +3,7 @@ import { Box, Grid, Stack, Typography } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
 import HomeLearners from "pages/home/components/HomeLearners";
 import HomeRecentReportsDataGrid from "pages/home/components/HomeRecentReports/HomeRecentReportsDataGrid";
+import { useIntl } from "react-intl";
 
 import { ReportType } from "api/generated/models";
 import FormikTextField from "components/forms/FormikTextField";
@@ -11,6 +12,7 @@ import Title from "components/TItle/Title";
 import ReportBuilderTemplate from "./components/ReportBuilderTemplate/ReportBuilderTemplate";
 
 const ReportPage = () => {
+  const intl = useIntl();
   const formik = useFormik({
     initialValues: {
       search: "",
@@ -30,14 +32,17 @@ const ReportPage = () => {
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>
           <Typography variant="h5" color="#4D4D4D">
-            Start from template
+            {/* Start from template */}
+            {intl.formatMessage({ id: "PAGE.REPORT_TEMPLATE" })}
           </Typography>
 
           {/* Start from template */}
           <Grid container pt={1} spacing={2}>
             <Grid item xs={6}>
               <ReportBuilderTemplate
-                title="Ascend Group Report"
+                title={intl.formatMessage({
+                  id: "PAGE.REPORT.CREATE_REPORT_GROUP",
+                })}
                 state={{
                   reportType: ReportType.Group_Report,
                 }}
@@ -45,7 +50,9 @@ const ReportPage = () => {
             </Grid>
             <Grid item xs={6}>
               <ReportBuilderTemplate
-                title="Ascend Individual Report"
+                title={intl.formatMessage({
+                  id: "PAGE.REPORT.CREATE_REPORT_INDIVIDUAL",
+                })}
                 state={{
                   reportType: ReportType.Individual_Report,
                 }}
@@ -66,7 +73,11 @@ const ReportPage = () => {
                     <FormikTextField
                       name="search"
                       label=""
-                      placeholder="Filter report"
+                      placeholder={intl.formatMessage({
+                        id: "PAGE.REPORT.CREATE_REPORT_FILTER",
+                      })}
+                      size="small"
+                      variant="outlined"
                       fullWidth
                     />
                   </Box>
@@ -95,7 +106,7 @@ const ReportPage = () => {
         <Grid item xs={4}>
           <Box position="sticky" top={10}>
             <Typography variant="h5" color="#4D4D4D">
-              Learners
+              {intl.formatMessage({ id: "PAGE.TITLE.LEARNERS" })}
             </Typography>
 
             {/* Learners */}

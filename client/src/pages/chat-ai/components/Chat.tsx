@@ -1,6 +1,7 @@
 import { Info } from "@mui/icons-material";
 import { Paper, Stack, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 
 import { useChatControllerStartChat } from "api/generated/chat/chat";
@@ -11,6 +12,7 @@ import ChatSuggestions from "./ChatSuggestions";
 const Chat = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
+  const intl = useIntl();
 
   const { mutateAsync: startChat } = useChatControllerStartChat({
     mutation: {
@@ -37,13 +39,13 @@ const Chat = () => {
             color="#4d4d4d"
             textAlign="center"
           >
-            Where your team improvement begins
+            {intl.formatMessage({ id: "PAGE.CHAT.DOCUMENT_TITLE" })}
           </Typography>
 
           <Stack direction="row" alignItems="center" mt={3} spacing={0.5}>
             <Info sx={{ color: "#B3B3B3", fontSize: 20 }} />
             <Typography color="#808080" fontSize={14}>
-              You can ask all about metrics and reports from your pannel
+              {intl.formatMessage({ id: "PAGE.CHAT.DOCUMENT_INFO" })}
             </Typography>
           </Stack>
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Stack, Typography } from "@mui/material";
+import { useIntl } from "react-intl";
 
 import Title from "components/TItle/Title";
 
@@ -7,6 +8,7 @@ import Chat from "./components/Chat";
 import PreviousChatsWidget from "./components/PreviousChatsWidget";
 
 const ChatAiPage = () => {
+  const intl = useIntl();
   return (
     <Stack
       sx={{
@@ -23,7 +25,7 @@ const ChatAiPage = () => {
         </Grid>
         <Grid item xs={4}>
           <Typography variant="h5" color="#4D4D4D">
-            Previous chats
+            {intl.formatMessage({ id: "PAGE.CHAT.PREVIOUS_CHATS" })}
           </Typography>
 
           <PreviousChatsWidget />
