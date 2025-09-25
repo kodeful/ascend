@@ -17,6 +17,7 @@ import { winstonLoader } from 'loaders/winston.loader';
 import { banner } from 'utils/banner';
 import { Logger } from 'utils/logger';
 
+// #
 const log = new Logger(__filename);
 bootstrapMicroframework({
   /**
