@@ -13,6 +13,7 @@ import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
 import SettingsConnectionsFilesPage from "pages/settings/connections/files/SettingsConnectionsFilesPage";
 import SettingsConnectionsGoogleSheetsPage from "pages/settings/connections/google-sheets/SettingsConnectionsGoogleSheetsPage";
 import SettingsConnectionsLuminaPage from "pages/settings/connections/lumina/SettingsConnectionsLuminaPage";
+import SettingsConnectionsMindslinesPage from "pages/settings/connections/mindslines/SettingsConnectionsMindslinesPage";
 import SettingsConnectionsPage from "pages/settings/connections/SettingsConnectionsPage";
 import SettingsGroupSettingsPage from "pages/settings/group-settings/SettingsGroupSettingsPage";
 import SignInPage from "pages/sign-in/SignInPage";
@@ -93,6 +94,12 @@ const App = () => {
           exact
           component={SettingsConnectionsLuminaPage}
           path="/settings/connections/lumina"
+          shrinked
+        />
+        <PrivateRoute
+          exact
+          component={SettingsConnectionsMindslinesPage}
+          path="/settings/connections/mindslines"
           shrinked
         />
 

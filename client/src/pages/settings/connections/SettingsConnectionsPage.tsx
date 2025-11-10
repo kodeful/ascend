@@ -4,6 +4,7 @@ import ExcelIMG from "assets/imgs/connections/excel.png";
 import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
 // import LearnDashIMG from "assets/imgs/connections/learn-dash.png";
 import LuminaIMG from "assets/imgs/connections/lumina.png";
+import MindslinesIMG from "assets/imgs/connections/mindslines.png";
 // import MoodleIMG from "assets/imgs/connections/moodle.png";
 import { useHistory } from "react-router-dom";
 
@@ -29,6 +30,12 @@ const connectApps = [
     img: GoogleSheetsIMG,
     title: "Google Sheets",
     link: "/settings/connections/google-sheets",
+    disabled: false,
+  },
+  {
+    img: MindslinesIMG,
+    title: "Mindslines",
+    link: "/settings/connections/mindslines",
     disabled: false,
   },
   {

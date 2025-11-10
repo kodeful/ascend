@@ -80,7 +80,11 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
         <FormikAutocomplete
           name="refetchInterval"
           label="Refetch interval"
-          options={valueOptions(["Daily"])}
+          options={valueOptions([
+            "Every Day",
+            "Every Hour",
+            "Every 15 Minutes",
+          ])}
         />
 
         <Typography

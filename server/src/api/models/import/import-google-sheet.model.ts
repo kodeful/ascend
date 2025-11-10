@@ -6,7 +6,9 @@ import Container from 'typedi';
 import { Import, ImportModel, ImportType } from './import.model';
 
 export enum ImportGoogleSheetRefetchInterval {
-  DAILY = 'Daily',
+  EVERY_DAY = 'Every Day',
+  EVERY_HOUR = 'Every Hour',
+  EVERY_15_MINUTES = 'Every 15 Minutes',
 }
 
 export class ImportGoogleSheet extends Import {

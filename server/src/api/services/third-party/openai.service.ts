@@ -1,4 +1,6 @@
 import { Ref } from '@typegoose/typegoose';
+import { first } from 'lodash';
+import { attempt } from 'lodash';
 import OpenAI from 'openai';
 import type {
   ChatCompletionMessageParam,
@@ -16,14 +18,12 @@ import { env } from 'env';
 
 /**
  * Utility: safe JSON parse
+ * Replaced with _.attempt from lodash for error handling
  */
 function safeJson<T = any>(raw: string | null | undefined, fallback: T): T {
-  try {
-    if (!raw) return fallback;
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
+  if (!raw) return fallback;
+  const result = attempt(() => JSON.parse(raw) as T);
+  return result instanceof Error ? fallback : result;
 }
 
 /**
@@ -405,8 +405,8 @@ export const openAIReply = async ({
       tool_choice: 'auto',
       response_format: { type: 'json_object' },
     });
-    console.log(completion);
-    const choice = completion.choices[0];
+
+    const choice = first(completion.choices);
     const msg = choice.message;
 
     // If the model asked to call tools, execute them and continue the loop.
