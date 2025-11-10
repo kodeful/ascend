@@ -69,6 +69,7 @@ const ReportBuilderTemplate: FC<ReportBuilderTemplateProps> = ({
       <Stack
         px={2}
         py={1}
+        pb={3}
         height="100%"
         justifyContent="center"
         flex={1}

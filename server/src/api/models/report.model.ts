@@ -27,7 +27,6 @@ export class Report extends DocumentWithTimestamps {
     type: SchemaTypes.ObjectId,
     ref: 'Organisation',
     required: true,
-    unique: true,
   })
   public organisation: Ref<Organisation>;
 
