@@ -66,9 +66,14 @@ const SingleChatMessages = () => {
               color={user ? "#fff" : "#333333"}
               fontWeight={500}
               lineHeight={1.2}
-            >
-              {message}
-            </Typography>
+              dangerouslySetInnerHTML={{ __html: message }}
+              sx={{
+                "& p": {
+                  margin: 0,
+                  padding: 0,
+                },
+              }}
+            />
           </Box>
         </Stack>
       ))}

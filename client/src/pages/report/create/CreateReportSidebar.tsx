@@ -6,9 +6,7 @@ import { useHistory } from "react-router-dom";
 
 import { ReportRangeDate, ReportType } from "api/generated/models";
 import { useUserControllerFilterUsers } from "api/generated/user/user";
-import FormikAutocomplete, {
-  valueOptions,
-} from "components/forms/FormikAutocomplete";
+import FormikAutocomplete from "components/forms/FormikAutocomplete";
 import FormikSwitch from "components/forms/FormikSwitch";
 import FormikTextField from "components/forms/FormikTextField";
 

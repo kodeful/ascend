@@ -3,6 +3,7 @@ import { InfoOutlined } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
+import { enqueueSnackbar } from "notistack";
 import * as yup from "yup";
 
 import axiosInstance from "api/axios-instance";
@@ -50,9 +51,16 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
-
-      setIsLoading(false);
+      })
+        .catch((err) => {
+          console.error(err);
+          enqueueSnackbar(err.response?.data?.message || "Error", {
+            variant: "error",
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     },
   });
 

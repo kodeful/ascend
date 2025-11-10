@@ -200,6 +200,21 @@ export class ImportController {
         throw new BadRequestError('Invalid file type');
     }
 
+    const normalizedRows = map(extractedData, (row) => {
+      if (!row.email || !row.score || !row.timestamp) {
+        return null;
+      }
+
+      return {
+        timestamp: row.timestamp,
+        email: row.email,
+        score: row.score,
+      };
+    }).filter(Boolean);
+    if (!normalizedRows.length) {
+      throw new BadRequestError('No valid data found');
+    }
+
     // CREATE IMPORT
     const { _id: importId } = await this.importService.importFileService.create(
       {
@@ -219,7 +234,7 @@ export class ImportController {
       metric,
       skill,
       assessment,
-      rows: extractedData,
+      rows: normalizedRows,
     });
 
     return {};

@@ -1,7 +1,6 @@
 import type React from "react";
 import { Avatar, Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useIntl } from "react-intl";
 
 import { ReportType } from "api/generated/models";
 import AscendIcon from "components/icons/AscendIcon";
@@ -29,7 +28,7 @@ const ReportCoverPage: React.FC<Props> = ({
   isIndividual,
   assessmentsIncluded,
 }) => {
-  const intl = useIntl();
+  // const intl = useIntl();
   return (
     <Page key="cover" width={width} height={height} pt={10} pb={8} px={9}>
       {/* HEADER */}

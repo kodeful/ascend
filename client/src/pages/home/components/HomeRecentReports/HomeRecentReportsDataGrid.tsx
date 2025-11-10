@@ -99,7 +99,7 @@ const HomeRecentReportsDataGrid = () => {
         },
       },
     ],
-    [currentLanguage],
+    [intl, currentLanguage],
   );
 
   return (
