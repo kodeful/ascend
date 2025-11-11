@@ -48,7 +48,7 @@ export class ImportController {
     private importDataService: ImportDataService,
   ) {}
 
-  private async processImportData({
+  public async processImportData({
     organisationId,
     importId,
     metric,
@@ -68,20 +68,30 @@ export class ImportController {
     }[];
   }) {
     const importDataBulk = map(rows, (row) => ({
-      insertOne: {
-        document: {
+      updateOne: {
+        filter: {
           organisation: organisationId,
           import: importId,
           timestamp: row.timestamp,
           email: row.email,
+        },
+        update: {
           score: row.score,
           metric,
           skill,
           assessment,
         },
+        upsert: true,
       },
     }));
 
+    // CLEAN
+    await this.importDataService.model.deleteMany({
+      organisation: organisationId,
+      import: importId,
+    });
+
+    // IMPORT
     await this.importDataService.model.bulkWrite(importDataBulk);
     return;
   }

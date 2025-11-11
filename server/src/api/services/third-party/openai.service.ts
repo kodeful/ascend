@@ -415,10 +415,12 @@ export const openAIReply = async ({
         const toolResponse = await executeToolCall(
           organisationId,
           tc.id,
+          // @ts-expect-error
           tc.function.name,
+          // @ts-expect-error
           tc.function.arguments,
         );
-        // Append assistant tool-call "marker" and our tool response
+
         messages.push({
           role: 'assistant',
           content: null,
