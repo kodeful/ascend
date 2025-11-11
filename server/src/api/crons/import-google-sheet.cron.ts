@@ -21,6 +21,7 @@ export class ImportGoogleSheetCron {
       filter: {
         type: ImportType.GOOGLE_SHEET,
         refetchInterval,
+        lastRefetchTimestamp: dayjs().toDate(),
       },
     });
 

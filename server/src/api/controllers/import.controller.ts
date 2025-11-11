@@ -166,6 +166,7 @@ export class ImportController {
         organisation: req.organisation._id,
         sheetId: spreadsheetId,
         refetchInterval,
+        lastRefetchTimestamp: dayjs().toDate(),
         metric,
         skill,
         assessment,

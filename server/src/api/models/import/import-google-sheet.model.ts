@@ -1,6 +1,6 @@
 import { getDiscriminatorModelForClass, prop } from '@typegoose/typegoose';
 import { Expose } from 'class-transformer';
-import { IsEnum, IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsString } from 'class-validator';
 import Container from 'typedi';
 
 import { Import, ImportModel, ImportType } from './import.model';
@@ -25,6 +25,11 @@ export class ImportGoogleSheet extends Import {
     required: true,
   })
   public refetchInterval: ImportGoogleSheetRefetchInterval;
+
+  @Expose()
+  @IsDateString()
+  @prop({ type: Date })
+  public lastRefetchTimestamp: Date;
 }
 
 export const ImportGoogleSheetModel = ImportModel.discriminator(

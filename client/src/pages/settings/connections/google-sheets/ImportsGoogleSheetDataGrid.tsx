@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Box, Link, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
+import dayjs from "dayjs";
 
 import { useImportControllerFilterImports } from "api/generated/import/import";
 import DataGrid from "components/DataGrid/DataGrid";
@@ -56,6 +57,14 @@ const ImportsGoogleSheetDataGrid = () => {
       {
         field: "refetchInterval",
         headerName: "Refetch Interval",
+        flex: 1,
+      },
+      {
+        field: "lastRefetchTimestamp",
+        headerName: "Last Refetch",
+        renderCell: ({ value }) => {
+          return dayjs(value).fromNow();
+        },
         flex: 1,
       },
       {
