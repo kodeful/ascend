@@ -44,10 +44,10 @@ const DataPage = () => {
           </Grid>
 
           <Typography variant="h5" color="#4D4D4D" mt={3}>
-            Lumina
+            Mindslines
           </Typography>
 
-          {/* Lumina */}
+          {/* Mindslines */}
           <Grid container pt={1} spacing={2}>
             <Grid item xs={12}>
               <DataLuminaGroupEvaluation />

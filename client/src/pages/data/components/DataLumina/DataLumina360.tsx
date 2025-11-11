@@ -12,7 +12,7 @@ const DataLumina360 = () => {
       }}
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-        Lumina 360
+        Mindslines 360
       </Typography>
 
       <Grid container spacing={2}>

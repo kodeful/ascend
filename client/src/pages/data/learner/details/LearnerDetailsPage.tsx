@@ -33,7 +33,7 @@ const LearnerDetailsPage = () => {
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={8}>
-          {/* Lumina */}
+          {/* Mindslines */}
           <Grid container pt={1} spacing={2}>
             <Grid item xs={12}>
               <DataLuminaGroupEvaluation />

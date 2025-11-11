@@ -43,11 +43,11 @@ const tools: ChatCompletionTool[] = [
           email: {
             type: 'string',
             description:
-              'Filter by user email (exact match). Example: "alice@example.com".',
+              'Filter by user email (regex match). Example: "alice@example.com".',
           },
           skill: {
             type: 'string',
-            description: 'Filter by skill name (exact match).',
+            description: 'Filter by skill name (regex match).',
           },
           metric: {
             type: 'string',
@@ -104,7 +104,7 @@ const tools: ChatCompletionTool[] = [
           email: {
             type: 'string',
             description:
-              'Optional filter by email before aggregation (exact match).',
+              'Optional filter by email before aggregation (regex match).',
           },
           skill: {
             type: 'string',
@@ -261,8 +261,8 @@ async function executeToolCall(
       };
 
       const query: Record<string, any> = { organisation: organisationId };
-      if (email) query.email = email;
-      if (skill) query.skill = skill;
+      if (email) query.email = { $regex: email, $options: 'i' };
+      if (skill) query.skill = { $regex: skill, $options: 'i' };
       if (metric) query.metric = metric;
 
       // Support either "timestamp" on the doc or "createdAt" if present.
@@ -319,8 +319,8 @@ async function executeToolCall(
       };
 
       const match: Record<string, any> = { organisation: organisationId };
-      if (email) match.email = email;
-      if (skill) match.skill = skill;
+      if (email) match.email = { $regex: email, $options: 'i' };
+      if (skill) match.skill = { $regex: skill, $options: 'i' };
       if (metric) match.metric = metric;
 
       if (fromTs || toTs) {

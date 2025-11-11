@@ -15,7 +15,7 @@ const DataLuminaGroupEvaluation = () => {
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
         {intl.formatMessage({
-          id: "PAGE.GROUP_LUMIA_GROUP_EVALUATION",
+          id: "PAGE.GROUP_MINDSLINES_GROUP_EVALUATION",
         })}
       </Typography>
 
