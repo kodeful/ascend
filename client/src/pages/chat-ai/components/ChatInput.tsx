@@ -89,6 +89,7 @@ const ChatInput: FC<ChatInputProps> = ({ onSend }) => {
               alignItems="center"
               px={1}
               component={ButtonBase}
+              disabled
             >
               <AddCircleIcon
                 sx={{

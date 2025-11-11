@@ -8,12 +8,17 @@ import { openAIReply } from 'api/services/third-party/openai.service';
 import { DocumentWithTimestamps } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
-import { Chat } from './chat.model';
+import { Chat, ChatModel } from './chat.model';
 import { Organisation } from './organisation.model';
 import { User } from './user.model';
 
 @post<ChatMessage>('save', async function () {
   if (!this.user) return;
+
+  await ChatModel.updateOne(
+    { _id: this.chat },
+    { $set: { lastMessage: this.message } },
+  );
 
   const receivedMessage = this.message;
   openAIReply({

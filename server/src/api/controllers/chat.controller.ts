@@ -26,16 +26,11 @@ import { mongoId } from 'utils/mongoId';
 
 // Response Types
 // ?|> filterChats
-class filterChatsData extends Chat {
-  @ValidateNested()
-  @Type(() => ChatMessage)
-  firstMessage: ChatMessage;
-}
 
 class filterChatsResponse {
   @ValidateNested({ each: true })
-  @Type(() => filterChatsData)
-  data: filterChatsData[];
+  @Type(() => Chat)
+  data: Chat[];
 }
 
 // ?|> startChat
@@ -77,7 +72,7 @@ export class ChatController {
       queryParams,
     );
 
-    const { data: chats, meta } = await this.chatService.filter({
+    return this.chatService.filter({
       limit,
       page,
       sort,
@@ -86,24 +81,7 @@ export class ChatController {
       preFilter: {
         organisation: mongoId(req.organisation._id),
       },
-      Model: filterChatsData,
     });
-
-    const data = await Promise.all(
-      chats.map(async (chat) => {
-        // @ts-expect-error
-        chat.firstMessage = await this.chatMessageService.findOne({
-          filter: {
-            chat: chat._id,
-          },
-          sort: { createdAt: 1 },
-        });
-
-        return chat;
-      }),
-    );
-
-    return { data, meta };
   }
 
   @Get('/messages/:chatId')

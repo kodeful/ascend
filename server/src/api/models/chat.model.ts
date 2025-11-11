@@ -1,6 +1,6 @@
 import { Ref, getModelForClass, index, prop } from '@typegoose/typegoose';
 import { Expose, Transform } from 'class-transformer';
-import { IsMongoId } from 'class-validator';
+import { IsMongoId, IsString } from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
 
@@ -20,6 +20,11 @@ export class Chat extends DocumentWithTimestamps {
     required: true,
   })
   public organisation: Ref<Organisation>;
+
+  @Expose()
+  @IsString()
+  @prop({ type: String })
+  public lastMessage: string;
 }
 
 export const ChatModel = getModelForClass(Chat, {

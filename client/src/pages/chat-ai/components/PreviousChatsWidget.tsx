@@ -88,7 +88,7 @@ const PreviousChatsWidget: FC<PreviousChatsWidgetProps> = ({ selected }) => {
                     textOverflow="ellipsis"
                     width="100%"
                   >
-                    {data.firstMessage?.message}
+                    {data.lastMessage}
                   </Typography>
                 </ButtonBase>
               </>
