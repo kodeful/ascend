@@ -5,9 +5,8 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { ChatMessage } from "./chatMessage";
 
-export interface FilterChatsData {
+export interface Chat {
   /** @pattern ^[0-9a-fA-F]{24}$ */
   _id: string;
   /** @pattern \d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d+Z? */

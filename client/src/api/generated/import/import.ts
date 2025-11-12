@@ -110,6 +110,153 @@ export function useImportControllerFilterImports<
 }
 
 /**
+ * @summary Import file
+ */
+export const importControllerImportFile = (
+  importControllerImportFileBody?: unknown,
+) => {
+  return axiosInstance<unknown>({
+    url: `/import/file`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: importControllerImportFileBody,
+  });
+};
+
+export const getImportControllerImportFileMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportFile>>,
+    TError,
+    { data: unknown },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importControllerImportFile>>,
+  TError,
+  { data: unknown },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importControllerImportFile>>,
+    { data: unknown }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return importControllerImportFile(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportControllerImportFileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importControllerImportFile>>
+>;
+export type ImportControllerImportFileMutationBody = unknown;
+export type ImportControllerImportFileMutationError = unknown;
+
+/**
+ * @summary Import file
+ */
+export const useImportControllerImportFile = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportFile>>,
+    TError,
+    { data: unknown },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importControllerImportFile>>,
+  TError,
+  { data: unknown },
+  TContext
+> => {
+  const mutationOptions = getImportControllerImportFileMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Import mindslines
+ */
+export const importControllerImportMindslines = (
+  importControllerImportMindslinesBody?: unknown,
+) => {
+  return axiosInstance<unknown>({
+    url: `/import/mindslines`,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: importControllerImportMindslinesBody,
+  });
+};
+
+export const getImportControllerImportMindslinesMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportMindslines>>,
+    TError,
+    { data: unknown },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importControllerImportMindslines>>,
+  TError,
+  { data: unknown },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importControllerImportMindslines>>,
+    { data: unknown }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return importControllerImportMindslines(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportControllerImportMindslinesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importControllerImportMindslines>>
+>;
+export type ImportControllerImportMindslinesMutationBody = unknown;
+export type ImportControllerImportMindslinesMutationError = unknown;
+
+/**
+ * @summary Import mindslines
+ */
+export const useImportControllerImportMindslines = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportMindslines>>,
+    TError,
+    { data: unknown },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importControllerImportMindslines>>,
+  TError,
+  { data: unknown },
+  TContext
+> => {
+  const mutationOptions =
+    getImportControllerImportMindslinesMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
  * @summary Import google sheet
  */
 export const importControllerImportGoogleSheet = (
@@ -180,79 +327,6 @@ export const useImportControllerImportGoogleSheet = <
 > => {
   const mutationOptions =
     getImportControllerImportGoogleSheetMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
- * @summary Import file
- */
-export const importControllerImportFile = (
-  importControllerImportFileBody?: unknown,
-) => {
-  return axiosInstance<unknown>({
-    url: `/import/file`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: importControllerImportFileBody,
-  });
-};
-
-export const getImportControllerImportFileMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof importControllerImportFile>>,
-    TError,
-    { data: unknown },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof importControllerImportFile>>,
-  TError,
-  { data: unknown },
-  TContext
-> => {
-  const { mutation: mutationOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof importControllerImportFile>>,
-    { data: unknown }
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return importControllerImportFile(data);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ImportControllerImportFileMutationResult = NonNullable<
-  Awaited<ReturnType<typeof importControllerImportFile>>
->;
-export type ImportControllerImportFileMutationBody = unknown;
-export type ImportControllerImportFileMutationError = unknown;
-
-/**
- * @summary Import file
- */
-export const useImportControllerImportFile = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof importControllerImportFile>>,
-    TError,
-    { data: unknown },
-    TContext
-  >;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof importControllerImportFile>>,
-  TError,
-  { data: unknown },
-  TContext
-> => {
-  const mutationOptions = getImportControllerImportFileMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

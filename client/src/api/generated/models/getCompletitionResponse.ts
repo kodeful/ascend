@@ -5,8 +5,9 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { Chat } from "./chat";
 
-export interface FilterChatsResponse {
-  data: Chat[];
+export interface GetCompletitionResponse {
+  completed: number;
+  in_progress: number;
+  not_started: number;
 }

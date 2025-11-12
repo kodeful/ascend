@@ -184,6 +184,12 @@ export class UserController {
     return { data, meta };
   }
 
+  @Get('/:userId')
+  @ResponseSchema(User)
+  public async getUser(@Param('userId') userId: string) {
+    return await this.userService.findOneById(mongoId(userId));
+  }
+
   @Post()
   @ResponseSchema(undefined)
   public async createUser(

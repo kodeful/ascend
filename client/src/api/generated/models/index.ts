@@ -7,11 +7,11 @@
  */
 
 export * from "./calculateROIBody";
+export * from "./chat";
 export * from "./chatControllerFilterChatsParams";
 export * from "./chatMessage";
 export * from "./createUserBody";
 export * from "./createUserBodyRole";
-export * from "./filterChatsData";
 export * from "./filterChatsResponse";
 export * from "./filterImportsResponse";
 export * from "./filterMeta";
@@ -21,13 +21,13 @@ export * from "./filterUsersData";
 export * from "./filterUsersDataRole";
 export * from "./filterUsersResponse";
 export * from "./findROIResponse";
+export * from "./getCompletitionResponse";
 export * from "./import";
-export * from "./importAssessment";
 export * from "./importControllerFilterImportsParams";
-export * from "./importMetric";
 export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./metricsControllerGetMetricsStatisticsBySkillParams";
+export * from "./metricsMindslinesControllerGetCompletitionParams";
 export * from "./organisation";
 export * from "./organisationControllerCreateOrganisationBody";
 export * from "./rOICalculator";

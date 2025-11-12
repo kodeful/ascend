@@ -398,6 +398,87 @@ export const useUserControllerCreateUser = <
   return useMutation(mutationOptions);
 };
 /**
+ * @summary Get user
+ */
+export const userControllerGetUser = (
+  userId: unknown,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<User>({ url: `/user/${userId}`, method: "GET", signal });
+};
+
+export const getUserControllerGetUserQueryKey = (userId: unknown) => {
+  return [`/user/${userId}`] as const;
+};
+
+export const getUserControllerGetUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof userControllerGetUser>>,
+  TError = unknown,
+>(
+  userId: unknown,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof userControllerGetUser>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getUserControllerGetUserQueryKey(userId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof userControllerGetUser>>
+  > = ({ signal }) => userControllerGetUser(userId, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof userControllerGetUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type UserControllerGetUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof userControllerGetUser>>
+>;
+export type UserControllerGetUserQueryError = unknown;
+
+/**
+ * @summary Get user
+ */
+
+export function useUserControllerGetUser<
+  TData = Awaited<ReturnType<typeof userControllerGetUser>>,
+  TError = unknown,
+>(
+  userId: unknown,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof userControllerGetUser>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getUserControllerGetUserQueryOptions(userId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * @summary Update user
  */
 export const userControllerUpdateUser = (

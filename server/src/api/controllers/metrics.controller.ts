@@ -82,7 +82,6 @@ export class MetricsController {
         if (usedCombinations.includes(combination)) {
           return;
         }
-
         metrics[item.metric].push(item.score);
         usedCombinations.push(combination);
       });

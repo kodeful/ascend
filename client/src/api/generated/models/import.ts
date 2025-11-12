@@ -5,19 +5,14 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { ImportAssessment } from "./importAssessment";
-import type { ImportMetric } from "./importMetric";
 
 export interface Import {
   /** @pattern ^[0-9a-fA-F]{24}$ */
   _id: string;
-  assessment: ImportAssessment;
   /** @pattern \d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d+Z? */
   createdAt: string;
-  metric: ImportMetric;
   /** @pattern ^[0-9a-fA-F]{24}$ */
   organisation: string;
-  skill: string;
   /** @pattern \d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d+Z? */
   updatedAt: string;
 }

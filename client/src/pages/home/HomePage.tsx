@@ -5,6 +5,7 @@ import { FormattedMessage } from "react-intl";
 import Title from "components/TItle/Title";
 
 import Home3EyesViewReport from "./components/Home3EyesViewReport/Home3EyesViewReport";
+import HomeCompletition from "./components/HomeCompletition/HomeCompletition";
 import HomeGroupActivity from "./components/HomeGroupActivity/HomeGroupActivity";
 import HomeGroupDeltaChange from "./components/HomeGroupDeltaChange/HomeGroupDeltaChange";
 import HomeGroupTrust from "./components/HomeGroupSkill/HomeGroupSkill";
@@ -62,8 +63,12 @@ const HomePage = () => {
                 <HomeLearners />
               </Grid>
               <Grid item xs={12}>
+                <HomeCompletition />
+              </Grid>
+              <Grid item xs={12}>
                 <HomeGroupActivity />
               </Grid>
+
               {/* <Grid item xs={12}>
                 <HomeProgressStatistics />
               </Grid> */}

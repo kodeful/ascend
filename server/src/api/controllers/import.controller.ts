@@ -20,6 +20,7 @@ import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { Import } from 'api/models/import/import.model';
 import { Organisation } from 'api/models/organisation.model';
+import { ImportDataMindslinesService } from 'api/services/import-data-mindslines.service';
 import { ImportDataService } from 'api/services/import-data.service';
 import { ImportService } from 'api/services/import.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
@@ -46,6 +47,7 @@ export class ImportController {
   constructor(
     private importService: ImportService,
     private importDataService: ImportDataService,
+    private importDataMindslinesService: ImportDataMindslinesService,
   ) {}
 
   public async processImportData({
@@ -132,13 +134,13 @@ export class ImportController {
     }));
 
     // CLEAN
-    await this.importDataService.model.deleteMany({
+    await this.importDataMindslinesService.model.deleteMany({
       organisation: organisationId,
       import: importId,
     });
 
     // IMPORT
-    await this.importDataService.model.bulkWrite(importDataBulk);
+    await this.importDataMindslinesService.model.bulkWrite(importDataBulk);
     return;
   }
 
@@ -259,7 +261,7 @@ export class ImportController {
       key.toLowerCase().includes('completed count'),
     );
     const inProgressCount = find(keys, (key) =>
-      key.toLowerCase().includes('in progress count'),
+      key.toLowerCase().includes('in-progress count'),
     );
     const notStartedCount = find(keys, (key) =>
       key.toLowerCase().includes('not attempted count'),
