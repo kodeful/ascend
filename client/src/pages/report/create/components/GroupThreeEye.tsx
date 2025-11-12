@@ -12,7 +12,7 @@ type Props = {
   width: number;
   height: number;
   // Optional aggregated global scores; if omitted, the chart renders a placeholder
-  scores?: {
+  threeEye: {
     self: number;
     peer: number;
     facilitator: number;
@@ -25,7 +25,7 @@ const interpretAlignment = (spread: number) => {
   return "Notable misalignment—perceptions differ meaningfully.";
 };
 
-const GroupThreeEye: React.FC<Props> = ({ width, height }) => {
+const GroupThreeEye: React.FC<Props> = ({ width, height, threeEye }) => {
   const { values } = useFormikContext() as any; // for horizontal layout toggle
 
   const categories = ["Self", "Peer", "Facilitator"];
@@ -37,7 +37,17 @@ const GroupThreeEye: React.FC<Props> = ({ width, height }) => {
   //   { y: 10.9, color: palette[2] },
   // ];
 
-  const spread = Math.max(11.1, 10.6, 10.9) - Math.min(11.1, 10.6, 10.9);
+  const spread =
+    Math.max(
+      threeEye?.self ?? 0,
+      threeEye?.peer ?? 0,
+      threeEye?.facilitator ?? 0,
+    ) -
+    Math.min(
+      threeEye?.self ?? 0,
+      threeEye?.peer ?? 0,
+      threeEye?.facilitator ?? 0,
+    );
 
   const options: Highcharts.Options = {
     chart: {
@@ -77,19 +87,19 @@ const GroupThreeEye: React.FC<Props> = ({ width, height }) => {
       {
         type: "column",
         name: "Self-evaluation",
-        data: [11.1],
+        data: [threeEye?.self ?? 0],
         color: "#EC762E",
       },
       {
         type: "column",
         name: "Peer evaluation",
-        data: [10.6],
+        data: [threeEye?.peer ?? 0],
         color: "#F1B136",
       },
       {
         type: "column",
         name: "Facilitator evaluation",
-        data: [10.9],
+        data: [threeEye?.facilitator ?? 0],
         color: "#AEAC95",
       },
     ],

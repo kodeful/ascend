@@ -25,27 +25,7 @@ const IndividualRecommendations: React.FC<Props> = ({
   height,
   skills,
 }) => {
-  const items =
-    skills.length > 0
-      ? skills
-      : [
-          {
-            skill: "Communication",
-            aspects: {
-              Knowledge: { begin: 3.2, end: 4.5 },
-              Application: { begin: 3.0, end: 4.2 },
-              Confidence: { begin: 3.4, end: 4.6 },
-            },
-          },
-          {
-            skill: "Decision-Making",
-            aspects: {
-              Knowledge: { begin: 2.8, end: 3.9 },
-              Application: { begin: 3.1, end: 4.1 },
-              Confidence: { begin: 3.0, end: 4.0 },
-            },
-          },
-        ];
+  const items = skills;
 
   return (
     <Page key="ind-recs" width={width} height={height}>

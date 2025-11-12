@@ -79,8 +79,8 @@ const IndividualOverallProgress: React.FC<Props> = ({
     ],
   };
 
-  const latest = timeline[timeline.length - 1];
-  const first = timeline[0];
+  const latest = timeline[timeline.length - 1] ?? { global: 0, confidence: 0 };
+  const first = timeline[0] ?? { global: 0, confidence: 0 };
   const delta = latest.global - first.global;
   const pctImprovement = Math.max(
     0,

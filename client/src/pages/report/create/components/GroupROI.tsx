@@ -1,5 +1,6 @@
 import type React from "react";
 import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
+import { isNumber } from "lodash";
 
 import { mean, Page, SectionHeader } from "./ReportPDF.shared";
 
@@ -16,16 +17,7 @@ const GroupROI: React.FC<Props> = ({ width, height, skills }) => {
   const theme = useTheme();
 
   // Fallback sample if empty (keeps PDF from looking blank during wiring)
-  const rows = skills?.length
-    ? skills
-    : [
-        { before: 7.5, latest: 9.2, delta: 1.7 },
-        { before: 8.1, latest: 9.5, delta: 1.4 },
-        { before: 7.8, latest: 10.2, delta: 2.4 },
-        { before: 9.0, latest: 10.8, delta: 1.8 },
-        { before: 8.4, latest: 10.6, delta: 2.2 },
-        { before: 7.2, latest: 8.0, delta: 0.8 },
-      ];
+  const rows = skills;
 
   // Core aggregates
   const avgBefore = mean(rows.map((r) => r.before));
@@ -171,6 +163,7 @@ export default GroupROI;
 /* ───────────────────────── helpers (local) ───────────────────────── */
 
 function format1(n: number) {
+  if (!isNumber(n)) return "0";
   return (Math.round(n * 10) / 10).toFixed(1);
 }
 

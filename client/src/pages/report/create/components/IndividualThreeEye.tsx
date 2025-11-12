@@ -9,16 +9,17 @@ import { Page, SectionHeader } from "./ReportPDF.shared";
 type Props = {
   width: number;
   height: number;
+  threeEye: { self: number; peer: number; facilitator: number };
 };
 
-const IndividualThreeEye: React.FC<Props> = ({ width, height }) => {
+const IndividualThreeEye: React.FC<Props> = ({ width, height, threeEye }) => {
   const { values } = useFormikContext() as any;
 
   // Sample mock data — replace with API later
   const categories = ["Global Score"];
-  const self = [11.5];
-  const peer = [10.8];
-  const facilitator = [11.1];
+  const self = [threeEye?.self ?? 0];
+  const peer = [threeEye?.peer ?? 0];
+  const facilitator = [threeEye?.facilitator ?? 0];
 
   const options: Highcharts.Options = {
     chart: {

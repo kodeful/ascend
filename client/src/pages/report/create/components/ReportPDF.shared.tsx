@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import _ from "lodash";
 
 import AscendIcon from "components/icons/AscendIcon";
 
@@ -54,10 +55,9 @@ export const individualSuggestion = (latest: number, delta: number) => {
   return "🟡 Keep building—prompted reflection & peer feedback";
 };
 
-// Utility
-export const mean = (arr: number[]) =>
-  arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
-export const round1 = (n: number) => Math.round(n * 10) / 10;
+// Utility (using lodash where possible)
+export const mean = (arr: number[]) => _.mean(arr) ?? 0;
+export const round1 = (n: number) => _.round(n, 1);
 export const pct = (n: number) => `${Math.round(n)}%`;
 
 /** ─────────────────────────────────────────────────────────────
@@ -74,55 +74,6 @@ export const SKILLS = [
   "Decision-Making",
   "Adaptability",
 ];
-
-export const SAMPLE_GROUP = {
-  cohortName: "Emerging Leaders – Spring",
-  company: "Acme Corp",
-  periodFrom: "2025-02-01",
-  periodTo: "2025-07-25",
-  assessmentsIncluded: 2,
-  // per skill: avg before / latest across cohort + % improved
-  skills: SKILLS.map((s, i) => {
-    const before = 7 + (i % 3); // 7..9
-    const latest = before + (i % 2 === 0 ? 2.1 : 0.6); // some improve strongly, some lightly
-    const delta = latest - before;
-    const improvedShare = i % 2 === 0 ? 0.78 : 0.56;
-    return { skill: s, before, latest, delta, improvedShare };
-  }),
-  // 3-Eye global (all skills combined)
-  threeEye: { self: 11.1, peer: 10.6, facilitator: 10.9 },
-};
-
-export const SAMPLE_INDIVIDUAL = {
-  learnerName: "Jordan Avery",
-  company: "Acme Corp",
-  dates: ["2025-02-01", "2025-04-15", "2025-07-25"],
-  // Global combined line (0–15)
-  globalTimeline: [
-    { label: "A1", date: "2025-02-01", global: 8.7, confidence: 8.1 },
-    { label: "A2", date: "2025-04-15", global: 10.2, confidence: 9.3 },
-    { label: "A3", date: "2025-07-25", global: 11.4, confidence: 10.6 },
-  ],
-  // Table: Knowledge / Application / Confidence (0–5 each in this sample)
-  // (You can re-scale if you use 1–5 or 1–3 per dimension.)
-  skills: SKILLS.map((s, i) => {
-    const kb = 2.9 + (i % 3) * 0.3; // before knowledge
-    const ka = kb + (i % 2 === 0 ? 0.9 : 0.4); // after knowledge
-    const ab = 2.7 + ((i + 1) % 3) * 0.3; // before application
-    const aa = ab + (i % 2 === 0 ? 0.9 : 0.3);
-    const cb = 2.6 + ((i + 2) % 3) * 0.3; // before confidence
-    const ca = cb + (i % 2 === 0 ? 1.2 : 0.5);
-    return {
-      skill: s,
-      aspects: {
-        Knowledge: { begin: round1(kb), end: round1(ka) },
-        Application: { begin: round1(ab), end: round1(aa) },
-        Confidence: { begin: round1(cb), end: round1(ca) },
-      },
-    };
-  }),
-  threeEye: { self: 11.5, peer: 10.8, facilitator: 11.1 },
-};
 
 /** ─────────────────────────────────────────────────────────────
  *  Shared UI bits
@@ -199,7 +150,7 @@ export const SectionHeader: React.FC<{ title: string; subtitle?: string }> = ({
 );
 
 // Tiny insight helpers (no charts)
-export const computeInsightsGroup = (skills: typeof SAMPLE_GROUP.skills) => {
+export const computeInsightsGroup = (skills: any) => {
   // TODO: Replace with real logic + matrix-driven text
   const mostImproved = [...skills].sort((a, b) => b.delta - a.delta)[0]?.skill;
   return [
@@ -210,9 +161,7 @@ export const computeInsightsGroup = (skills: typeof SAMPLE_GROUP.skills) => {
   ].filter(Boolean) as string[];
 };
 
-export const computeInsightsIndividual = (
-  timeline: typeof SAMPLE_INDIVIDUAL.globalTimeline,
-) => {
+export const computeInsightsIndividual = (timeline: any) => {
   // TODO: Replace with plateau/surge detection
   if (timeline.length < 3)
     return ["Additional assessments will clarify trend."];

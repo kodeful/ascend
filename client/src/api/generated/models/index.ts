@@ -36,6 +36,8 @@ export * from "./rOICalculatorFields";
 export * from "./rOICalculatorResult";
 export * from "./report";
 export * from "./reportControllerFilterReportsParams";
+export * from "./reportControllerGetGroupDataParams";
+export * from "./reportControllerGetIndividualDataParams";
 export * from "./reportRangeDate";
 export * from "./reportType";
 export * from "./sendMessageChatBody";

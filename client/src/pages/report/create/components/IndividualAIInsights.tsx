@@ -10,16 +10,7 @@ type Props = {
 };
 
 const IndividualAIInsights: React.FC<Props> = ({ width, height, lines }) => {
-  const items =
-    lines.length > 0
-      ? lines
-      : [
-          "🚀 Significant jump in Global Score (+2.7) between A1 and A3 — strong upward momentum maintained.",
-          "💡 Confidence gains outpaced skill application, suggesting readiness to take on higher-stakes projects.",
-          "📚 Application scores improved steadily, especially in Strategic Thinking (+1.1) — evidence of better decision structuring.",
-          "🔄 Slight dip in Adaptability mid-cycle recovered by final assessment — potential resilience growth.",
-          "🤝 Peer feedback alignment with self-assessment increased, indicating greater self-awareness.",
-        ];
+  const items = lines;
 
   return (
     <Page key="ind-ai" width={width} height={height}>

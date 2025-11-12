@@ -66,4 +66,13 @@ bootstrapMicroframework({
         break;
     }
   })
-  .catch((error) => log.error('Application crashed: ' + error));
+  .catch((error) => {
+    log.error('Application crashed: ' + error);
+    if (error && error.stack) {
+      log.error('Stacktrace: ' + error.stack);
+    } else {
+      log.error('No stacktrace available.');
+    }
+    // Optionally, log additional details if available
+    log.error('Raw error object:', error);
+  });

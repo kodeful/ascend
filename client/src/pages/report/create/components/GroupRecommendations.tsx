@@ -11,17 +11,7 @@ type Props = {
 
 const GroupRecommendations: React.FC<Props> = ({ width, height, skills }) => {
   // fallback sample data
-  const items =
-    skills.length > 0
-      ? skills
-      : [
-          { skill: "Communication", latest: 12.4, delta: 1.8 },
-          { skill: "Decision-Making", latest: 10.1, delta: 0.6 },
-          { skill: "Strategic Thinking", latest: 8.9, delta: -0.4 },
-          { skill: "Self-Awareness", latest: 13.0, delta: 2.1 },
-          { skill: "Critical Thinking", latest: 9.6, delta: 0.9 },
-          { skill: "Adaptability", latest: 8.2, delta: -0.2 },
-        ];
+  const items = skills;
 
   return (
     <Page key="group-recs" width={width} height={height}>

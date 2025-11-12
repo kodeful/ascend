@@ -5,6 +5,10 @@ import { useFormikContext } from "formik";
 import { find } from "lodash";
 
 import { ReportType } from "api/generated/models";
+import {
+  useReportControllerGetGroupData,
+  useReportControllerGetIndividualData,
+} from "api/generated/report/report";
 import { useUserControllerFilterUsers } from "api/generated/user/user";
 
 import GroupAIInsights from "./GroupAIInsights";
@@ -18,17 +22,10 @@ import IndividualOverallProgress from "./IndividualOverallProgress";
 import IndividualRecommendations from "./IndividualRecommendations";
 import IndividualThreeEye from "./IndividualThreeEye";
 import ReportCoverPage from "./ReportCoverPage";
+
 // Charts intentionally omitted per request — leave TODO comments where needed
 // import Home3EyesViewReportGraph from "pages/home/components/Home3EyesViewReport/Home3EyesViewReportGraph";
 // import HomeGroupDeltaChangeGraph from "pages/home/components/HomeGroupDeltaChange/HomeGroupDeltaChangeGraph";
-
-import {
-  // computeInsightsGroup,
-  // computeInsightsIndividual,
-  // Page, // re-exported but only used by CoverPage internally
-  SAMPLE_GROUP,
-  SAMPLE_INDIVIDUAL,
-} from "./ReportPDF.shared";
 
 const ReportPDF: React.FC = () => {
   const { values } = useFormikContext() as any;
@@ -64,12 +61,27 @@ const ReportPDF: React.FC = () => {
     values.reportType === "individual-report" ||
     values.reportType === ReportType.Individual_Report;
 
-  // Data to feed pages (swap to real data later)
-  const groupData = SAMPLE_GROUP;
-  const individualData = {
-    ...SAMPLE_INDIVIDUAL,
-    learnerName: learner?.fullName || SAMPLE_INDIVIDUAL.learnerName,
-  };
+  const { data: groupData } = useReportControllerGetGroupData(
+    {
+      rangeData: values.rangeDate?.toString(),
+    },
+    {
+      query: {
+        queryKey: ["group-data", values.rangeDate?.toString()],
+      },
+    },
+  ) as unknown as any;
+
+  const { data: individualData } = useReportControllerGetIndividualData(
+    {
+      rangeData: values.rangeDate?.toString(),
+    },
+    {
+      query: {
+        queryKey: ["individual-data", values.rangeDate?.toString()],
+      },
+    },
+  ) as unknown as any;
 
   // Build pages (single place), then auto-number them
   const pages: React.ReactElement[] = [];
@@ -84,7 +96,7 @@ const ReportPDF: React.FC = () => {
       learner={learner}
       isGroup={isGroup}
       isIndividual={isIndividual}
-      assessmentsIncluded={groupData.assessmentsIncluded}
+      assessmentsIncluded={groupData?.assessmentsIncluded ?? 0}
     />,
   );
 
@@ -95,12 +107,17 @@ const ReportPDF: React.FC = () => {
         key="group-eval"
         width={width}
         height={height}
-        skills={groupData.skills}
+        skills={groupData?.skills ?? []}
         horizontal={values.horizontal}
       />,
     );
     pages.push(
-      <GroupThreeEye key="group-3eye" width={width} height={height} />,
+      <GroupThreeEye
+        key="group-3eye"
+        width={width}
+        height={height}
+        threeEye={groupData?.threeEye ?? { self: 0, peer: 0, facilitator: 0 }}
+      />,
     );
     pages.push(
       <GroupAIInsights
@@ -108,7 +125,7 @@ const ReportPDF: React.FC = () => {
         width={width}
         height={height}
         // insights={computeInsightsGroup(groupData.skills)}
-        insights={[]}
+        insights={groupData?.insights ?? []}
       />,
     );
     pages.push(
@@ -116,7 +133,7 @@ const ReportPDF: React.FC = () => {
         key="group-recs"
         width={width}
         height={height}
-        skills={groupData.skills}
+        skills={groupData?.skills ?? []}
       />,
     );
     pages.push(
@@ -124,7 +141,7 @@ const ReportPDF: React.FC = () => {
         key="group-roi"
         width={width}
         height={height}
-        skills={groupData.skills}
+        skills={groupData?.skills ?? []}
       />,
     );
   }
@@ -136,7 +153,7 @@ const ReportPDF: React.FC = () => {
         key="individual-progress"
         width={width}
         height={height}
-        timeline={individualData.globalTimeline}
+        timeline={individualData?.globalTimeline ?? []}
       />,
     );
     pages.push(
@@ -144,7 +161,7 @@ const ReportPDF: React.FC = () => {
         key="individual-details"
         width={width}
         height={height}
-        skills={individualData.skills}
+        skills={individualData?.skills ?? []}
         horizontal={values.horizontal}
       />,
     );
@@ -153,6 +170,9 @@ const ReportPDF: React.FC = () => {
         key="individual-3eye"
         width={width}
         height={height}
+        threeEye={
+          individualData?.threeEye ?? { self: 0, peer: 0, facilitator: 0 }
+        }
       />,
     );
     pages.push(
@@ -161,7 +181,7 @@ const ReportPDF: React.FC = () => {
         width={width}
         height={height}
         // lines={computeInsightsIndividual(individualData.globalTimeline)}
-        lines={[]}
+        lines={individualData?.insights ?? []}
       />,
     );
     pages.push(
@@ -169,7 +189,7 @@ const ReportPDF: React.FC = () => {
         key="individual-recommendations"
         width={width}
         height={height}
-        skills={individualData.skills}
+        skills={individualData?.skills ?? []}
       />,
     );
   }

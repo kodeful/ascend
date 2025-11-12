@@ -21,6 +21,8 @@ import { axiosInstance } from "../../axios-instance";
 import type {
   FilterReportsResponse,
   ReportControllerFilterReportsParams,
+  ReportControllerGetGroupDataParams,
+  ReportControllerGetIndividualDataParams,
 } from ".././models";
 
 /**
@@ -183,3 +185,175 @@ export const useReportControllerCreateReport = <
 
   return useMutation(mutationOptions);
 };
+/**
+ * @summary Get group data
+ */
+export const reportControllerGetGroupData = (
+  params?: ReportControllerGetGroupDataParams,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<unknown>({
+    url: `/report/data/group`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getReportControllerGetGroupDataQueryKey = (
+  params?: ReportControllerGetGroupDataParams,
+) => {
+  return [`/report/data/group`, ...(params ? [params] : [])] as const;
+};
+
+export const getReportControllerGetGroupDataQueryOptions = <
+  TData = Awaited<ReturnType<typeof reportControllerGetGroupData>>,
+  TError = unknown,
+>(
+  params?: ReportControllerGetGroupDataParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof reportControllerGetGroupData>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getReportControllerGetGroupDataQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof reportControllerGetGroupData>>
+  > = ({ signal }) => reportControllerGetGroupData(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof reportControllerGetGroupData>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ReportControllerGetGroupDataQueryResult = NonNullable<
+  Awaited<ReturnType<typeof reportControllerGetGroupData>>
+>;
+export type ReportControllerGetGroupDataQueryError = unknown;
+
+/**
+ * @summary Get group data
+ */
+
+export function useReportControllerGetGroupData<
+  TData = Awaited<ReturnType<typeof reportControllerGetGroupData>>,
+  TError = unknown,
+>(
+  params?: ReportControllerGetGroupDataParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof reportControllerGetGroupData>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getReportControllerGetGroupDataQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Get individual data
+ */
+export const reportControllerGetIndividualData = (
+  params?: ReportControllerGetIndividualDataParams,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<unknown>({
+    url: `/report/data/individual`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getReportControllerGetIndividualDataQueryKey = (
+  params?: ReportControllerGetIndividualDataParams,
+) => {
+  return [`/report/data/individual`, ...(params ? [params] : [])] as const;
+};
+
+export const getReportControllerGetIndividualDataQueryOptions = <
+  TData = Awaited<ReturnType<typeof reportControllerGetIndividualData>>,
+  TError = unknown,
+>(
+  params?: ReportControllerGetIndividualDataParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof reportControllerGetIndividualData>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getReportControllerGetIndividualDataQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof reportControllerGetIndividualData>>
+  > = ({ signal }) => reportControllerGetIndividualData(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof reportControllerGetIndividualData>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ReportControllerGetIndividualDataQueryResult = NonNullable<
+  Awaited<ReturnType<typeof reportControllerGetIndividualData>>
+>;
+export type ReportControllerGetIndividualDataQueryError = unknown;
+
+/**
+ * @summary Get individual data
+ */
+
+export function useReportControllerGetIndividualData<
+  TData = Awaited<ReturnType<typeof reportControllerGetIndividualData>>,
+  TError = unknown,
+>(
+  params?: ReportControllerGetIndividualDataParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof reportControllerGetIndividualData>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getReportControllerGetIndividualDataQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
