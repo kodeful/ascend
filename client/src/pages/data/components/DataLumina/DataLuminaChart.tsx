@@ -23,23 +23,25 @@ const DataLuminaChart: FC<DataLuminaChartProps> = ({ email, ...props }) => {
   );
 
   const data = useMemo(() => {
-    let choosenSkills = ((skills as unknown as any[]).map((skill) => {
-      let color = "#A0C705";
-      if (skill.completedPercentage > 0.75) {
-        color = "#A0C705";
-      } else if (skill.completedPercentage > 0.5) {
-        color = "#CDDD68";
-      } else if (skill.completedPercentage > 0.25) {
-        color = "#F1B136";
-      } else {
-        color = "#EC762E";
-      }
-      return {
-        value: +(skill.completedPercentage * 100).toFixed(1),
-        color: color,
-        label: skill.skill,
-      };
-    }) || []) as { value: number; color: string; label: string }[];
+    let choosenSkills =
+      // @ts-ignore
+      (skills ?? []).map((skill: any) => {
+        let color = "#A0C705";
+        if (skill.completedPercentage > 0.75) {
+          color = "#A0C705";
+        } else if (skill.completedPercentage > 0.5) {
+          color = "#CDDD68";
+        } else if (skill.completedPercentage > 0.25) {
+          color = "#F1B136";
+        } else {
+          color = "#EC762E";
+        }
+        return {
+          value: +(skill.completedPercentage * 100).toFixed(1),
+          color: color,
+          label: skill.skill,
+        };
+      }) || [];
 
     choosenSkills = [
       ...choosenSkills,
