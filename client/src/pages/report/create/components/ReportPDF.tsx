@@ -63,23 +63,25 @@ const ReportPDF: React.FC = () => {
 
   const { data: groupData } = useReportControllerGetGroupData(
     {
-      rangeData: values.rangeDate?.toString(),
+      rangeData: values.rangeDate,
     },
     {
       query: {
-        queryKey: ["group-data", values.rangeDate?.toString()],
+        queryKey: ["group-data", values.rangeDate],
+        enabled: Boolean(isGroup && values.rangeDate),
       },
     },
   ) as unknown as any;
 
   const { data: individualData } = useReportControllerGetIndividualData(
     {
-      rangeData: values.rangeDate?.toString(),
+      rangeData: values.rangeDate,
       learner: values.learner,
     },
     {
       query: {
-        queryKey: ["individual-data", values.rangeDate?.toString()],
+        queryKey: ["individual-data", values.rangeDate, values.learner],
+        enabled: Boolean(isIndividual && values.learner && values.rangeDate),
       },
     },
   ) as unknown as any;
@@ -125,7 +127,6 @@ const ReportPDF: React.FC = () => {
         key="group-ai"
         width={width}
         height={height}
-        // insights={computeInsightsGroup(groupData.skills)}
         insights={groupData?.insights ?? []}
       />,
     );
@@ -181,7 +182,6 @@ const ReportPDF: React.FC = () => {
         key="individual-ai"
         width={width}
         height={height}
-        // lines={computeInsightsIndividual(individualData.globalTimeline)}
         lines={individualData?.insights ?? []}
       />,
     );

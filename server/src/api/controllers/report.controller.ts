@@ -146,8 +146,8 @@ export class ReportController {
     return {
       cohortName: 'Emerging Leaders – Spring',
       company: organisation.name,
-      periodFrom: from.format('YYYY-MM-DD'),
-      periodTo: to.format('YYYY-MM-DD'),
+      periodFrom: from?.format('YYYY-MM-DD'),
+      periodTo: to?.format('YYYY-MM-DD'),
       assessmentsIncluded: learnersIncluded,
       skills: SKILLS.map((s, i) => {
         const before = 7 + (i % 3); // 7..9
@@ -177,6 +177,7 @@ export class ReportController {
   ) {
     const organisation = req.organisation;
     const { from, to } = this.getRangeData(rangeData);
+    const user = await this.userService.findOneById(mongoId(learner));
 
     const dates = [];
     let curr = from.clone();
@@ -189,7 +190,7 @@ export class ReportController {
       {
         filter: {
           organisation: organisation._id,
-          date: { $in: dates },
+          email: user.email,
         },
       },
       'skill',
