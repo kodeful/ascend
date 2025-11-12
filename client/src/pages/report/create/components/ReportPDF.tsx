@@ -75,6 +75,7 @@ const ReportPDF: React.FC = () => {
   const { data: individualData } = useReportControllerGetIndividualData(
     {
       rangeData: values.rangeDate?.toString(),
+      learner: values.learner,
     },
     {
       query: {

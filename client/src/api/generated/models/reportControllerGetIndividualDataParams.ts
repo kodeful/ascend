@@ -7,5 +7,6 @@
  */
 
 export type ReportControllerGetIndividualDataParams = {
+  learner?: string;
   rangeData?: string;
 };

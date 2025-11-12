@@ -146,8 +146,8 @@ export class ReportController {
     return {
       cohortName: 'Emerging Leaders – Spring',
       company: organisation.name,
-      periodFrom: from.toISOString(),
-      periodTo: to.toISOString(),
+      periodFrom: from.format('YYYY-MM-DD'),
+      periodTo: to.format('YYYY-MM-DD'),
       assessmentsIncluded: learnersIncluded,
       skills: SKILLS.map((s, i) => {
         const before = 7 + (i % 3); // 7..9
@@ -198,11 +198,6 @@ export class ReportController {
     return {
       company: organisation.name,
       dates,
-      // globalTimeline: [
-      //   { label: 'A1', date: '2025-02-01', global: 8.7, confidence: 8.1 },
-      //   { label: 'A2', date: '2025-04-15', global: 10.2, confidence: 9.3 },
-      //   { label: 'A3', date: '2025-07-25', global: 11.4, confidence: 10.6 },
-      // ],
       globalTimeline: dates.map((d, i) => {
         // Add some modest random variation while keeping a smooth trend.
         // Simulate more realistic progress with small growing global/confidence values.
