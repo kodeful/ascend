@@ -82,7 +82,7 @@ const SettingsConnectionsMindslinesPage = () => {
               }}
               onClick={() => {
                 openModal("import-file", {
-                  source: "file",
+                  source: "mindslines",
                 });
               }}
             >

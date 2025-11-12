@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Box, Link, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
-import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
+import MindslinesIMG from "assets/imgs/connections/mindslines.png";
 
 import { useImportControllerFilterImports } from "api/generated/import/import";
 import DataGrid from "components/DataGrid/DataGrid";
@@ -22,8 +22,8 @@ const ImportsMindslinesDataGrid = () => {
   const columns = useMemo<GridColDef<any, any>[]>(
     () => [
       {
-        field: "sheetId",
-        headerName: "Sheet ID",
+        field: "fileName",
+        headerName: "File Name",
         flex: 1,
         renderCell: ({ value }) => {
           return (
@@ -31,10 +31,10 @@ const ImportsMindslinesDataGrid = () => {
             //   <B
             //   <Typography>{row.sheetId}</Typography>
             // </Stack>
-            <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack direction="row" alignItems="center" spacing={1.5}>
               <Box
                 component="img"
-                src={GoogleSheetsIMG}
+                src={MindslinesIMG}
                 width={20}
                 height={20}
                 sx={{
@@ -43,9 +43,9 @@ const ImportsMindslinesDataGrid = () => {
                 }}
               />
               <Link
-                href={`https://docs.google.com/spreadsheets/d/${value}`}
-                target="_blank"
-                className="one-line"
+              // href={`https://app.mindslines.com/learners/${value}`}
+              // target="_blank"
+              // className="one-line"
               >
                 {value}
               </Link>
@@ -54,8 +54,8 @@ const ImportsMindslinesDataGrid = () => {
         },
       },
       {
-        field: "refetchInterval",
-        headerName: "Refetch Interval",
+        field: "skill",
+        headerName: "Skill",
         flex: 1,
       },
       // {

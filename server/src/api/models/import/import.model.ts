@@ -5,8 +5,7 @@ import {
   prop,
 } from '@typegoose/typegoose';
 import { Expose, Transform } from 'class-transformer';
-import { IsEnum, IsMongoId } from 'class-validator';
-import { IsString } from 'class-validator';
+import { IsMongoId } from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
 
@@ -18,6 +17,7 @@ import { Organisation } from '../organisation.model';
 export enum ImportType {
   GOOGLE_SHEET = 'Google Sheet',
   FILE = 'File',
+  MINDSLINES = 'Mindslines',
 }
 
 export enum ImportMetric {
@@ -49,21 +49,6 @@ export class Import extends DocumentWithTimestamps {
   public organisation: Ref<Organisation>;
 
   public type: ImportType;
-
-  @Expose()
-  @IsString()
-  @prop({ type: String, required: true })
-  public skill: string;
-
-  @Expose()
-  @IsEnum(ImportMetric)
-  @prop({ type: String, enum: ImportMetric, required: true })
-  public metric: ImportMetric;
-
-  @Expose()
-  @IsEnum(ImportAssessment)
-  @prop({ type: String, enum: ImportAssessment, required: true })
-  public assessment: ImportAssessment;
 }
 
 export const ImportModel = getModelForClass(Import, {
