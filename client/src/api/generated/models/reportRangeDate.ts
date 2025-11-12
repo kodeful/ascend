@@ -12,4 +12,8 @@ export type ReportRangeDate =
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ReportRangeDate = {
   Last_Week: "Last Week",
+  Last_Month: "Last Month",
+  Last_3_Months: "Last 3 Months",
+  Last_6_Months: "Last 6 Months",
+  Last_Year: "Last Year",
 } as const;

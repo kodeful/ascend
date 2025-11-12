@@ -16,6 +16,10 @@ export enum ReportType {
 
 export enum ReportRangeDate {
   LAST_WEEK = 'Last Week',
+  LAST_MONTH = 'Last Month',
+  LAST_3_MONTHS = 'Last 3 Months',
+  LAST_6_MONTHS = 'Last 6 Months',
+  LAST_YEAR = 'Last Year',
 }
 
 @index({ user: 1 })

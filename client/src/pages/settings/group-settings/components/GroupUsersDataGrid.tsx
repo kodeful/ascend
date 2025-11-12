@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { ChevronRight } from "@mui/icons-material";
 import { ButtonBase, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
+import { useHistory } from "react-router-dom";
 
 import { useUserControllerFilterUsers } from "api/generated/user/user";
 import DataGrid from "components/DataGrid/DataGrid";
@@ -10,6 +11,7 @@ import { useMeStore } from "components/stores/MeStore";
 
 const GroupUsersDataGrid = () => {
   const me = useMeStore((s) => s.me);
+  const history = useHistory();
 
   const { data: users, isLoading } = useUserControllerFilterUsers(
     {
@@ -93,6 +95,10 @@ const GroupUsersDataGrid = () => {
         columns={columns}
         loading={isLoading}
         rows={users?.data || []}
+        onRowClick={(params) => {
+          if (params.row.role !== "Learner") return;
+          history.push(`/data/learner/${params.row._id}`);
+        }}
       />
 
       <Typography

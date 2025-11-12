@@ -23,7 +23,9 @@ const DataLuminaChart: FC<DataLuminaChartProps> = ({ email, ...props }) => {
   );
 
   const data = useMemo(() => {
-    let choosenSkills = (skills?.map((skill: any) => {
+    let choosenSkills = ((
+      skills as unknown as { skill: string; completedPercentage: number }[]
+    )?.map((skill) => {
       let color = "#A0C705";
       if (skill.completedPercentage > 0.75) {
         color = "#A0C705";

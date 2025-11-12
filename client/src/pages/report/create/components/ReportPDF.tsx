@@ -89,7 +89,7 @@ const ReportPDF: React.FC = () => {
   );
 
   /** GROUP PAGES **/
-  if (isGroup) {
+  if (isGroup && values.rangeDate) {
     pages.push(
       <GroupEvaluationAssessments
         key="group-eval"
@@ -99,11 +99,9 @@ const ReportPDF: React.FC = () => {
         horizontal={values.horizontal}
       />,
     );
-
     pages.push(
       <GroupThreeEye key="group-3eye" width={width} height={height} />,
     );
-
     pages.push(
       <GroupAIInsights
         key="group-ai"
@@ -113,7 +111,6 @@ const ReportPDF: React.FC = () => {
         insights={[]}
       />,
     );
-
     pages.push(
       <GroupRecommendations
         key="group-recs"
@@ -122,7 +119,6 @@ const ReportPDF: React.FC = () => {
         skills={groupData.skills}
       />,
     );
-
     pages.push(
       <GroupROI
         key="group-roi"
@@ -134,43 +130,43 @@ const ReportPDF: React.FC = () => {
   }
 
   /** INDIVIDUAL PAGES **/
-  if (isIndividual) {
+  if (isIndividual && values.learner && values.rangeDate) {
     pages.push(
       <IndividualOverallProgress
-        key="ind-progress"
+        key="individual-progress"
         width={width}
         height={height}
         timeline={individualData.globalTimeline}
       />,
     );
-
     pages.push(
       <IndividualDetails
-        key="ind-details"
+        key="individual-details"
         width={width}
         height={height}
         skills={individualData.skills}
         horizontal={values.horizontal}
       />,
     );
-
     pages.push(
-      <IndividualThreeEye key="ind-3eye" width={width} height={height} />,
+      <IndividualThreeEye
+        key="individual-3eye"
+        width={width}
+        height={height}
+      />,
     );
-
     pages.push(
       <IndividualAIInsights
-        key="ind-ai"
+        key="individual-ai"
         width={width}
         height={height}
         // lines={computeInsightsIndividual(individualData.globalTimeline)}
         lines={[]}
       />,
     );
-
     pages.push(
       <IndividualRecommendations
-        key="ind-recs"
+        key="individual-recommendations"
         width={width}
         height={height}
         skills={individualData.skills}

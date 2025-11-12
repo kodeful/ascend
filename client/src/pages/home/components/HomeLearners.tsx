@@ -62,7 +62,13 @@ const HomeLearners = () => {
           </Stack>
         }
       >
-        <Stack direction="column" divider={<Divider />}>
+        <Stack
+          direction="column"
+          divider={<Divider />}
+          maxHeight={195}
+          overflow="scroll"
+          className="scrollbar-hidden"
+        >
           {!learners?.data.length && (
             <Typography
               fontSize={14}

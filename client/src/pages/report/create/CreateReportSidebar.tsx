@@ -48,6 +48,30 @@ const CreateReportSidebar: FC<CreateReportSidebarProps> = ({ isLoading }) => {
           id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE_LAST_WEEK",
         }),
       },
+      {
+        value: ReportRangeDate.Last_Month,
+        label: intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE_LAST_MONTH",
+        }),
+      },
+      {
+        value: ReportRangeDate.Last_3_Months,
+        label: intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE_LAST_3_MONTHS",
+        }),
+      },
+      {
+        value: ReportRangeDate.Last_6_Months,
+        label: intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE_LAST_6_MONTHS",
+        }),
+      },
+      {
+        value: ReportRangeDate.Last_Year,
+        label: intl.formatMessage({
+          id: "PAGE.REPORT.CREATE_REPORT.RANGE_DATE_LAST_YEAR",
+        }),
+      },
     ],
     [intl],
   );
