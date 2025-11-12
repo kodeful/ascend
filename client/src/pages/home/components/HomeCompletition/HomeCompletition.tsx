@@ -88,8 +88,7 @@ const HomeCompletition = ({ email }: { email?: string }) => {
                 SkeletonComponent={<Skeleton variant="text" width={80} />}
               >
                 <Typography fontSize={16} fontWeight={600} color="#2A2A2A">
-                  <Counter count={item.count as number} step={1} digits={0} />{" "}
-                  quizzes
+                  <Counter count={item.count} step={1} digits={0} /> quizzes
                 </Typography>
               </AsyncComponent>
               <Typography fontSize={11} lineHeight={1} color="#2A2A2A">
