@@ -28,6 +28,7 @@ export * from "./loginBody";
 export * from "./loginResponse";
 export * from "./metricsControllerGetMetricsStatisticsBySkillParams";
 export * from "./metricsMindslinesControllerGetCompletitionParams";
+export * from "./metricsMindslinesControllerGetSkillsParams";
 export * from "./organisation";
 export * from "./organisationControllerCreateOrganisationBody";
 export * from "./rOICalculator";

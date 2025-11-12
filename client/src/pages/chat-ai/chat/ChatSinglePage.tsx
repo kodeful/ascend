@@ -16,12 +16,20 @@ const ChatSinglePage = () => {
         p: 3,
         py: 2,
       }}
+      flex={1}
       height="100%"
     >
       <Title title="PAGE.TITLE.CHAT" />
 
-      <Grid container spacing={2} mt={2} height="100%">
-        <Grid item xs={8}>
+      <Grid
+        container
+        spacing={2}
+        mt={2}
+        height="100%"
+        overflow="hidden"
+        flex={1}
+      >
+        <Grid item xs={8} height="100%" width="100%" flex={1}>
           <SingleChat />
         </Grid>
         <Grid item xs={4}>

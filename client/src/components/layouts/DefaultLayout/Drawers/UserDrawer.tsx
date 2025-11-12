@@ -130,7 +130,8 @@ const UserDrawer: FC<UserDrawerProps> = ({ isOpen, onClose }) => {
             bgcolor: "primary.main",
             color: "#FFF",
             border: "2px solid #FFF",
-            fontSize: Math.min(40, 60 / initials.length),
+            // fontSize: Math.min(40, 60 / initials.length),
+            fontSize: 35,
             fontWeight: 600,
           }}
           variant="circular"

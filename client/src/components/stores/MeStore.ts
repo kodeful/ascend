@@ -63,7 +63,10 @@ export const role = () => {
 
 export const userInitials = (name: string | undefined) => {
   if (!name) return "";
-  return map(split(name, " "), (word) => word.charAt(0)).join("") ?? "";
+  const initials = map(split(name, " "), (word) => word.charAt(0)).join("");
+  return [initials.charAt(0), initials.charAt(initials.length - 1)]
+    .filter(Boolean)
+    .join("");
 };
 
 export { useMeStore };

@@ -93,7 +93,7 @@ const HomeCompletition = ({ email }: { email?: string }) => {
                 </Typography>
               </AsyncComponent>
               <Typography fontSize={11} lineHeight={1} color="#2A2A2A">
-                In Progress
+                {item.status}
               </Typography>
             </Stack>
           </Stack>

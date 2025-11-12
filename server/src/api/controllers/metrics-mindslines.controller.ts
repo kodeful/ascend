@@ -1,5 +1,5 @@
 import { IsNumber } from 'class-validator';
-import { sumBy } from 'lodash';
+import { first, groupBy, map, meanBy, sumBy } from 'lodash';
 import {
   Authorized,
   Get,
@@ -82,5 +82,25 @@ export class MetricsMindslinesController {
     );
 
     return skills;
+  }
+
+  @Get('/skills')
+  @ResponseSchema(undefined)
+  public async getSkills(@Req() req, @QueryParam('email') email?: string) {
+    const skills = await this.importDataMindslinesService.find({
+      filter: {
+        organisation: req.organisation._id,
+        ...(email && { email }),
+      },
+      select: ['skill', 'completedPercentage'],
+    });
+
+    const groupedSkills = groupBy(skills, 'skill');
+    const skillsWithCompletedPercentage = map(groupedSkills, (skill) => ({
+      skill: first(skill)?.skill,
+      completedPercentage: meanBy(skill, 'completedPercentage'),
+    }));
+
+    return skillsWithCompletedPercentage;
   }
 }

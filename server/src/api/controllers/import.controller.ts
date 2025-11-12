@@ -255,7 +255,7 @@ export class ImportController {
     }
     const emailKey = find(keys, (key) => key.toLowerCase().includes('email'));
     const completedPercentage = find(keys, (key) =>
-      key.toLowerCase().includes('completed percentage'),
+      key.toLowerCase().includes('completion percentage'),
     );
     const completedCount = find(keys, (key) =>
       key.toLowerCase().includes('completed count'),

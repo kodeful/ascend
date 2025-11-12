@@ -400,14 +400,11 @@ export const useUserControllerCreateUser = <
 /**
  * @summary Get user
  */
-export const userControllerGetUser = (
-  userId: unknown,
-  signal?: AbortSignal,
-) => {
+export const userControllerGetUser = (userId: string, signal?: AbortSignal) => {
   return axiosInstance<User>({ url: `/user/${userId}`, method: "GET", signal });
 };
 
-export const getUserControllerGetUserQueryKey = (userId: unknown) => {
+export const getUserControllerGetUserQueryKey = (userId: string) => {
   return [`/user/${userId}`] as const;
 };
 
@@ -415,7 +412,7 @@ export const getUserControllerGetUserQueryOptions = <
   TData = Awaited<ReturnType<typeof userControllerGetUser>>,
   TError = unknown,
 >(
-  userId: unknown,
+  userId: string,
   options?: {
     query?: UseQueryOptions<
       Awaited<ReturnType<typeof userControllerGetUser>>,
@@ -458,7 +455,7 @@ export function useUserControllerGetUser<
   TData = Awaited<ReturnType<typeof userControllerGetUser>>,
   TError = unknown,
 >(
-  userId: unknown,
+  userId: string,
   options?: {
     query?: UseQueryOptions<
       Awaited<ReturnType<typeof userControllerGetUser>>,

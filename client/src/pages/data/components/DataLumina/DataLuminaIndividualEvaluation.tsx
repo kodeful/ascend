@@ -1,11 +1,10 @@
 import React from "react";
 import { Grid, Paper, Typography } from "@mui/material";
-import { useIntl } from "react-intl";
 
 import DataLuminaChart from "./DataLuminaChart";
 
-const DataLuminaGroupEvaluation = () => {
-  const intl = useIntl();
+const DataLuminaIndividualEvaluation = ({ email }: { email?: string }) => {
+  // const intl = useIntl();
 
   return (
     <Paper
@@ -15,14 +14,12 @@ const DataLuminaGroupEvaluation = () => {
       }}
     >
       <Typography fontSize={18} fontWeight={500} color="#60646C" mb={2}>
-        {intl.formatMessage({
-          id: "PAGE.GROUP_MINDSLINES_GROUP",
-        })}
+        Mindslines - Individual
       </Typography>
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <DataLuminaChart />
+          <DataLuminaChart email={email} />
         </Grid>
         {/* <Grid item xs={6}>
           <DataLuminaChart />
@@ -32,4 +29,4 @@ const DataLuminaGroupEvaluation = () => {
   );
 };
 
-export default DataLuminaGroupEvaluation;
+export default DataLuminaIndividualEvaluation;

@@ -17,6 +17,7 @@ import { axiosInstance } from "../../axios-instance";
 import type {
   GetCompletitionResponse,
   MetricsMindslinesControllerGetCompletitionParams,
+  MetricsMindslinesControllerGetSkillsParams,
 } from ".././models";
 
 /**
@@ -196,6 +197,93 @@ export function useMetricsMindslinesControllerGetMetricsSkillsOptions<
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions =
     getMetricsMindslinesControllerGetMetricsSkillsOptionsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Get skills
+ */
+export const metricsMindslinesControllerGetSkills = (
+  params?: MetricsMindslinesControllerGetSkillsParams,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<unknown>({
+    url: `/metrics-mindslines/skills`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getMetricsMindslinesControllerGetSkillsQueryKey = (
+  params?: MetricsMindslinesControllerGetSkillsParams,
+) => {
+  return [`/metrics-mindslines/skills`, ...(params ? [params] : [])] as const;
+};
+
+export const getMetricsMindslinesControllerGetSkillsQueryOptions = <
+  TData = Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>,
+  TError = unknown,
+>(
+  params?: MetricsMindslinesControllerGetSkillsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getMetricsMindslinesControllerGetSkillsQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>
+  > = ({ signal }) => metricsMindslinesControllerGetSkills(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type MetricsMindslinesControllerGetSkillsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>
+>;
+export type MetricsMindslinesControllerGetSkillsQueryError = unknown;
+
+/**
+ * @summary Get skills
+ */
+
+export function useMetricsMindslinesControllerGetSkills<
+  TData = Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>,
+  TError = unknown,
+>(
+  params?: MetricsMindslinesControllerGetSkillsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof metricsMindslinesControllerGetSkills>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getMetricsMindslinesControllerGetSkillsQueryOptions(
+    params,
+    options,
+  );
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

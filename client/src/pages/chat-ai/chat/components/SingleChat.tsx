@@ -35,27 +35,38 @@ const SingleChat = () => {
   });
 
   return (
-    <Paper sx={{ height: "100%" }}>
+    <Paper
+      sx={{
+        height: "100%",
+      }}
+    >
       <Stack
         width="100%"
         height="100%"
         alignItems="center"
         justifyContent="center"
-        flex={1}
-        overflow="hidden"
       >
         <Stack
           direction="column"
-          maxWidth={768}
+          // maxWidth={768}
+          maxWidth={768 + 42}
           width="100%"
           height="100%"
           px={4}
           py={4}
           boxSizing="border-box"
           justifyContent="space-between"
+          flex={1}
           spacing={2}
         >
-          <SingleChatMessages />
+          <Stack
+            height="100%"
+            width="100%"
+            overflow="scroll"
+            className="scrollbar-hidden"
+          >
+            <SingleChatMessages />
+          </Stack>
 
           <ChatInput
             onSend={async (message) => {

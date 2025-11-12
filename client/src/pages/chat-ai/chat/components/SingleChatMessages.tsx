@@ -21,24 +21,77 @@ const SingleChatMessages = () => {
 
   return (
     <Stack
-      direction="column"
-      justifyContent="flex-end"
+      direction="column-reverse"
       height="100%"
-      spacing={1}
+      width="100%"
+      overflow="scroll"
+      className="scrollbar-hidden"
+      display="flex"
     >
-      {(chatMessages ?? []).map(({ _id, user, message }) => (
-        <Stack
-          position="relative"
-          direction="row"
-          justifyContent={user ? "flex-end" : "flex-start"}
-          key={_id}
-        >
-          {/* ASCEND LOGO */}
-          {!user && (
+      <Stack direction="column" spacing={1}>
+        {(chatMessages ?? []).map(({ _id, user, message }) => (
+          <Stack
+            position="relative"
+            direction="row"
+            justifyContent={user ? "flex-end" : "flex-start"}
+            key={_id}
+          >
+            {/* ASCEND LOGO */}
+            {!user && (
+              <Stack
+                position="absolute"
+                bottom={0}
+                left={0}
+                width={35}
+                height={35}
+                borderRadius="50%"
+                border="1px solid #E1D7CB"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <AscendIcon />
+              </Stack>
+            )}
+
+            <Box
+              maxWidth={374}
+              bgcolor={user ? "#EC762E" : "#F5EFEA"}
+              sx={{
+                borderRadius: "15px",
+                ...(user
+                  ? { borderBottomRightRadius: "0px" }
+                  : { borderBottomLeftRadius: "0px", marginLeft: "45px" }),
+              }}
+              p={2}
+            >
+              <Typography
+                fontSize={16}
+                color={user ? "#fff" : "#333333"}
+                fontWeight={500}
+                lineHeight={1.2}
+                dangerouslySetInnerHTML={{ __html: message }}
+                sx={{
+                  "& p": {
+                    margin: 0,
+                    padding: 0,
+                  },
+                }}
+              />
+            </Box>
+          </Stack>
+        ))}
+
+        {isChatGenerating && (
+          <Stack
+            position="relative"
+            direction="row"
+            justifyContent="flex-start"
+          >
             <Stack
               position="absolute"
               bottom={0}
-              left={-45}
+              // left={-45}
+              left={0}
               width={35}
               height={35}
               borderRadius="50%"
@@ -48,73 +101,29 @@ const SingleChatMessages = () => {
             >
               <AscendIcon />
             </Stack>
-          )}
 
-          <Box
-            maxWidth={374}
-            bgcolor={user ? "#EC762E" : "#F5EFEA"}
-            sx={{
-              borderRadius: "15px",
-              ...(user
-                ? { borderBottomRightRadius: "0px" }
-                : { borderBottomLeftRadius: "0px" }),
-            }}
-            p={2}
-          >
-            <Typography
-              fontSize={16}
-              color={user ? "#fff" : "#333333"}
-              fontWeight={500}
-              lineHeight={1.2}
-              dangerouslySetInnerHTML={{ __html: message }}
+            <Box
+              maxWidth={374}
+              bgcolor={"#F5EFEA"}
               sx={{
-                "& p": {
-                  margin: 0,
-                  padding: 0,
-                },
+                borderRadius: "15px",
+                borderBottomLeftRadius: "0px",
               }}
-            />
-          </Box>
-        </Stack>
-      ))}
-
-      {isChatGenerating && (
-        <Stack position="relative" direction="row" justifyContent="flex-start">
-          <Stack
-            position="absolute"
-            bottom={0}
-            left={-45}
-            width={35}
-            height={35}
-            borderRadius="50%"
-            border="1px solid #E1D7CB"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <AscendIcon />
-          </Stack>
-
-          <Box
-            maxWidth={374}
-            bgcolor={"#F5EFEA"}
-            sx={{
-              borderRadius: "15px",
-              borderBottomLeftRadius: "0px",
-            }}
-            p={2}
-          >
-            <Typography
-              fontSize={16}
-              color={"#333333"}
-              fontWeight={500}
-              lineHeight={1.2}
-              sx={{ opacity: 0.5 }}
+              p={2}
             >
-              Thinking...
-            </Typography>
-          </Box>
-        </Stack>
-      )}
+              <Typography
+                fontSize={16}
+                color={"#333333"}
+                fontWeight={500}
+                lineHeight={1.2}
+                sx={{ opacity: 0.5 }}
+              >
+                Thinking...
+              </Typography>
+            </Box>
+          </Stack>
+        )}
+      </Stack>
     </Stack>
   );
 };

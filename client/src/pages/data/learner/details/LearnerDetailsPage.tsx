@@ -1,13 +1,14 @@
 import React from "react";
 import { Avatar, Box, CircularProgress, Grid, Stack } from "@mui/material";
-import DataLumina360 from "pages/data/components/DataLumina/DataLumina360";
 import DataLuminaGroupEvaluation from "pages/data/components/DataLumina/DataLuminaGroupEvaluation";
+import DataLuminaIndividualEvaluation from "pages/data/components/DataLumina/DataLuminaIndividualEvaluation";
 import HomeCompletition from "pages/home/components/HomeCompletition/HomeCompletition";
 import HomeGroupActivity from "pages/home/components/HomeGroupActivity/HomeGroupActivity";
 import { useParams } from "react-router-dom";
 
 import { useUserControllerGetUser } from "api/generated/user/user";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
+import { userInitials } from "components/stores/MeStore";
 import Title from "components/TItle/Title";
 
 const LearnerDetailsPage = () => {
@@ -25,6 +26,7 @@ const LearnerDetailsPage = () => {
         p: 3,
         py: 2,
       }}
+      height="100%"
     >
       <Title
         title="PAGE.TITLE.LEARNER"
@@ -61,8 +63,11 @@ const LearnerDetailsPage = () => {
                 <DataLuminaGroupEvaluation />
               </Grid>
 
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <DataLumina360 />
+              </Grid> */}
+              <Grid item xs={12}>
+                <DataLuminaIndividualEvaluation email={learner?.email} />
               </Grid>
             </Grid>
           </Grid>
@@ -103,11 +108,7 @@ const LearnerDetailsPage = () => {
                   }}
                   variant="circular"
                 >
-                  {learner?.fullName
-                    ?.split(" ")
-                    .map((name: string) => name[0])
-                    .join("")
-                    .toUpperCase()}
+                  {userInitials(learner?.fullName).toUpperCase()}
                 </Avatar>
               </Stack>
 

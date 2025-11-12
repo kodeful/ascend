@@ -1,5 +1,5 @@
 import React, { useMemo, type FC } from "react";
-import { Box, useMediaQuery, type Theme } from "@mui/material";
+import { Box, Stack, useMediaQuery, type Theme } from "@mui/material";
 
 import ScrollTopProvider from "components/providers/ScrollTopProvider";
 import type { WithChildren } from "utils/types";
@@ -45,7 +45,7 @@ const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
           <Topbar />
         </Box>
 
-        <Box
+        <Stack
           gridArea="content"
           minHeight="100%"
           height="100%"
@@ -58,7 +58,7 @@ const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
           }}
           className="content"
         >
-          <Box
+          <Stack
             component="main"
             height="100%"
             flex={1}
@@ -67,14 +67,15 @@ const DefaultLayout: FC<WithChildren<DefaultLayoutProps>> = ({
             sx={{
               position: "relative",
               flexGrow: 1,
+              height: "100%",
               // p: isMobile ? 2 : 3,
               // py: isMobile ? 4 : 2,
               bgcolor: "background.default",
             }}
           >
             {children}
-          </Box>
-        </Box>
+          </Stack>
+        </Stack>
       </Box>
     </ScrollTopProvider>
   );
