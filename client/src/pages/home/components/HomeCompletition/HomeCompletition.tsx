@@ -45,21 +45,21 @@ const HomeCompletition = ({ email }: { email?: string }) => {
       >
         {[
           {
-            count: completition?.in_progress,
+            count: completition?.in_progress!,
             status: "In Progress",
             icon: WatchLater,
             color: "warning.main",
             loading: isLoading,
           },
           {
-            count: completition?.completed,
+            count: completition?.completed!,
             status: "Completed",
             icon: CheckCircle,
             color: "success.main",
             loading: isLoading,
           },
           {
-            count: completition?.not_started,
+            count: completition?.not_started!,
             status: "Not Started",
             icon: CalendarToday,
             color: "error.main",
