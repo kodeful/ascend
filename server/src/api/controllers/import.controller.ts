@@ -4,7 +4,7 @@ import { ValidateNested } from 'class-validator';
 import csvtojson from 'csvtojson';
 import dayjs from 'dayjs';
 import { google } from 'googleapis';
-import { find, first, isNumber, last, map, sum } from 'lodash';
+import { find, first, isNumber, last, map } from 'lodash';
 import {
   Authorized,
   BadRequestError,
@@ -28,6 +28,7 @@ import { ImportService } from 'api/services/import.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { env } from 'env';
 import { mongoId } from 'utils/mongoId';
+import { isValidEmail } from 'utils/validators';
 
 // Response Types
 // ?|> filterImports
@@ -388,8 +389,14 @@ export class ImportController {
 
     if (importType === 'evaluation') {
       const extractedData = map(rows, (row) => {
+        let email = '';
         let score = 0;
         row.slice(1).map((row) => {
+          if (isValidEmail(row)) {
+            email = row;
+            return;
+          }
+
           let value = 0;
           if (row.startsWith('a)')) {
             value = 1;
@@ -404,7 +411,7 @@ export class ImportController {
 
         return {
           timestamp: dayjs(first(row)).toDate(),
-          email: last(row),
+          email,
           score,
         };
       });
@@ -441,11 +448,23 @@ export class ImportController {
       }
 
       const extractedData = map(rows, (row) => {
-        const score = sum(map(row.slice(2), Number));
+        let email = '';
+        let score = 0;
+
+        row.forEach((cell) => {
+          if (isValidEmail(cell)) {
+            email = cell;
+            return;
+          }
+
+          const value = +cell;
+          if (!isNumber(value) || isNaN(value)) return;
+          score += value;
+        });
 
         return {
           timestamp: dayjs(first(row)).toDate(),
-          email: row[1],
+          email,
           score,
         };
       });
