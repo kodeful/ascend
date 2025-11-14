@@ -255,6 +255,7 @@ async function executeToolCall(
         sort?: 'asc' | 'desc';
         fields?: string[];
       };
+      console.log(limit, sort);
 
       const query: Record<string, any> = { organisation: organisationId };
       if (email) query.email = { $regex: email, $options: 'i' };
@@ -273,6 +274,7 @@ async function executeToolCall(
         Array.isArray(fields) && fields.length
           ? Object.fromEntries(fields.map((f) => [f, 1]))
           : undefined;
+      console.log(projection);
 
       // const data = (await ImportDataModel.find(query, projection)
       //   .sort({ [timeField]: sort === 'asc' ? 1 : -1 })
@@ -355,6 +357,7 @@ async function executeToolCall(
         { $sort: { 'group.skill': 1, 'group.metric': 1, 'group.email': 1 } },
         { $limit: Math.min(Math.max(limit || 200, 1), 1000) },
       ];
+      console.log(pipeline);
 
       // const results = await ImportDataModel.aggregate(pipeline);
       const results = [];

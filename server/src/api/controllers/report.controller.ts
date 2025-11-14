@@ -177,7 +177,7 @@ export class ReportController {
   ) {
     const organisation = req.organisation;
     const { from, to } = this.getRangeData(rangeData);
-    const user = await this.userService.findOneById(mongoId(learner));
+    // const user = await this.userService.findOneById(mongoId(learner));
 
     const dates = [];
     let curr = from.clone();

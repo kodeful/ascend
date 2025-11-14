@@ -254,27 +254,27 @@ export class ImportController {
   @ResponseSchema(undefined)
   public async importFile(
     @Req() req: any,
-    @Body() { metric, assessment, skill }: any,
+    // @Body() { metric, assessment, skill }: any,
     @UploadedFile('file') file?: any,
   ) {
     if (!file) {
       throw new BadRequestError('File is required');
     }
 
-    const fileType = file.mimetype;
-    const stringFile = file.buffer.toString('utf-8');
-    let extractedData = [];
+    // const fileType = file.mimetype;
+    // const stringFile = file.buffer.toString('utf-8');
+    // let extractedData = [];
 
-    switch (fileType) {
-      case 'text/csv':
-        extractedData = await csvtojson().fromString(stringFile);
-        break;
-      case 'application/json':
-        extractedData = JSON.parse(stringFile);
-        break;
-      default:
-        throw new BadRequestError('Invalid file type');
-    }
+    // switch (fileType) {
+    //   case 'text/csv':
+    //     extractedData = await csvtojson().fromString(stringFile);
+    //     break;
+    //   case 'application/json':
+    //     extractedData = JSON.parse(stringFile);
+    //     break;
+    //   default:
+    //     throw new BadRequestError('Invalid file type');
+    // }
 
     // const normalizedRows = map(extractedData, (row) => {
     //   if (!row.email || !row.score || !row.timestamp) {
