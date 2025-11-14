@@ -183,80 +183,6 @@ export const useImportControllerImportFile = <
   return useMutation(mutationOptions);
 };
 /**
- * @summary Import mindslines
- */
-export const importControllerImportMindslines = (
-  importControllerImportMindslinesBody?: unknown,
-) => {
-  return axiosInstance<unknown>({
-    url: `/import/mindslines`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: importControllerImportMindslinesBody,
-  });
-};
-
-export const getImportControllerImportMindslinesMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof importControllerImportMindslines>>,
-    TError,
-    { data: unknown },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof importControllerImportMindslines>>,
-  TError,
-  { data: unknown },
-  TContext
-> => {
-  const { mutation: mutationOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof importControllerImportMindslines>>,
-    { data: unknown }
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return importControllerImportMindslines(data);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ImportControllerImportMindslinesMutationResult = NonNullable<
-  Awaited<ReturnType<typeof importControllerImportMindslines>>
->;
-export type ImportControllerImportMindslinesMutationBody = unknown;
-export type ImportControllerImportMindslinesMutationError = unknown;
-
-/**
- * @summary Import mindslines
- */
-export const useImportControllerImportMindslines = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof importControllerImportMindslines>>,
-    TError,
-    { data: unknown },
-    TContext
-  >;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof importControllerImportMindslines>>,
-  TError,
-  { data: unknown },
-  TContext
-> => {
-  const mutationOptions =
-    getImportControllerImportMindslinesMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-/**
  * @summary Import google sheet
  */
 export const importControllerImportGoogleSheet = (
@@ -327,6 +253,136 @@ export const useImportControllerImportGoogleSheet = <
 > => {
   const mutationOptions =
     getImportControllerImportGoogleSheetMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Import mindslines
+ */
+export const importControllerImportMindslines = () => {
+  return axiosInstance<unknown>({ url: `/import/mindslines`, method: "POST" });
+};
+
+export const getImportControllerImportMindslinesMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportMindslines>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importControllerImportMindslines>>,
+  TError,
+  void,
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importControllerImportMindslines>>,
+    void
+  > = () => {
+    return importControllerImportMindslines();
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportControllerImportMindslinesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importControllerImportMindslines>>
+>;
+
+export type ImportControllerImportMindslinesMutationError = unknown;
+
+/**
+ * @summary Import mindslines
+ */
+export const useImportControllerImportMindslines = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportMindslines>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importControllerImportMindslines>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions =
+    getImportControllerImportMindslinesMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Import lumina
+ */
+export const importControllerImportLumina = () => {
+  return axiosInstance<unknown>({ url: `/import/lumina`, method: "POST" });
+};
+
+export const getImportControllerImportLuminaMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportLumina>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importControllerImportLumina>>,
+  TError,
+  void,
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importControllerImportLumina>>,
+    void
+  > = () => {
+    return importControllerImportLumina();
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportControllerImportLuminaMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importControllerImportLumina>>
+>;
+
+export type ImportControllerImportLuminaMutationError = unknown;
+
+/**
+ * @summary Import lumina
+ */
+export const useImportControllerImportLumina = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerImportLumina>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importControllerImportLumina>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions =
+    getImportControllerImportLuminaMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

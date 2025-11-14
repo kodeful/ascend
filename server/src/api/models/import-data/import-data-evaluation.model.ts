@@ -1,6 +1,6 @@
 import { Ref, getModelForClass, prop } from '@typegoose/typegoose';
 import { Expose, Transform } from 'class-transformer';
-import { IsMongoId, IsNumber, IsOptional } from 'class-validator';
+import { IsDate, IsMongoId, IsNumber } from 'class-validator';
 import { IsString } from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
@@ -8,10 +8,10 @@ import { Container } from 'typedi';
 import { Document } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
-import { Import } from './import.model';
+import { Import } from '../import/import.model';
 import { Organisation } from '../organisation.model';
 
-export class ImportDataMindslines extends Document {
+export class ImportDataEvaluation extends Document {
   @Expose()
   @IsMongoId()
   @Transform(transformMongoId)
@@ -33,9 +33,19 @@ export class ImportDataMindslines extends Document {
   public import: Ref<Import>;
 
   @Expose()
+  @IsDate()
+  @prop({ type: Date, required: true })
+  public timestamp: Date;
+
+  @Expose()
   @IsString()
   @prop({ type: String, required: true })
   public email: string;
+
+  @Expose()
+  @IsString()
+  @prop({ type: String, required: true })
+  public metric: string;
 
   @Expose()
   @IsString()
@@ -44,33 +54,14 @@ export class ImportDataMindslines extends Document {
 
   @Expose()
   @IsNumber()
-  @IsOptional()
-  @prop({ type: Number })
-  public completedPercentage?: number;
-
-  @Expose()
-  @IsNumber()
-  @IsOptional()
-  @prop({ type: Number })
-  public completedCount?: number;
-
-  @Expose()
-  @IsNumber()
-  @IsOptional()
-  @prop({ type: Number })
-  public inProgressCount?: number;
-
-  @Expose()
-  @IsNumber()
-  @IsOptional()
-  @prop({ type: Number })
-  public notStartedCount?: number;
+  @prop({ type: Number, required: true })
+  public score: number;
 }
 
-export const ImportDataMindslinesModel = getModelForClass(
-  ImportDataMindslines,
+export const ImportDataEvaluationModel = getModelForClass(
+  ImportDataEvaluation,
   {
     schemaOptions: {},
   },
 );
-Container.set(ImportDataMindslines.name, ImportDataMindslinesModel);
+Container.set(ImportDataEvaluation.name, ImportDataEvaluationModel);

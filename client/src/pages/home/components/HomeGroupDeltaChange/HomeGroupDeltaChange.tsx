@@ -4,20 +4,25 @@ import { Paper, Skeleton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { FormattedMessage } from "react-intl";
 
-import { useMetricsControllerGetMetricsStatisticsByMetric } from "api/generated/metrics/metrics";
+import { useMetricsEvaluationControllerGetByMetric } from "api/generated/metrics-evaluation/metrics-evaluation";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 import Counter from "components/Counter/Counter";
 import { useLanguageStore } from "components/stores/LanguageStore";
 
 import HomeGroupDeltaChangeGraph from "./HomeGroupDeltaChangeGraph";
 
-const HomeGroupDeltaChange = () => {
+const HomeGroupDeltaChange = ({ email }: { email?: string }) => {
   const { data: metrics, isLoading } =
-    useMetricsControllerGetMetricsStatisticsByMetric({
-      query: {
-        queryKey: ["metrics", "statistics", "by-metric"],
+    useMetricsEvaluationControllerGetByMetric(
+      {
+        email,
       },
-    });
+      {
+        query: {
+          queryKey: ["metrics", "evaluation", "by-metric", email],
+        },
+      },
+    );
 
   const currentLanguage = useLanguageStore((s) => s.language);
 
@@ -57,7 +62,7 @@ const HomeGroupDeltaChange = () => {
         loading={isLoading}
         SkeletonComponent={<Skeleton variant="rectangular" height={240} />}
       >
-        <HomeGroupDeltaChangeGraph height={240} />
+        <HomeGroupDeltaChangeGraph height={240} email={email} />
       </AsyncComponent>
 
       <Stack direction="row" alignItems="center" spacing={1}>

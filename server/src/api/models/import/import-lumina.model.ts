@@ -5,15 +5,15 @@ import Container from 'typedi';
 
 import { Import, ImportModel, ImportType } from './import.model';
 
-export class ImportMindslines extends Import {
+export class ImportLumina extends Import {
   @Expose()
   @IsString()
   @prop({ type: String, required: true })
   public fileName: string;
 }
 
-export const ImportMindslinesModel = ImportModel.discriminator(
-  ImportType.MINDSLINES,
-  getDiscriminatorModelForClass(ImportModel, ImportMindslines).schema,
+export const ImportLuminaModel = ImportModel.discriminator(
+  ImportType.LUMINA,
+  getDiscriminatorModelForClass(ImportModel, ImportLumina).schema,
 );
-Container.set(ImportMindslines.name, ImportMindslinesModel);
+Container.set(ImportLumina.name, ImportLuminaModel);

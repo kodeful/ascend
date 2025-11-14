@@ -2,22 +2,24 @@ import React from "react";
 import { Box, Paper, Skeleton, Typography } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
-import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+import { useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill } from "api/generated/metrics-three-eye-view/metrics-three-eye-view";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 
 import Home3EyesViewReportGraph from "./Home3EyesViewReportGraph";
 
-const Home3EyesViewReport = () => {
-  const { isLoading } = useMetricsControllerGetMetricsStatisticsBySkill(
-    {
-      skill: undefined,
-    },
-    {
-      query: {
-        queryKey: ["metrics", "statistics", "by-skill"],
+const Home3EyesViewReport = ({ email }: { email?: string }) => {
+  const { isLoading } =
+    useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill(
+      {
+        skill: undefined,
+        email,
       },
-    },
-  );
+      {
+        query: {
+          queryKey: ["metrics", "three-eye-view", "by-skill", email],
+        },
+      },
+    );
 
   return (
     <Paper
@@ -38,7 +40,7 @@ const Home3EyesViewReport = () => {
           loading={isLoading}
           SkeletonComponent={<Skeleton variant="rectangular" height={280} />}
         >
-          <Home3EyesViewReportGraph height={280} />
+          <Home3EyesViewReportGraph height={280} email={email} />
         </AsyncComponent>
       </Box>
     </Paper>

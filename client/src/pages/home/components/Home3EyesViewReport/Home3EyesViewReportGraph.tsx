@@ -1,28 +1,33 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { map, round } from "lodash";
 import { useIntl } from "react-intl";
 
-import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+import { useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill } from "api/generated/metrics-three-eye-view/metrics-three-eye-view";
 
 interface Home3EyesViewReportGraphProps {
   height: number;
+  email?: string;
 }
 
 const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
   height,
+  email,
 }) => {
   const intl = useIntl();
-  const { data: metrics } = useMetricsControllerGetMetricsStatisticsBySkill(
-    {
-      skill: undefined,
-    },
-    {
-      query: {
-        queryKey: ["metrics", "statistics", "by-skill"],
+  const { data: metrics } =
+    useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill(
+      {
+        skill: undefined,
+        email,
       },
-    },
-  );
+      {
+        query: {
+          queryKey: ["metrics", "statistics", "by-skill", email],
+        },
+      },
+    );
 
   const options: Highcharts.Options = {
     chart: {
@@ -79,24 +84,29 @@ const Home3EyesViewReportGraph: FC<Home3EyesViewReportGraphProps> = ({
       {
         type: "column",
         name: intl.formatMessage({ id: "PAGE.HOME.PEER_EVALUATION" }),
-        // @ts-expect-error
-        data: metrics?.peerEvaluations || [],
+        data:
+          // @ts-expect-error
+          map(metrics?.peerEvaluations || [], (value) => round(value, 1)) || [],
         color: "#F1B136",
       },
       {
         type: "column",
 
         name: intl.formatMessage({ id: "PAGE.HOME.SELF_EVALUATION" }),
-        // @ts-expect-error
-        data: metrics?.selfEvaluations || [],
+        data:
+          // @ts-expect-error
+          map(metrics?.selfEvaluations || [], (value) => round(value, 1)) || [],
         color: "#EC762E",
       },
       {
         type: "column",
 
         name: intl.formatMessage({ id: "PAGE.HOME.FACILITATOR_EVALUATION" }),
-        // @ts-expect-error
-        data: metrics?.facilitatorEvaluations || [],
+        data:
+          // @ts-expect-error
+          map(metrics?.facilitatorEvaluations || [], (value) =>
+            round(value, 1),
+          ) || [],
         color: "#AEAC95",
       },
     ],

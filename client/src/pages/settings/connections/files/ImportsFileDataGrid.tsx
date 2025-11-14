@@ -40,11 +40,6 @@ const ImportsGoogleSheetDataGrid = () => {
         headerName: "Skill",
         flex: 1,
       },
-      {
-        field: "assessment",
-        headerName: "Assessment",
-        flex: 1,
-      },
       //   {
       //     field: "actions",
       //     headerName: "",

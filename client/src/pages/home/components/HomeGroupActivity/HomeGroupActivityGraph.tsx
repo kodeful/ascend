@@ -1,7 +1,8 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { useIntl } from "react-intl";
+
+// import { useIntl } from "react-intl";
 
 interface HomeGroupActivityGraphProps {
   height: number;
@@ -10,7 +11,7 @@ interface HomeGroupActivityGraphProps {
 const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
   height,
 }) => {
-  const intl = useIntl();
+  // const intl = useIntl();
 
   const options: Highcharts.Options = {
     chart: {
@@ -52,7 +53,7 @@ const HomeGroupActivityGraph: FC<HomeGroupActivityGraphProps> = ({
     series: [
       {
         type: "column",
-        name: intl.formatMessage({ id: "PAGE.HOME.DATA" }),
+        name: "Hours Spent",
         data: [5, 10, 8, 4, 6, 2, 2],
         color: "#AEAC95",
       },

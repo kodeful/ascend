@@ -16,7 +16,8 @@ import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { Report } from 'api/models/report.model';
 import { UserRole } from 'api/models/user.model';
-import { ImportDataService } from 'api/services/import-data.service';
+// import { ImportDataMindslinesService } from 'api/services/import-data-mindslines.service';
+// import { ImportDataService } from 'api/services/import-data-evaluation.service';
 import { ReportService } from 'api/services/report.service';
 import { UserService } from 'api/services/user.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
@@ -42,14 +43,14 @@ export class ReportController {
   constructor(
     private reportService: ReportService,
     private userService: UserService,
-    private importDataService: ImportDataService,
+    // private importDataService: ImportDataService,
+    // private importDataMindslinesService: ImportDataMindslinesService,
   ) {}
 
   @Get()
   @ResponseSchema(filterReportsResponse)
   public async filterReports(
     @Req() req: any,
-    // @CurrentUser() user: User,
     @QueryParams() queryParams: FilterQueryParams<Report>,
   ) {
     const { limit, page, sort, filter } = plainToInstance(
@@ -150,13 +151,12 @@ export class ReportController {
       periodTo: to?.format('YYYY-MM-DD'),
       assessmentsIncluded: learnersIncluded,
       skills: SKILLS.map((s, i) => {
-        const before = 7 + (i % 3); // 7..9
-        const latest = before + (i % 2 === 0 ? 2.1 : 0.6); // some improve strongly, some lightly
+        const before = 7 + (i % 3);
+        const latest = before + (i % 2 === 0 ? 2.1 : 0.6);
         const delta = latest - before;
         const improvedShare = i % 2 === 0 ? 0.78 : 0.56;
         return { skill: s, before, latest, delta, improvedShare };
       }),
-      // 3-Eye global (all skills combined)
       threeEye: { self: 11.1, peer: 10.6, facilitator: 10.9 },
       insights: [
         '📈 The cohort showed a 23% surge in Communication scores, suggesting rapid adoption of collaborative habits.',
@@ -186,22 +186,31 @@ export class ReportController {
       curr = curr.add(1, 'day');
     }
 
-    const skills = await this.importDataService.distinct(
-      {
-        filter: {
-          organisation: organisation._id,
-          email: user.email,
-        },
-      },
-      'skill',
-    );
+    // import data nad minslines
+    // const [importData, importMindslinesData] = await Promise.all([
+    //   this.importDataService.find({
+    //     filter: {
+    //       organisation: organisation._id,
+    //       email: user.email,
+    //     },
+    //     select: ['skill'],
+    //   }),
+    //   this.importDataMindslinesService.find({
+    //     filter: {
+    //       organisation: organisation._id,
+    //       email: user.email,
+    //     },
+    //     select: ['skill'],
+    //   }),
+    // ]);
+    // console.log(importData, importMindslinesData);
+    // const skills = uniq(map(importData, 'skill'));
+    const skills = [];
 
     return {
       company: organisation.name,
       dates,
       globalTimeline: dates.map((d, i) => {
-        // Add some modest random variation while keeping a smooth trend.
-        // Simulate more realistic progress with small growing global/confidence values.
         const baseGlobal = 8.5 + i * 0.5 + Math.random() * 0.4 - 0.2;
         const baseConfidence = 8.0 + i * 0.45 + Math.random() * 0.4 - 0.2;
 

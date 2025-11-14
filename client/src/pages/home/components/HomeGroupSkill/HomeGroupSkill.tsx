@@ -3,13 +3,13 @@ import { Grid, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { FormikProvider, useFormik } from "formik";
 import { FormattedMessage } from "react-intl";
 
-import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+import { useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill } from "api/generated/metrics-three-eye-view/metrics-three-eye-view";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 
 import HomeGroupTestGraph from "./HomeGroupSkillGraph";
 import SkillAutocomplete from "./SkillAutocomplete";
 
-const HomeGroupSkill = () => {
+const HomeGroupSkill = ({ email }: { email?: string }) => {
   const formik = useFormik({
     initialValues: {
       skill: null,
@@ -19,17 +19,19 @@ const HomeGroupSkill = () => {
 
   const { values } = formik;
 
-  const { isLoading } = useMetricsControllerGetMetricsStatisticsBySkill(
-    {
-      skill: values.skill!,
-    },
-    {
-      query: {
-        enabled: !!values.skill,
-        queryKey: ["metrics", "statistics", "by-skill", values.skill],
+  const { isLoading } =
+    useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill(
+      {
+        skill: values.skill!,
+        email,
       },
-    },
-  );
+      {
+        query: {
+          enabled: !!values.skill,
+          queryKey: ["metrics", "statistics", "by-skill", values.skill, email],
+        },
+      },
+    );
 
   return (
     <Paper
@@ -51,7 +53,7 @@ const HomeGroupSkill = () => {
             </Typography>
 
             <FormikProvider value={formik}>
-              <SkillAutocomplete />
+              <SkillAutocomplete email={email} />
             </FormikProvider>
           </Stack>
         </Grid>
@@ -81,7 +83,11 @@ const HomeGroupSkill = () => {
                   <Skeleton variant="rectangular" height={240} />
                 }
               >
-                <HomeGroupTestGraph height={240} skill={values.skill} />
+                <HomeGroupTestGraph
+                  height={240}
+                  skill={values.skill}
+                  email={email}
+                />
               </AsyncComponent>
 
               {/* <Stack

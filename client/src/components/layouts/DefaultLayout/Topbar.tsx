@@ -160,7 +160,7 @@ const Topbar: FC<{}> = () => {
                       color: "#FFF",
                       border: "2px solid #FFF",
                       // fontSize: Math.min(25, 30 / initials.length),
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: 600,
                     }}
                     variant="circular"

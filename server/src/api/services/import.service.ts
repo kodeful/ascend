@@ -3,6 +3,7 @@ import { Inject, Service } from 'typedi';
 
 import { ImportFile } from 'api/models/import/import-file.model';
 import { ImportGoogleSheet } from 'api/models/import/import-google-sheet.model';
+import { ImportLumina } from 'api/models/import/import-lumina.model';
 import { ImportMindslines } from 'api/models/import/import-mindslines.model';
 import { Import, ImportType } from 'api/models/import/import.model';
 import { CRUD } from 'utils/models/CRUD';
@@ -34,6 +35,15 @@ class ImportMindslinesService extends CRUD<ImportMindslines> {
   }
 }
 
+class ImportLuminaService extends CRUD<ImportLumina> {
+  constructor(
+    @Inject(ImportLumina.name)
+    readonly importLuminaModel: Model<ImportLumina>,
+  ) {
+    super(ImportLumina, importLuminaModel);
+  }
+}
+
 @Service()
 export class ImportService extends CRUD<Import> {
   constructor(
@@ -42,6 +52,7 @@ export class ImportService extends CRUD<Import> {
     readonly importGoogleSheetService: ImportGoogleSheetService,
     readonly importFileService: ImportFileService,
     readonly importMindslinesService: ImportMindslinesService,
+    readonly importLuminaService: ImportLuminaService,
   ) {
     super(Import, importModel);
   }
@@ -54,6 +65,8 @@ export class ImportService extends CRUD<Import> {
         return this.importFileService;
       case ImportType.MINDSLINES:
         return this.importMindslinesService;
+      case ImportType.LUMINA:
+        return this.importLuminaService;
       default:
         throw new Error(`Unsupported import type: ${type}`);
     }

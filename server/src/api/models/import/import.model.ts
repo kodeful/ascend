@@ -15,9 +15,10 @@ import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 import { Organisation } from '../organisation.model';
 
 export enum ImportType {
-  GOOGLE_SHEET = 'Google Sheet',
   FILE = 'File',
+  GOOGLE_SHEET = 'Google Sheet',
   MINDSLINES = 'Mindslines',
+  LUMINA = 'Lumina',
 }
 
 export enum ImportMetric {

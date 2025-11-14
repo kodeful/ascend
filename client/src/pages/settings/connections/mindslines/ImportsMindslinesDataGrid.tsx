@@ -53,26 +53,6 @@ const ImportsMindslinesDataGrid = () => {
           );
         },
       },
-      {
-        field: "skill",
-        headerName: "Skill",
-        flex: 1,
-      },
-      // {
-      //   field: "metric",
-      //   headerName: "Metric",
-      //   flex: 1,
-      // },
-      // {
-      //   field: "skill",
-      //   headerName: "Skill",
-      //   flex: 1,
-      // },
-      // {
-      //   field: "assessment",
-      //   headerName: "Assessment",
-      //   flex: 1,
-      // },
       //   {
       //     field: "actions",
       //     headerName: "",

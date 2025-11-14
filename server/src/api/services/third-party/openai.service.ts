@@ -9,10 +9,6 @@ import type {
 } from 'openai/resources/chat/completions';
 import { Service } from 'typedi';
 
-import {
-  ImportData,
-  ImportDataModel,
-} from 'api/models/import/import-data.model';
 import { Organisation } from 'api/models/organisation.model';
 import { env } from 'env';
 
@@ -278,10 +274,11 @@ async function executeToolCall(
           ? Object.fromEntries(fields.map((f) => [f, 1]))
           : undefined;
 
-      const data = (await ImportDataModel.find(query, projection)
-        .sort({ [timeField]: sort === 'asc' ? 1 : -1 })
-        .limit(Math.min(Math.max(limit || 100, 1), 500))
-        .lean()) as ImportData[];
+      // const data = (await ImportDataModel.find(query, projection)
+      //   .sort({ [timeField]: sort === 'asc' ? 1 : -1 })
+      //   .limit(Math.min(Math.max(limit || 100, 1), 500))
+      //   .lean()) as ImportData[];
+      const data = [];
 
       return {
         role: 'tool',
@@ -359,7 +356,8 @@ async function executeToolCall(
         { $limit: Math.min(Math.max(limit || 200, 1), 1000) },
       ];
 
-      const results = await ImportDataModel.aggregate(pipeline);
+      // const results = await ImportDataModel.aggregate(pipeline);
+      const results = [];
       return {
         role: 'tool',
         tool_call_id: toolCallId,

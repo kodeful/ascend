@@ -55,6 +55,11 @@ const ImportsGoogleSheetDataGrid = () => {
         },
       },
       {
+        field: "sheetName",
+        headerName: "Spreadsheet Name",
+        flex: 1,
+      },
+      {
         field: "refetchInterval",
         headerName: "Refetch Interval",
         flex: 1,
@@ -75,11 +80,6 @@ const ImportsGoogleSheetDataGrid = () => {
       {
         field: "skill",
         headerName: "Skill",
-        flex: 1,
-      },
-      {
-        field: "assessment",
-        headerName: "Assessment",
         flex: 1,
       },
       //   {

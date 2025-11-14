@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
+import DataLuminaEvaluation from "pages/data/components/DataLumina/DataLuminaEvaluation";
 import { FormattedMessage } from "react-intl";
 
 import Title from "components/TItle/Title";
@@ -8,7 +9,7 @@ import Home3EyesViewReport from "./components/Home3EyesViewReport/Home3EyesViewR
 import HomeCompletition from "./components/HomeCompletition/HomeCompletition";
 import HomeGroupActivity from "./components/HomeGroupActivity/HomeGroupActivity";
 import HomeGroupDeltaChange from "./components/HomeGroupDeltaChange/HomeGroupDeltaChange";
-import HomeGroupTrust from "./components/HomeGroupSkill/HomeGroupSkill";
+import HomeGroupSkill from "./components/HomeGroupSkill/HomeGroupSkill";
 import HomeLearners from "./components/HomeLearners";
 import HomeRecentReportsDataGrid from "./components/HomeRecentReports/HomeRecentReportsDataGrid";
 
@@ -19,10 +20,18 @@ const HomePage = () => {
         p: 3,
         py: 2,
       }}
+      height="100%"
     >
       <Title title="PAGE.TITLE.DASHBOARD" />
 
-      <Grid container spacing={2} mt={2}>
+      <Grid
+        className="scrollbar-hidden"
+        container
+        spacing={2}
+        mt={2}
+        height="100%"
+        overflow="scroll"
+      >
         <Grid item xs={8}>
           <Typography variant="h5" color="#4D4D4D">
             <FormattedMessage id="PAGE.HOME.METRICS" />
@@ -34,10 +43,13 @@ const HomePage = () => {
               <HomeGroupDeltaChange />
             </Grid>
             <Grid item xs={6}>
-              <HomeGroupTrust />
+              <HomeGroupSkill />
             </Grid>
             <Grid item xs={12}>
               <Home3EyesViewReport />
+            </Grid>
+            <Grid item xs={12}>
+              <DataLuminaEvaluation />
             </Grid>
           </Grid>
 

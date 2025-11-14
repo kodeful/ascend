@@ -1,16 +1,23 @@
 import React, { type FC } from "react";
 import { useIntl } from "react-intl";
 
-import { useMetricsControllerGetMetricsSkillsOptions } from "api/generated/metrics/metrics";
+import { useMetricsThreeEyeViewControllerGetMetricsSkillsOptions } from "api/generated/metrics-three-eye-view/metrics-three-eye-view";
 import FormikAutocomplete, {
   valueOptions,
 } from "components/forms/FormikAutocomplete";
 
-const SkillAutocomplete: FC = () => {
+const SkillAutocomplete: FC<{ email?: string }> = ({ email }) => {
   const intl = useIntl();
 
   const { data: skills, isLoading } =
-    useMetricsControllerGetMetricsSkillsOptions();
+    useMetricsThreeEyeViewControllerGetMetricsSkillsOptions(
+      { email },
+      {
+        query: {
+          queryKey: ["metrics", "three-eye-view", "skills", email],
+        },
+      },
+    );
 
   return (
     <FormikAutocomplete

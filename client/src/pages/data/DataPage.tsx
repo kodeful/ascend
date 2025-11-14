@@ -9,7 +9,7 @@ import { useIntl } from "react-intl";
 import Title from "components/TItle/Title";
 
 import DataGroupMetrics from "./components/DataGroupMetrics/DataGroupMetrics";
-import DataLuminaGroupEvaluation from "./components/DataLumina/DataLuminaGroupEvaluation";
+import DataLuminaEvaluation from "./components/DataLumina/DataLuminaEvaluation";
 
 const DataPage = () => {
   const intl = useIntl();
@@ -50,7 +50,7 @@ const DataPage = () => {
           {/* Mindslines */}
           <Grid container pt={1} spacing={2}>
             <Grid item xs={12}>
-              <DataLuminaGroupEvaluation />
+              <DataLuminaEvaluation />
             </Grid>
           </Grid>
         </Grid>

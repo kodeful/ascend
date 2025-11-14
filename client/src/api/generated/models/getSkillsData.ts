@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type MetricsControllerGetMetricsStatisticsBySkillParams = {
-  skill?: string;
-};
+export interface GetSkillsData {
+  percentile: number;
+  skill: string;
+}

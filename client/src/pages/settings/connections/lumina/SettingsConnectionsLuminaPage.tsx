@@ -82,7 +82,7 @@ const SettingsConnectionsLuminaPage = () => {
               }}
               onClick={() => {
                 openModal("import-file", {
-                  source: "file",
+                  source: "lumina",
                 });
               }}
             >

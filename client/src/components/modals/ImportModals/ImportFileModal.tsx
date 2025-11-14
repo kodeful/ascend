@@ -4,12 +4,14 @@ import { Dialog, Typography } from "@mui/material";
 import type { ModalProps } from "../ModalProps";
 import ImportFileFile from "./ImportFileFile";
 import ImportFileGoogleSheet from "./ImportFileGoogleSheet";
+import ImportFileLumina from "./ImportFileLumina";
 import ImportFileMindslines from "./ImportFileMindslines";
 
 const FORM = {
   file: ImportFileFile,
   "google-sheet": ImportFileGoogleSheet,
   mindslines: ImportFileMindslines,
+  lumina: ImportFileLumina,
 };
 
 type ImportFileModalProps = ModalProps & {

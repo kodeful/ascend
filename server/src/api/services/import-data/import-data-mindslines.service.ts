@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { Inject, Service } from 'typedi';
 
-import { ImportDataMindslines } from 'api/models/import/import-data-mindslines.model';
+import { ImportDataMindslines } from 'api/models/import-data/import-data-mindslines.model';
 import { CRUD } from 'utils/models/CRUD';
 
 @Service()

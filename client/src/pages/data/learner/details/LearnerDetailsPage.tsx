@@ -1,9 +1,11 @@
 import React from "react";
 import { Avatar, Box, CircularProgress, Grid, Stack } from "@mui/material";
-import DataLuminaGroupEvaluation from "pages/data/components/DataLumina/DataLuminaGroupEvaluation";
-import DataLuminaIndividualEvaluation from "pages/data/components/DataLumina/DataLuminaIndividualEvaluation";
+import DataLuminaEvaluation from "pages/data/components/DataLumina/DataLuminaEvaluation";
+import Home3EyesViewReport from "pages/home/components/Home3EyesViewReport/Home3EyesViewReport";
 import HomeCompletition from "pages/home/components/HomeCompletition/HomeCompletition";
 import HomeGroupActivity from "pages/home/components/HomeGroupActivity/HomeGroupActivity";
+import HomeGroupDeltaChange from "pages/home/components/HomeGroupDeltaChange/HomeGroupDeltaChange";
+import HomeGroupSkill from "pages/home/components/HomeGroupSkill/HomeGroupSkill";
 import { useParams } from "react-router-dom";
 
 import { useUserControllerGetUser } from "api/generated/user/user";
@@ -55,19 +57,28 @@ const LearnerDetailsPage = () => {
           </Stack>
         }
       >
-        <Grid container spacing={2} mt={2}>
+        <Grid
+          className="scrollbar-hidden"
+          container
+          spacing={2}
+          mt={2}
+          height="100%"
+          overflow="scroll"
+        >
           <Grid item xs={8}>
             {/* Mindslines */}
             <Grid container pt={1} spacing={2}>
-              <Grid item xs={12}>
-                <DataLuminaGroupEvaluation />
+              <Grid item xs={6}>
+                <HomeGroupDeltaChange email={learner?.email} />
               </Grid>
-
-              {/* <Grid item xs={12}>
-                <DataLumina360 />
-              </Grid> */}
+              <Grid item xs={6}>
+                <HomeGroupSkill email={learner?.email} />
+              </Grid>
               <Grid item xs={12}>
-                <DataLuminaIndividualEvaluation email={learner?.email} />
+                <Home3EyesViewReport email={learner?.email} />
+              </Grid>
+              <Grid item xs={12}>
+                <DataLuminaEvaluation email={learner?.email} />
               </Grid>
             </Grid>
           </Grid>

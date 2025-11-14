@@ -1,5 +1,4 @@
-import dayjs from 'dayjs';
-import { filter, forEach, map, mean, meanBy, sum, uniq } from 'lodash';
+import { filter, forEach, map, mean, uniq } from 'lodash';
 import {
   Authorized,
   Get,
@@ -9,16 +8,17 @@ import {
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
-import { ImportAssessment, ImportMetric } from 'api/models/import/import.model';
-import { ImportDataService } from 'api/services/import-data.service';
+import { ImportAssessment } from 'api/models/import/import.model';
+import { ImportDataThreeEyeViewService } from 'api/services/import-data/import-data-three-eye-view.service';
 
 // Response Types
-// Controller
 @Authorized()
-@JsonController('/metrics')
+@JsonController('/metrics-three-eye-view')
 @OpenAPI({})
-export class MetricsController {
-  constructor(private importDataService: ImportDataService) {}
+export class MetricsThreeEyeViewController {
+  constructor(
+    private importDataThreeEyeViewService: ImportDataThreeEyeViewService,
+  ) {}
 
   @Get('/skills/options')
   @OpenAPI({
@@ -37,11 +37,15 @@ export class MetricsController {
       },
     },
   })
-  public async getMetricsSkillsOptions(@Req() req) {
-    const skills = await this.importDataService.distinct(
+  public async getMetricsSkillsOptions(
+    @Req() req,
+    @QueryParam('email') email?: string,
+  ) {
+    const skills = await this.importDataThreeEyeViewService.distinct(
       {
         filter: {
           organisation: req.organisation._id,
+          ...(email && { email }),
         },
       },
       'skill',
@@ -50,72 +54,18 @@ export class MetricsController {
     return skills;
   }
 
-  @Get('/statistics/by-metric')
-  @ResponseSchema(undefined)
-  public async getMetricsStatisticsByMetric(@Req() req) {
-    const importData = await this.importDataService.find({
-      filter: {
-        organisation: req.organisation._id,
-      },
-      select: ['timestamp', 'metric', 'score', 'email'],
-      sort: { timestamp: -1 },
-    });
-
-    const previousMonthImportData = filter(importData, (item) => {
-      return dayjs(item.timestamp).isBefore(dayjs().startOf('month'));
-    });
-
-    const calculateMetrics = (importData) => {
-      const metrics = {
-        [ImportMetric.KNOWLEDGE]: [],
-        [ImportMetric.CONFIDENCE]: [],
-        [ImportMetric.APPLICATION]: [],
-      };
-      const usedCombinations = [];
-      forEach(importData, (item) => {
-        const combination = [
-          item.email,
-          item.metric,
-          item.skill,
-          item.assessment,
-        ].join(':');
-        if (usedCombinations.includes(combination)) {
-          return;
-        }
-        metrics[item.metric].push(item.score);
-        usedCombinations.push(combination);
-      });
-
-      return [
-        meanBy(metrics[ImportMetric.KNOWLEDGE]) || 0,
-        meanBy(metrics[ImportMetric.CONFIDENCE]) || 0,
-        meanBy(metrics[ImportMetric.APPLICATION]) || 0,
-      ];
-    };
-
-    const before = calculateMetrics(previousMonthImportData);
-    const after = calculateMetrics(importData);
-
-    const increasePercentage =
-      (sum(before) > 0 ? sum(after) / sum(before) : 1) - 1;
-
-    return {
-      before, // [Knowledge, Confidence, Application]
-      after, // [Knowledge, Confidence, Application]
-      increasePercentage,
-    };
-  }
-
   @Get('/statistics/by-skill')
   @ResponseSchema(undefined)
   public async getMetricsStatisticsBySkill(
     @Req() req,
     @QueryParam('skill') skill: string,
+    @QueryParam('email') email?: string,
   ) {
-    const importData = await this.importDataService.find({
+    const importData = await this.importDataThreeEyeViewService.find({
       filter: {
         organisation: req.organisation._id,
         ...(skill && { skill }),
+        ...(email && { email }),
       },
       select: ['timestamp', 'metric', 'score', 'email', 'skill', 'assessment'],
       sort: { timestamp: -1 },

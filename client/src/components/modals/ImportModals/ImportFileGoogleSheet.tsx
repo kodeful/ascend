@@ -26,14 +26,12 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
       refetchInterval: null,
       metric: null,
       skill: "",
-      assessment: null,
     },
     validationSchema: yup.object({
       spreadsheetLink: yup.string().nullable().required(),
       refetchInterval: yup.string().nullable().required(),
       metric: yup.string().required(),
       skill: yup.string().required(),
-      assessment: yup.string().nullable().required(),
     }),
 
     onSubmit: async (values) => {
@@ -43,7 +41,6 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
           refetchInterval: values.refetchInterval,
           metric: values.metric,
           skill: values.skill,
-          assessment: values.assessment,
         },
       });
     },
@@ -105,7 +102,7 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
 
         <FormikTextField name="skill" label="Skill" />
 
-        <FormikAutocomplete
+        {/* <FormikAutocomplete
           name="assessment"
           label="Assessment"
           options={valueOptions([
@@ -113,7 +110,7 @@ const ImportFileGoogleSheet: FC<ImportFileGoogleSheetProps> = ({
             "Self-evaluation",
             "Facilitator Evaluation",
           ])}
-        />
+        /> */}
 
         <Divider sx={{ my: 2 }} />
 

@@ -1,31 +1,36 @@
 import React, { type FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { map, round } from "lodash";
 import { useIntl } from "react-intl";
 
-import { useMetricsControllerGetMetricsStatisticsBySkill } from "api/generated/metrics/metrics";
+import { useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill } from "api/generated/metrics-three-eye-view/metrics-three-eye-view";
 
 interface HomeGroupSkillGraphProps {
   height: number;
   skill: string;
+  email?: string;
 }
 
 const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({
   height,
   skill,
+  email,
 }) => {
   const intl = useIntl();
 
-  const { data: metrics } = useMetricsControllerGetMetricsStatisticsBySkill(
-    {
-      skill,
-    },
-    {
-      query: {
-        queryKey: ["metrics", "statistics", "by-skill", skill],
+  const { data: metrics } =
+    useMetricsThreeEyeViewControllerGetMetricsStatisticsBySkill(
+      {
+        skill,
+        email,
       },
-    },
-  );
+      {
+        query: {
+          queryKey: ["metrics", "three-eye-view", "by-skill", skill, email],
+        },
+      },
+    );
 
   const options: Highcharts.Options = {
     chart: {
@@ -81,25 +86,28 @@ const HomeGroupSkillGraph: FC<HomeGroupSkillGraphProps> = ({
     series: [
       {
         type: "bar",
-        // name: "Peer evaluation",
         name: intl.formatMessage({ id: "PAGE.HOME.PEER_EVALUATION" }),
-        // @ts-expect-error
-        data: metrics?.peerEvaluations || [],
+        data:
+          // @ts-expect-error
+          map(metrics?.peerEvaluations || [], (value) => round(value, 1)) || [],
         color: "#F1B136",
       },
       {
         type: "bar",
-        // name: "Self-evaluation",
         name: intl.formatMessage({ id: "PAGE.HOME.SELF_EVALUATION" }),
-        // @ts-expect-error
-        data: metrics?.selfEvaluations || [],
+        data:
+          // @ts-expect-error
+          map(metrics?.selfEvaluations || [], (value) => round(value, 1)) || [],
         color: "#EC762E",
       },
       {
         type: "bar",
         name: intl.formatMessage({ id: "PAGE.HOME.FACILITATOR_EVALUATION" }),
-        // @ts-expect-error
-        data: metrics?.facilitatorEvaluations || [],
+        data:
+          // @ts-expect-error
+          map(metrics?.facilitatorEvaluations || [], (value) =>
+            round(value, 1),
+          ) || [],
         color: "#AEAC95",
       },
     ],

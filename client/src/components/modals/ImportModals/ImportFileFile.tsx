@@ -25,13 +25,13 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
       file: null,
       metric: null,
       skill: "",
-      assessment: null,
+      // assessment: null,
     },
     validationSchema: yup.object({
       file: yup.mixed().required(),
       metric: yup.string().nullable().required(),
       skill: yup.string().required(),
-      assessment: yup.string().nullable().required(),
+      // assessment: yup.string().nullable().required(),
     }),
 
     onSubmit: async (values) => {
@@ -42,7 +42,7 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
       formData.append("file", values.file);
       formData.append("metric", values.metric as unknown as string);
       formData.append("skill", values.skill);
-      formData.append("assessment", values.assessment as unknown as string);
+      // formData.append("assessment", values.assessment as unknown as string);
 
       await axiosInstance({
         method: "POST",
@@ -152,7 +152,7 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
           />
 
           <FormikTextField name="skill" label="Skill" />
-
+          {/* 
           <FormikAutocomplete
             name="assessment"
             label="Assessment"
@@ -161,7 +161,7 @@ const ImportFileFile: FC<ImportFileFileProps> = ({ handleClose }) => {
               "Self-evaluation",
               "Facilitator Evaluation",
             ])}
-          />
+          /> */}
 
           <Divider sx={{ my: 2 }} />
 

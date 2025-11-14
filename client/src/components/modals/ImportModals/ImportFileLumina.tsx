@@ -9,13 +9,11 @@ import * as yup from "yup";
 
 import axiosInstance from "api/axios-instance";
 
-type ImportFileMindslinesProps = {
+type ImportFileLuminaProps = {
   handleClose: () => void;
 };
 
-const ImportFileMindslines: FC<ImportFileMindslinesProps> = ({
-  handleClose,
-}) => {
+const ImportFileLumina: FC<ImportFileLuminaProps> = ({ handleClose }) => {
   const queryClient = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -38,14 +36,14 @@ const ImportFileMindslines: FC<ImportFileMindslinesProps> = ({
 
       await axiosInstance({
         method: "POST",
-        url: "/import/mindslines",
+        url: "/import/lumina",
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
         .then(async () => {
-          await queryClient.invalidateQueries(["imports", "mindslines"]);
+          await queryClient.invalidateQueries(["imports", "lumina"]);
 
           handleClose();
         })
@@ -164,4 +162,4 @@ const ImportFileMindslines: FC<ImportFileMindslinesProps> = ({
   );
 };
 
-export default ImportFileMindslines;
+export default ImportFileLumina;

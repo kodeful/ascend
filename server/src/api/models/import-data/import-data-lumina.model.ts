@@ -1,6 +1,6 @@
 import { Ref, getModelForClass, prop } from '@typegoose/typegoose';
-import { Expose, Transform } from 'class-transformer';
-import { IsDate, IsEnum, IsMongoId, IsNumber } from 'class-validator';
+import { Expose, Transform, Type } from 'class-transformer';
+import { IsDate, IsMongoId, IsObject } from 'class-validator';
 import { IsString } from 'class-validator';
 import { SchemaTypes } from 'mongoose';
 import { Container } from 'typedi';
@@ -8,10 +8,10 @@ import { Container } from 'typedi';
 import { Document } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
-import { Import, ImportAssessment, ImportMetric } from './import.model';
+import { Import } from '../import/import.model';
 import { Organisation } from '../organisation.model';
 
-export class ImportData extends Document {
+export class ImportDataLumina extends Document {
   @Expose()
   @IsMongoId()
   @Transform(transformMongoId)
@@ -43,27 +43,13 @@ export class ImportData extends Document {
   public email: string;
 
   @Expose()
-  @IsNumber()
-  @prop({ type: Number, required: true })
-  public score: number;
-
-  @Expose()
-  @IsString()
-  @prop({ type: String, required: true })
-  public skill: string;
-
-  @Expose()
-  @IsEnum(ImportMetric)
-  @prop({ type: String, enum: ImportMetric, required: true })
-  public metric: ImportMetric;
-
-  @Expose()
-  @IsEnum(ImportAssessment)
-  @prop({ type: String, enum: ImportAssessment, required: true })
-  public assessment: ImportAssessment;
+  @IsObject()
+  @prop({ type: Object, required: true })
+  @Type(() => Object)
+  public skills: Record<string, number>;
 }
 
-export const ImportDataModel = getModelForClass(ImportData, {
+export const ImportDataLuminaModel = getModelForClass(ImportDataLumina, {
   schemaOptions: {},
 });
-Container.set(ImportData.name, ImportDataModel);
+Container.set(ImportDataLumina.name, ImportDataLuminaModel);

@@ -3,7 +3,7 @@ import { Grid, Stack, Typography } from "@mui/material";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-import { useMetricsMindslinesControllerGetSkills } from "api/generated/metrics-mindslines/metrics-mindslines";
+import { useMetricsLuminaControllerGetSkills } from "api/generated/metrics-lumina/metrics-lumina";
 import Counter from "components/Counter/Counter";
 
 interface DataLuminaChartProps {
@@ -13,62 +13,59 @@ interface DataLuminaChartProps {
 }
 
 const DataLuminaChart: FC<DataLuminaChartProps> = ({ email, ...props }) => {
-  const { data: skills } = useMetricsMindslinesControllerGetSkills(
+  const { data: skills } = useMetricsLuminaControllerGetSkills(
     { email },
     {
       query: {
-        queryKey: ["metrics-mindslines-skills", email],
+        queryKey: ["metrics", "lumina", email],
       },
     },
   );
 
   const data = useMemo(() => {
-    let choosenSkills =
+    if (!skills?.length)
+      return [
+        { value: 0, color: "#A0C705", label: "Adapting to Change" },
+        { value: 0, color: "#A0C705", label: "Agile Learning" },
+        { value: 0, color: "#A0C705", label: "Conceptualising Strategies" },
+        { value: 0, color: "#A0C705", label: "Fostering Creativity" },
+        { value: 0, color: "#A0C705", label: "Working under Pressure" },
+        { value: 0, color: "#A0C705", label: "Engaging and Energising" },
+        { value: 0, color: "#A0C705", label: "Providing Direction" },
+        { value: 0, color: "#A0C705", label: "Purposeful Argumentation" },
+        { value: 0, color: "#A0C705", label: "Pursuing and Achieving Goals" },
+        { value: 0, color: "#A0C705", label: "Planning and Organising" },
+        { value: 0, color: "#A0C705", label: "Ensuring Accountability" },
+        {
+          value: 0,
+          color: "#A0C705",
+          label: "Gathering and Analysing Information",
+        },
+        { value: 0, color: "#A0C705", label: "Supporting Others" },
+        { value: 0, color: "#A0C705", label: "Coaching and Developing Others" },
+        { value: 0, color: "#A0C705", label: "Working Together" },
+        { value: 0, color: "#A0C705", label: "Being Interpersonally Astute" },
+      ];
+
+    const choosenSkills =
       // @ts-ignore
       (skills ?? []).map((skill: any) => {
         let color = "#A0C705";
-        if (skill.completedPercentage > 0.75) {
+        if (skill.percentile > 75) {
           color = "#A0C705";
-        } else if (skill.completedPercentage > 0.5) {
+        } else if (skill.percentile > 50) {
           color = "#CDDD68";
-        } else if (skill.completedPercentage > 0.25) {
+        } else if (skill.percentile > 25) {
           color = "#F1B136";
         } else {
           color = "#EC762E";
         }
         return {
-          value: +(skill.completedPercentage * 100).toFixed(1),
+          value: +skill.percentile.toFixed(1),
           color: color,
           label: skill.skill,
         };
       }) || [];
-
-    choosenSkills = [
-      ...choosenSkills,
-      { value: 0, color: "#A0C705", label: "Accommodating" },
-      { value: 0, color: "#A0C705", label: "Collaborative" },
-      { value: 0, color: "#A0C705", label: "Adaptable" },
-      { value: 0, color: "#A0C705", label: "Empathetic" },
-      { value: 0, color: "#A0C705", label: "Flexible" },
-      { value: 0, color: "#A0C705", label: "Spontaneous" },
-      { value: 0, color: "#A0C705", label: "Conceptual" },
-      { value: 0, color: "#A0C705", label: "Imaginative" },
-      { value: 0, color: "#A0C705", label: "Radical" },
-      { value: 0, color: "#A0C705", label: "Sociable" },
-      { value: 0, color: "#A0C705", label: "Demonstrative" },
-      { value: 0, color: "#A0C705", label: "Logical" },
-      { value: 0, color: "#A0C705", label: "Practical" },
-      { value: 0, color: "#A0C705", label: "Reliable" },
-      { value: 0, color: "#A0C705", label: "Organized" },
-      { value: 0, color: "#A0C705", label: "Precise" },
-      { value: 0, color: "#A0C705", label: "Methodical" },
-      { value: 0, color: "#A0C705", label: "Decisive" },
-      { value: 0, color: "#A0C705", label: "Analytical" },
-      { value: 0, color: "#A0C705", label: "Self-Disciplined" },
-      { value: 0, color: "#A0C705", label: "Persuasive" },
-      { value: 0, color: "#A0C705", label: "Direct" },
-      { value: 0, color: "#A0C705", label: "Courageous" },
-    ].slice(0, 24);
 
     return choosenSkills;
   }, [skills]);
@@ -76,10 +73,10 @@ const DataLuminaChart: FC<DataLuminaChartProps> = ({ email, ...props }) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
-        <DataLuminaChartSide data={data.slice(0, 12)} {...props} />
+        <DataLuminaChartSide data={data.slice(0, 8)} {...props} />
       </Grid>
       <Grid item xs={6}>
-        <DataLuminaChartSide data={data.slice(12)} {...props} />
+        <DataLuminaChartSide data={data.slice(8)} {...props} />
       </Grid>
     </Grid>
   );
@@ -98,7 +95,7 @@ const DataLuminaChartSide: FC<
   const options: Highcharts.Options = {
     chart: {
       type: "bar", // Horizontal bars
-      height: 430, // Adjust height as needed
+      height: 290, // Adjust height as needed
     },
     credits: {
       enabled: false,
@@ -160,7 +157,7 @@ const DataLuminaChartSide: FC<
       <Stack flex={1} width="100%" overflow="hidden">
         <HighchartsReact highcharts={Highcharts} options={options} />
       </Stack>
-      <Stack width={labels ? 150 : 40}>
+      <Stack width={labels ? 240 : 40}>
         <Stack direction="column" my={1}>
           {data.map((item) => (
             <Stack

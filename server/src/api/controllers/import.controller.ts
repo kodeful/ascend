@@ -4,7 +4,7 @@ import { ValidateNested } from 'class-validator';
 import csvtojson from 'csvtojson';
 import dayjs from 'dayjs';
 import { google } from 'googleapis';
-import { find, first, isNumber, map, sum } from 'lodash';
+import { find, first, isNumber, last, map, sum } from 'lodash';
 import {
   Authorized,
   BadRequestError,
@@ -18,10 +18,12 @@ import {
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
-import { Import } from 'api/models/import/import.model';
+import { Import, ImportAssessment } from 'api/models/import/import.model';
 import { Organisation } from 'api/models/organisation.model';
-import { ImportDataMindslinesService } from 'api/services/import-data-mindslines.service';
-import { ImportDataService } from 'api/services/import-data.service';
+import { ImportDataEvaluationService } from 'api/services/import-data/import-data-evaluation.service';
+import { ImportDataLuminaService } from 'api/services/import-data/import-data-lumina.service';
+import { ImportDataMindslinesService } from 'api/services/import-data/import-data-mindslines.service';
+import { ImportDataThreeEyeViewService } from 'api/services/import-data/import-data-three-eye-view.service';
 import { ImportService } from 'api/services/import.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { env } from 'env';
@@ -46,23 +48,23 @@ class filterImportsResponse {
 export class ImportController {
   constructor(
     private importService: ImportService,
-    private importDataService: ImportDataService,
+    private importDataEvaluationService: ImportDataEvaluationService,
+    private importDataThreeEyeViewService: ImportDataThreeEyeViewService,
     private importDataMindslinesService: ImportDataMindslinesService,
+    private importDataLuminaService: ImportDataLuminaService,
   ) {}
 
-  public async processImportData({
+  public async processImportDataEvaluation({
     organisationId,
     importId,
     metric,
     skill,
-    assessment,
     rows,
   }: {
     organisationId: Ref<Organisation>;
     importId: Ref<Import>;
     metric: string;
     skill: string;
-    assessment: string;
     rows: {
       timestamp: Date;
       email: string;
@@ -81,35 +83,79 @@ export class ImportController {
           score: row.score,
           metric,
           skill,
-          assessment,
         },
         upsert: true,
       },
     }));
 
     // CLEAN
-    await this.importDataService.model.deleteMany({
+    await this.importDataEvaluationService.model.deleteMany({
       organisation: organisationId,
       import: importId,
     });
 
     // IMPORT
-    await this.importDataService.model.bulkWrite(importDataBulk);
+    await this.importDataEvaluationService.model.bulkWrite(importDataBulk);
+    return;
+  }
+
+  public async processImportDataThreeEyeView({
+    organisationId,
+    importId,
+    metric,
+    skill,
+    assessment,
+    rows,
+  }: {
+    organisationId: Ref<Organisation>;
+    importId: Ref<Import>;
+    metric: string;
+    skill: string;
+    assessment: ImportAssessment;
+    rows: {
+      timestamp: Date;
+      email: string;
+      score: number;
+    }[];
+  }) {
+    const importDataBulk = map(rows, (row) => ({
+      updateOne: {
+        filter: {
+          organisation: organisationId,
+          import: importId,
+          timestamp: row.timestamp,
+          email: row.email,
+        },
+        update: {
+          score: row.score,
+          assessment,
+          metric,
+          skill,
+        },
+        upsert: true,
+      },
+    }));
+
+    // CLEAN
+    await this.importDataThreeEyeViewService.model.deleteMany({
+      organisation: organisationId,
+      import: importId,
+    });
+
+    // IMPORT
+    await this.importDataThreeEyeViewService.model.bulkWrite(importDataBulk);
     return;
   }
 
   public async processImportDataMindslines({
     organisationId,
     importId,
-    skill,
     rows,
   }: {
     organisationId: Ref<Organisation>;
     importId: Ref<Import>;
-    skill: string;
     rows: {
       email: string;
-      completedPercentage: number;
       completedCount: number;
       inProgressCount: number;
       notStartedCount: number;
@@ -123,8 +169,6 @@ export class ImportController {
           email: row.email,
         },
         update: {
-          skill,
-          completedPercentage: row.completedPercentage,
           completedCount: row.completedCount,
           inProgressCount: row.inProgressCount,
           notStartedCount: row.notStartedCount,
@@ -141,6 +185,43 @@ export class ImportController {
 
     // IMPORT
     await this.importDataMindslinesService.model.bulkWrite(importDataBulk);
+    return;
+  }
+
+  public async processImportDataLumina({
+    organisationId,
+    importId,
+    rows,
+  }: {
+    organisationId: Ref<Organisation>;
+    importId: Ref<Import>;
+    rows: {
+      email: string;
+      skills: Record<string, number>;
+    }[];
+  }) {
+    const importDataBulk = map(rows, (row) => ({
+      updateOne: {
+        filter: {
+          organisation: organisationId,
+          import: importId,
+          email: row.email,
+        },
+        update: {
+          skills: row.skills,
+        },
+        upsert: true,
+      },
+    }));
+
+    // CLEAN
+    await this.importDataLuminaService.model.deleteMany({
+      organisation: organisationId,
+      import: importId,
+    });
+
+    // IMPORT
+    await this.importDataLuminaService.model.bulkWrite(importDataBulk);
     return;
   }
 
@@ -195,42 +276,192 @@ export class ImportController {
         throw new BadRequestError('Invalid file type');
     }
 
-    const normalizedRows = map(extractedData, (row) => {
-      if (!row.email || !row.score || !row.timestamp) {
-        return null;
-      }
+    // const normalizedRows = map(extractedData, (row) => {
+    //   if (!row.email || !row.score || !row.timestamp) {
+    //     return null;
+    //   }
 
-      return {
-        timestamp: row.timestamp,
-        email: row.email,
-        score: row.score,
-      };
-    }).filter(Boolean);
-    if (!normalizedRows.length) {
-      throw new BadRequestError('No valid data found');
+    //   return {
+    //     timestamp: row.timestamp,
+    //     email: row.email,
+    //     score: row.score,
+    //   };
+    // }).filter(Boolean);
+    // if (!normalizedRows.length) {
+    //   throw new BadRequestError('No valid data found');
+    // }
+
+    // // CREATE IMPORT
+    // const { _id: importId } = await this.importService.importFileService.create(
+    //   {
+    //     organisation: req.organisation._id,
+    //     fileName: file.originalname,
+    //     fileType,
+    //     metric,
+    //     skill,
+    //     assessment,
+    //   },
+    // );
+
+    // // CREATE IMPORT DATA
+    // await this.processImportDataEvaluation({
+    //   organisationId: req.organisation._id,
+    //   importId,
+    //   metric,
+    //   skill,
+    //   rows: normalizedRows,
+    // });
+
+    return {};
+  }
+
+  @Post('/google-sheet')
+  @ResponseSchema(undefined)
+  public async importGoogleSheet(
+    @Req() req: any,
+    @Body()
+    { spreadsheetLink, refetchInterval, metric, skill }: any,
+  ) {
+    const sheets = google.sheets({
+      version: 'v4',
+      auth: env.googleSheets.apiKey,
+    });
+
+    const spreadsheetId = spreadsheetLink.match(/\/d\/(.*?)\//)[1];
+    const range = 'A2:ZZ'; // Get all columns and rows from row 2 onwards
+
+    const importExists =
+      await this.importService.importGoogleSheetService.findOne({
+        filter: {
+          organisation: req.organisation._id,
+          sheetId: spreadsheetId,
+        },
+      });
+    if (importExists) {
+      throw new BadRequestError('Google Sheet import already exists');
+    }
+
+    const [spreadsheetMetaResponse, spreadsheetValuesResponse] =
+      await Promise.all([
+        sheets.spreadsheets.get({
+          spreadsheetId,
+          fields: 'properties/title',
+        }),
+        sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range,
+        }),
+      ]).catch((err) => {
+        console.error('Error fetching data from Google Sheets:', err);
+        const messages = map(err.errors, 'message').join(', ');
+
+        if (messages === 'The caller does not have permission') {
+          throw new BadRequestError(
+            'You do not have permission to access this Google Sheet, please share access with "Anyone with the link".',
+          );
+        }
+
+        throw new Error(messages || 'Error fetching data');
+      });
+
+    const spreadsheetName = spreadsheetMetaResponse.data.properties?.title;
+    const rows = spreadsheetValuesResponse.data.values;
+
+    let importType: 'evaluation' | 'three-eye-view';
+    if (spreadsheetName.toLowerCase().startsWith('evaluation')) {
+      importType = 'evaluation';
+    } else {
+      importType = 'three-eye-view';
     }
 
     // CREATE IMPORT
-    const { _id: importId } = await this.importService.importFileService.create(
-      {
+    const { _id: importId } =
+      await this.importService.importGoogleSheetService.create({
         organisation: req.organisation._id,
-        fileName: file.originalname,
-        fileType,
+        sheetId: spreadsheetId,
+        sheetName: spreadsheetName,
+        refetchInterval,
+        lastRefetchTimestamp: dayjs().toDate(),
+        metric,
+        skill,
+      });
+
+    if (importType === 'evaluation') {
+      const extractedData = map(rows, (row) => {
+        let score = 0;
+        row.slice(1).map((row) => {
+          let value = 0;
+          if (row.startsWith('a)')) {
+            value = 1;
+          } else if (row.startsWith('b')) {
+            value = 2;
+          } else if (row.startsWith('c')) {
+            value = 3;
+          }
+
+          score += value;
+        });
+
+        return {
+          timestamp: dayjs(first(row)).toDate(),
+          email: last(row),
+          score,
+        };
+      });
+
+      // CREATE IMPORT DATA
+      await this.processImportDataEvaluation({
+        organisationId: req.organisation._id,
+        importId,
+        metric,
+        skill,
+        rows: extractedData,
+      });
+
+      return {};
+    }
+
+    if (importType === 'three-eye-view') {
+      let assessment;
+      if (
+        spreadsheetName.includes('Facilitator Evaluation') ||
+        spreadsheetName.includes('Evaluación del Facilitador')
+      ) {
+        assessment = ImportAssessment.FACILITATOR_EVALUATION;
+      } else if (
+        spreadsheetName.includes('Self-Assessment') ||
+        spreadsheetName.includes('Autoevaluación')
+      ) {
+        assessment = ImportAssessment.SELF_EVALUATION;
+      } else if (
+        spreadsheetName.includes('Peer') ||
+        spreadsheetName.includes('Evaluación por compañeros')
+      ) {
+        assessment = ImportAssessment.PEER_EVALUATION;
+      }
+
+      const extractedData = map(rows, (row) => {
+        const score = sum(map(row.slice(2), Number));
+
+        return {
+          timestamp: dayjs(first(row)).toDate(),
+          email: row[1],
+          score,
+        };
+      });
+
+      // CREATE IMPORT DATA
+      await this.processImportDataThreeEyeView({
+        organisationId: req.organisation._id,
+        importId,
         metric,
         skill,
         assessment,
-      },
-    );
+        rows: extractedData,
+      });
 
-    // CREATE IMPORT DATA
-    await this.processImportData({
-      organisationId: req.organisation._id,
-      importId,
-      metric,
-      skill,
-      assessment,
-      rows: normalizedRows,
-    });
+      return {};
+    }
 
     return {};
   }
@@ -239,7 +470,6 @@ export class ImportController {
   @ResponseSchema(undefined)
   public async importMindslines(
     @Req() req: any,
-    @Body() { skill }: any,
     @UploadedFile('file') file?: any,
   ) {
     if (!file) {
@@ -254,9 +484,6 @@ export class ImportController {
       throw new BadRequestError('No valid data found');
     }
     const emailKey = find(keys, (key) => key.toLowerCase().includes('email'));
-    const completedPercentage = find(keys, (key) =>
-      key.toLowerCase().includes('completion percentage'),
-    );
     const completedCount = find(keys, (key) =>
       key.toLowerCase().includes('completed count'),
     );
@@ -269,14 +496,12 @@ export class ImportController {
 
     const normalizedRows = map(extractedData, (row) => {
       row.email = row[emailKey];
-      row.completedPercentage = +(row?.[completedPercentage] || 0);
       row.completedCount = +(row?.[completedCount] || 0);
       row.inProgressCount = +(row?.[inProgressCount] || 0);
       row.notStartedCount = +(row?.[notStartedCount] || 0);
 
       if (
         !row.email ||
-        !isNumber(row.completedPercentage) ||
         !isNumber(row.completedCount) ||
         !isNumber(row.inProgressCount) ||
         !isNumber(row.notStartedCount)
@@ -286,8 +511,6 @@ export class ImportController {
 
       return {
         email: row.email,
-        skill,
-        completedPercentage: row.completedPercentage / 100,
         completedCount: row.completedCount,
         inProgressCount: row.inProgressCount,
         notStartedCount: row.notStartedCount,
@@ -302,79 +525,71 @@ export class ImportController {
       await this.importService.importMindslinesService.create({
         organisation: req.organisation._id,
         fileName: file.originalname,
-        skill,
       });
 
     // CREATE IMPORT DATA
     await this.processImportDataMindslines({
       organisationId: req.organisation._id,
       importId,
-      skill,
       rows: normalizedRows,
     });
 
     return {};
   }
 
-  @Post('/google-sheet')
+  @Post('/lumina')
   @ResponseSchema(undefined)
-  public async importGoogleSheet(
-    @Req() req: any,
-    @Body()
-    { spreadsheetLink, refetchInterval, metric, skill, assessment }: any,
-  ) {
-    const sheets = google.sheets({
-      version: 'v4',
-      auth: env.googleSheets.apiKey,
-    });
+  public async importLumina(@Req() req: any, @UploadedFile('file') file?: any) {
+    if (!file) {
+      throw new BadRequestError('File is required');
+    }
 
-    const spreadsheetId = spreadsheetLink.match(/\/d\/(.*?)\//)[1];
-    const range = 'A2:ZZ'; // Get all columns and rows from row 2 onwards
+    const stringFile = file.buffer.toString('utf-8');
+    const extractedData = await csvtojson().fromString(stringFile);
 
-    const {
-      data: { values: rows },
-    } = await sheets.spreadsheets.values
-      .get({
-        spreadsheetId,
-        range,
-      })
-      .catch((err) => {
-        console.error('Error fetching data from Google Sheets:', err);
-        throw new BadRequestError(
-          map(err.errors, 'message').join(', ') || 'Error fetching data',
-        );
+    const keys = Object.keys(first(extractedData));
+    if (!keys.length) {
+      throw new BadRequestError('No valid data found');
+    }
+    const emailKey = find(keys, (key) => key.toLowerCase().includes('email'));
+
+    const normalizedRows = map(extractedData, (row) => {
+      row.email = row[emailKey];
+      row.skills = {};
+
+      Object.keys(row).forEach((key) => {
+        if (!key.toLowerCase().includes(`(percentile)`)) return;
+
+        const skill = last(key.split(' - ')).replace('(percentile)', '').trim();
+        const value = +row[key];
+        row.skills[skill] = isNumber(value) ? value : undefined;
       });
 
-    const extractedData = map(rows, (row) => {
-      const score = sum(map(row.slice(2), Number));
+      if (!row.email) {
+        return null;
+      }
 
       return {
-        timestamp: dayjs(row[0]).toDate(),
-        email: row[1],
-        score,
+        email: row.email,
+        skills: row.skills,
       };
-    });
+    }).filter(Boolean);
+    if (!normalizedRows.length) {
+      throw new BadRequestError('No valid data found');
+    }
 
     // CREATE IMPORT
     const { _id: importId } =
-      await this.importService.importGoogleSheetService.create({
+      await this.importService.importLuminaService.create({
         organisation: req.organisation._id,
-        sheetId: spreadsheetId,
-        refetchInterval,
-        lastRefetchTimestamp: dayjs().toDate(),
-        metric,
-        skill,
-        assessment,
+        fileName: file.originalname,
       });
 
     // CREATE IMPORT DATA
-    await this.processImportData({
+    await this.processImportDataLumina({
       organisationId: req.organisation._id,
       importId,
-      metric,
-      skill,
-      assessment,
-      rows: extractedData,
+      rows: normalizedRows,
     });
 
     return {};
