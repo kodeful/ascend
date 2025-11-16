@@ -19,7 +19,6 @@ import {
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { Import, ImportAssessment } from 'api/models/import/import.model';
-import { Organisation } from 'api/models/organisation.model';
 import { ImportDataEvaluationService } from 'api/services/import-data/import-data-evaluation.service';
 import { ImportDataLuminaService } from 'api/services/import-data/import-data-lumina.service';
 import { ImportDataMindslinesService } from 'api/services/import-data/import-data-mindslines.service';
@@ -27,7 +26,6 @@ import { ImportDataThreeEyeViewService } from 'api/services/import-data/import-d
 import { ImportService } from 'api/services/import.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { env } from 'env';
-import { mongoId } from 'utils/mongoId';
 import { isValidEmail } from 'utils/validators';
 
 // Response Types
@@ -56,13 +54,11 @@ export class ImportController {
   ) {}
 
   public async processImportDataEvaluation({
-    organisationId,
     importId,
     metric,
     skill,
     rows,
   }: {
-    organisationId: Ref<Organisation>;
     importId: Ref<Import>;
     metric: string;
     skill: string;
@@ -75,7 +71,6 @@ export class ImportController {
     const importDataBulk = map(rows, (row) => ({
       updateOne: {
         filter: {
-          organisation: organisationId,
           import: importId,
           timestamp: row.timestamp,
           email: row.email,
@@ -91,7 +86,6 @@ export class ImportController {
 
     // CLEAN
     await this.importDataEvaluationService.model.deleteMany({
-      organisation: organisationId,
       import: importId,
     });
 
@@ -101,14 +95,12 @@ export class ImportController {
   }
 
   public async processImportDataThreeEyeView({
-    organisationId,
     importId,
     metric,
     skill,
     assessment,
     rows,
   }: {
-    organisationId: Ref<Organisation>;
     importId: Ref<Import>;
     metric: string;
     skill: string;
@@ -122,7 +114,6 @@ export class ImportController {
     const importDataBulk = map(rows, (row) => ({
       updateOne: {
         filter: {
-          organisation: organisationId,
           import: importId,
           timestamp: row.timestamp,
           email: row.email,
@@ -139,7 +130,6 @@ export class ImportController {
 
     // CLEAN
     await this.importDataThreeEyeViewService.model.deleteMany({
-      organisation: organisationId,
       import: importId,
     });
 
@@ -149,11 +139,9 @@ export class ImportController {
   }
 
   public async processImportDataMindslines({
-    organisationId,
     importId,
     rows,
   }: {
-    organisationId: Ref<Organisation>;
     importId: Ref<Import>;
     rows: {
       email: string;
@@ -165,7 +153,6 @@ export class ImportController {
     const importDataBulk = map(rows, (row) => ({
       updateOne: {
         filter: {
-          organisation: organisationId,
           import: importId,
           email: row.email,
         },
@@ -180,7 +167,6 @@ export class ImportController {
 
     // CLEAN
     await this.importDataMindslinesService.model.deleteMany({
-      organisation: organisationId,
       import: importId,
     });
 
@@ -190,11 +176,9 @@ export class ImportController {
   }
 
   public async processImportDataLumina({
-    organisationId,
     importId,
     rows,
   }: {
-    organisationId: Ref<Organisation>;
     importId: Ref<Import>;
     rows: {
       email: string;
@@ -204,7 +188,6 @@ export class ImportController {
     const importDataBulk = map(rows, (row) => ({
       updateOne: {
         filter: {
-          organisation: organisationId,
           import: importId,
           email: row.email,
         },
@@ -217,7 +200,6 @@ export class ImportController {
 
     // CLEAN
     await this.importDataLuminaService.model.deleteMany({
-      organisation: organisationId,
       import: importId,
     });
 
@@ -244,9 +226,7 @@ export class ImportController {
       sort,
       filter,
       defaultFilter: {},
-      preFilter: {
-        organisation: mongoId(req.organisation._id),
-      },
+      preFilter: {},
       Model: Import,
     });
   }
@@ -295,7 +275,6 @@ export class ImportController {
     // // CREATE IMPORT
     // const { _id: importId } = await this.importService.importFileService.create(
     //   {
-    //     organisation: req.organisation._id,
     //     fileName: file.originalname,
     //     fileType,
     //     metric,
@@ -306,7 +285,6 @@ export class ImportController {
 
     // // CREATE IMPORT DATA
     // await this.processImportDataEvaluation({
-    //   organisationId: req.organisation._id,
     //   importId,
     //   metric,
     //   skill,
@@ -334,7 +312,6 @@ export class ImportController {
     const importExists =
       await this.importService.importGoogleSheetService.findOne({
         filter: {
-          organisation: req.organisation._id,
           sheetId: spreadsheetId,
         },
       });
@@ -378,7 +355,6 @@ export class ImportController {
     // CREATE IMPORT
     const { _id: importId } =
       await this.importService.importGoogleSheetService.create({
-        organisation: req.organisation._id,
         sheetId: spreadsheetId,
         sheetName: spreadsheetName,
         refetchInterval,
@@ -418,7 +394,6 @@ export class ImportController {
 
       // CREATE IMPORT DATA
       await this.processImportDataEvaluation({
-        organisationId: req.organisation._id,
         importId,
         metric,
         skill,
@@ -471,7 +446,6 @@ export class ImportController {
 
       // CREATE IMPORT DATA
       await this.processImportDataThreeEyeView({
-        organisationId: req.organisation._id,
         importId,
         metric,
         skill,
@@ -542,13 +516,11 @@ export class ImportController {
     // CREATE IMPORT
     const { _id: importId } =
       await this.importService.importMindslinesService.create({
-        organisation: req.organisation._id,
         fileName: file.originalname,
       });
 
     // CREATE IMPORT DATA
     await this.processImportDataMindslines({
-      organisationId: req.organisation._id,
       importId,
       rows: normalizedRows,
     });
@@ -600,13 +572,11 @@ export class ImportController {
     // CREATE IMPORT
     const { _id: importId } =
       await this.importService.importLuminaService.create({
-        organisation: req.organisation._id,
         fileName: file.originalname,
       });
 
     // CREATE IMPORT DATA
     await this.processImportDataLumina({
-      organisationId: req.organisation._id,
       importId,
       rows: normalizedRows,
     });

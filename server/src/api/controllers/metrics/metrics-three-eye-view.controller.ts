@@ -63,7 +63,6 @@ export class MetricsThreeEyeViewController {
   ) {
     const importData = await this.importDataThreeEyeViewService.find({
       filter: {
-        organisation: req.organisation._id,
         ...(skill && { skill }),
         ...(email && { email }),
       },

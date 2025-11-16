@@ -1,18 +1,7 @@
-import {
-  Ref,
-  getModelForClass,
-  modelOptions,
-  prop,
-} from '@typegoose/typegoose';
-import { Expose, Transform } from 'class-transformer';
-import { IsMongoId } from 'class-validator';
-import { SchemaTypes } from 'mongoose';
+import { getModelForClass, modelOptions } from '@typegoose/typegoose';
 import { Container } from 'typedi';
 
 import { DocumentWithTimestamps } from 'api/types/document.types';
-import { transformMongoId } from 'utils/class-transformers/transformMongoId';
-
-import { Organisation } from '../organisation.model';
 
 export enum ImportType {
   FILE = 'File',
@@ -39,16 +28,6 @@ export enum ImportAssessment {
   },
 })
 export class Import extends DocumentWithTimestamps {
-  @Expose()
-  @IsMongoId()
-  @Transform(transformMongoId)
-  @prop({
-    type: SchemaTypes.ObjectId,
-    ref: Organisation,
-    required: true,
-  })
-  public organisation: Ref<Organisation>;
-
   public type: ImportType;
 }
 

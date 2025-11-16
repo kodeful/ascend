@@ -3,7 +3,13 @@ import { Expose } from 'class-transformer';
 import { IsDateString, IsEnum, IsString } from 'class-validator';
 import Container from 'typedi';
 
-import { Import, ImportMetric, ImportModel, ImportType } from './import.model';
+import {
+  Import,
+  ImportAssessment,
+  ImportMetric,
+  ImportModel,
+  ImportType,
+} from './import.model';
 
 export enum ImportGoogleSheetRefetchInterval {
   EVERY_DAY = 'Every Day',
@@ -23,16 +29,6 @@ export class ImportGoogleSheet extends Import {
   public sheetName: string;
 
   @Expose()
-  @IsString()
-  @prop({ type: String, required: true })
-  public skill: string;
-
-  @Expose()
-  @IsEnum(ImportMetric)
-  @prop({ type: String, enum: ImportMetric, required: true })
-  public metric: ImportMetric;
-
-  @Expose()
   @IsEnum(ImportGoogleSheetRefetchInterval)
   @prop({
     type: String,
@@ -45,6 +41,21 @@ export class ImportGoogleSheet extends Import {
   @IsDateString()
   @prop({ type: Date })
   public lastRefetchTimestamp: Date;
+
+  @Expose()
+  @IsString()
+  @prop({ type: String, required: true })
+  public skill: string;
+
+  @Expose()
+  @IsEnum(ImportMetric)
+  @prop({ type: String, enum: ImportMetric })
+  public metric?: ImportMetric;
+
+  @Expose()
+  @IsEnum(ImportAssessment)
+  @prop({ type: String, enum: ImportAssessment })
+  public assessment?: ImportAssessment;
 }
 
 export const ImportGoogleSheetModel = ImportModel.discriminator(

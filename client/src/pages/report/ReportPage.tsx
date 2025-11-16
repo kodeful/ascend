@@ -26,10 +26,18 @@ const ReportPage = () => {
         p: 3,
         py: 2,
       }}
+      height="100%"
     >
       <Title title="PAGE.TITLE.REPORT_BUILDER" />
 
-      <Grid container spacing={2} mt={2}>
+      <Grid
+        className="scrollbar-hidden"
+        container
+        spacing={2}
+        mt={2}
+        height="100%"
+        overflow="scroll"
+      >
         <Grid item xs={8}>
           <Typography variant="h5" color="#4D4D4D">
             {/* Start from template */}

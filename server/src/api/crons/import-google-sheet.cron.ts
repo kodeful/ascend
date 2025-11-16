@@ -92,7 +92,6 @@ export class ImportGoogleSheetCron {
       // CREATE IMPORT DATA
       const importController = Container.get(ImportController);
       await importController.processImportDataEvaluation({
-        organisationId: sheetImport.organisation,
         importId: sheetImport._id,
         metric: sheetImport.metric,
         skill: sheetImport.skill,
@@ -144,7 +143,6 @@ export class ImportGoogleSheetCron {
       // CREATE IMPORT DATA
       const importController = Container.get(ImportController);
       await importController.processImportDataThreeEyeView({
-        organisationId: sheetImport.organisation,
         importId: sheetImport._id,
         metric: sheetImport.metric,
         skill: sheetImport.skill,

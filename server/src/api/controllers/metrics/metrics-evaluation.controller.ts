@@ -27,7 +27,6 @@ export class MetricsEvaluationController {
   public async getByMetric(@Req() req, @QueryParam('email') email?: string) {
     const importDataEvaluation = await this.importDataEvaluationService.find({
       filter: {
-        organisation: req.organisation._id,
         ...(email && { email }),
       },
       select: ['timestamp', 'metric', 'score', 'email'],

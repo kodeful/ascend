@@ -41,7 +41,6 @@ export class MetricsMindslinesController {
   ) {
     const skills = await this.importDataMindslinesService.find({
       filter: {
-        organisation: req.organisation._id,
         ...(email && { email }),
       },
       select: ['completedCount', 'inProgressCount', 'notStartedCount'],

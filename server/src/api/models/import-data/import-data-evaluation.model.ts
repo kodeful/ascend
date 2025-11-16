@@ -9,19 +9,8 @@ import { Document } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
 import { Import } from '../import/import.model';
-import { Organisation } from '../organisation.model';
 
 export class ImportDataEvaluation extends Document {
-  @Expose()
-  @IsMongoId()
-  @Transform(transformMongoId)
-  @prop({
-    type: SchemaTypes.ObjectId,
-    ref: 'Organisation',
-    required: true,
-  })
-  public organisation: Ref<Organisation>;
-
   @Expose()
   @IsMongoId()
   @Transform(transformMongoId)

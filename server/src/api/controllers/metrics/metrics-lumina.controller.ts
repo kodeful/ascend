@@ -33,7 +33,6 @@ export class MetricsLuminaController {
   public async getSkills(@Req() req, @QueryParam('email') email?: string) {
     const importData = await this.importDataLuminaService.find({
       filter: {
-        organisation: req.organisation._id,
         ...(email && { email }),
       },
       select: ['skills'],
