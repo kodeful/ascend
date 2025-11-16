@@ -17,7 +17,9 @@ import {
   UploadedFile,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
+import Container from 'typedi';
 
+import { ImportGoogleSheetCron } from 'api/crons/import-google-sheet.cron';
 import { Import, ImportAssessment } from 'api/models/import/import.model';
 import { ImportDataEvaluationService } from 'api/services/import-data/import-data-evaluation.service';
 import { ImportDataLuminaService } from 'api/services/import-data/import-data-lumina.service';
@@ -26,7 +28,6 @@ import { ImportDataThreeEyeViewService } from 'api/services/import-data/import-d
 import { ImportService } from 'api/services/import.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { env } from 'env';
-import { isValidEmail } from 'utils/validators';
 
 // Response Types
 // ?|> filterImports
@@ -301,13 +302,7 @@ export class ImportController {
     @Body()
     { spreadsheetLink, refetchInterval, metric, skill }: any,
   ) {
-    const sheets = google.sheets({
-      version: 'v4',
-      auth: env.googleSheets.apiKey,
-    });
-
     const spreadsheetId = spreadsheetLink.match(/\/d\/(.*?)\//)[1];
-    const range = 'A2:ZZ'; // Get all columns and rows from row 2 onwards
 
     const importExists =
       await this.importService.importGoogleSheetService.findOne({
@@ -319,38 +314,35 @@ export class ImportController {
       throw new BadRequestError('Google Sheet import already exists');
     }
 
-    const [spreadsheetMetaResponse, spreadsheetValuesResponse] =
-      await Promise.all([
-        sheets.spreadsheets.get({
-          spreadsheetId,
-          fields: 'properties/title',
-        }),
-        sheets.spreadsheets.values.get({
-          spreadsheetId,
-          range,
-        }),
-      ]).catch((err) => {
-        console.error('Error fetching data from Google Sheets:', err);
-        const messages = map(err.errors, 'message').join(', ');
+    const sheets = google.sheets({
+      version: 'v4',
+      auth: env.googleSheets.apiKey,
+    });
+    const range = 'A2:ZZ'; // Get all columns and rows from row 2 onwards
 
-        if (messages === 'The caller does not have permission') {
-          throw new BadRequestError(
-            'You do not have permission to access this Google Sheet, please share access with "Anyone with the link".',
-          );
-        }
+    const [spreadsheetMetaResponse] = await Promise.all([
+      sheets.spreadsheets.get({
+        spreadsheetId,
+        fields: 'properties/title',
+      }),
+      sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range,
+      }),
+    ]).catch((err) => {
+      console.error('Error fetching data from Google Sheets:', err);
+      const messages = map(err.errors, 'message').join(', ');
 
-        throw new Error(messages || 'Error fetching data');
-      });
+      if (messages === 'The caller does not have permission') {
+        throw new BadRequestError(
+          'You do not have permission to access this Google Sheet, please share access with "Anyone with the link".',
+        );
+      }
+
+      throw new Error(messages || 'Error fetching data');
+    });
 
     const spreadsheetName = spreadsheetMetaResponse.data.properties?.title;
-    const rows = spreadsheetValuesResponse.data.values;
-
-    let importType: 'evaluation' | 'three-eye-view';
-    if (spreadsheetName.toLowerCase().startsWith('evaluation')) {
-      importType = 'evaluation';
-    } else {
-      importType = 'three-eye-view';
-    }
 
     // CREATE IMPORT
     const { _id: importId } =
@@ -363,98 +355,8 @@ export class ImportController {
         skill,
       });
 
-    if (importType === 'evaluation') {
-      const extractedData = map(rows, (row) => {
-        let email = '';
-        let score = 0;
-        row.slice(1).map((row) => {
-          if (isValidEmail(row)) {
-            email = row;
-            return;
-          }
-
-          let value = 0;
-          if (row.startsWith('a)')) {
-            value = 1;
-          } else if (row.startsWith('b')) {
-            value = 2;
-          } else if (row.startsWith('c')) {
-            value = 3;
-          }
-
-          score += value;
-        });
-
-        return {
-          timestamp: dayjs(first(row)).toDate(),
-          email,
-          score,
-        };
-      });
-
-      // CREATE IMPORT DATA
-      await this.processImportDataEvaluation({
-        importId,
-        metric,
-        skill,
-        rows: extractedData,
-      });
-
-      return {};
-    }
-
-    if (importType === 'three-eye-view') {
-      let assessment;
-      if (
-        spreadsheetName.includes('Facilitator Evaluation') ||
-        spreadsheetName.includes('Evaluación del Facilitador')
-      ) {
-        assessment = ImportAssessment.FACILITATOR_EVALUATION;
-      } else if (
-        spreadsheetName.includes('Self-Assessment') ||
-        spreadsheetName.includes('Autoevaluación')
-      ) {
-        assessment = ImportAssessment.SELF_EVALUATION;
-      } else if (
-        spreadsheetName.includes('Peer') ||
-        spreadsheetName.includes('Evaluación por compañeros')
-      ) {
-        assessment = ImportAssessment.PEER_EVALUATION;
-      }
-
-      const extractedData = map(rows, (row) => {
-        let email = '';
-        let score = 0;
-
-        row.forEach((cell) => {
-          if (isValidEmail(cell)) {
-            email = cell;
-            return;
-          }
-
-          const value = +cell;
-          if (!isNumber(value) || isNaN(value)) return;
-          score += value;
-        });
-
-        return {
-          timestamp: dayjs(first(row)).toDate(),
-          email,
-          score,
-        };
-      });
-
-      // CREATE IMPORT DATA
-      await this.processImportDataThreeEyeView({
-        importId,
-        metric,
-        skill,
-        assessment,
-        rows: extractedData,
-      });
-
-      return {};
-    }
+    const importGoogleSheetCron = Container.get(ImportGoogleSheetCron);
+    await importGoogleSheetCron.processImportData(importId);
 
     return {};
   }
