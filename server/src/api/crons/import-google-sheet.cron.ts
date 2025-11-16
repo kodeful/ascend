@@ -15,6 +15,23 @@ import { ImportService } from 'api/services/import.service';
 import { env } from 'env';
 import { isValidEmail } from 'utils/validators';
 
+const METRIC_PER_INDEX = {
+  [0]: 'knowledge',
+  [1]: 'knowledge',
+  [2]: 'knowledge',
+  [3]: 'knowledge',
+  [4]: 'knowledge',
+  [5]: 'confidence',
+  [6]: 'confidence',
+  [7]: 'confidence',
+  [8]: 'confidence',
+  [9]: 'confidence',
+  [10]: 'application',
+  [11]: 'application',
+  [12]: 'application',
+  [13]: 'application',
+  [14]: 'application',
+};
 @CronController('import-google-sheet')
 export class ImportGoogleSheetCron {
   constructor(private importService: ImportService) {}
@@ -63,7 +80,12 @@ export class ImportGoogleSheetCron {
     if (importType === 'evaluation') {
       const extractedData = map(rows, (row) => {
         let email = '';
-        let score = 0;
+        const scores = {
+          knowledge: 0,
+          confidence: 0,
+          application: 0,
+        };
+        let metricIndex = 0;
         row.slice(1).map((row) => {
           if (isValidEmail(row)) {
             email = row;
@@ -79,13 +101,14 @@ export class ImportGoogleSheetCron {
             value = 3;
           }
 
-          score += value;
+          scores[METRIC_PER_INDEX[metricIndex]] += value;
+          metricIndex++;
         });
 
         return {
           timestamp: dayjs(first(row)).toDate(),
           email,
-          score,
+          ...scores,
         };
       });
 
@@ -93,7 +116,6 @@ export class ImportGoogleSheetCron {
       const importController = Container.get(ImportController);
       await importController.processImportDataEvaluation({
         importId: sheetImport._id,
-        metric: sheetImport.metric,
         skill: sheetImport.skill,
         rows: extractedData,
       });
@@ -144,7 +166,6 @@ export class ImportGoogleSheetCron {
       const importController = Container.get(ImportController);
       await importController.processImportDataThreeEyeView({
         importId: sheetImport._id,
-        metric: sheetImport.metric,
         skill: sheetImport.skill,
         assessment,
         rows: extractedData,

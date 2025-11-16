@@ -10,6 +10,7 @@ import {
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { ImportDataLuminaService } from 'api/services/import-data/import-data-lumina.service';
+import { MetricsService } from 'api/services/metrics.service';
 
 // Response Types
 // ?|> getSkills
@@ -26,14 +27,22 @@ class getSkillsData {
 @JsonController('/metrics-lumina')
 @OpenAPI({})
 export class MetricsLuminaController {
-  constructor(private importDataLuminaService: ImportDataLuminaService) {}
+  constructor(
+    private importDataLuminaService: ImportDataLuminaService,
+    private metricsService: MetricsService,
+  ) {}
 
   @Get('/skills')
   @ResponseSchema(getSkillsData, { isArray: true })
   public async getSkills(@Req() req, @QueryParam('email') email?: string) {
     const importData = await this.importDataLuminaService.find({
       filter: {
-        ...(email && { email }),
+        email: {
+          $in: await this.metricsService.metricsEmails({
+            organisationId: req.organisation._id,
+            email,
+          }),
+        },
       },
       select: ['skills'],
     });

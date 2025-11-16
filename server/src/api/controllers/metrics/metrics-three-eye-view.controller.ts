@@ -10,6 +10,7 @@ import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { ImportAssessment } from 'api/models/import/import.model';
 import { ImportDataThreeEyeViewService } from 'api/services/import-data/import-data-three-eye-view.service';
+import { MetricsService } from 'api/services/metrics.service';
 
 // Response Types
 @Authorized()
@@ -18,6 +19,7 @@ import { ImportDataThreeEyeViewService } from 'api/services/import-data/import-d
 export class MetricsThreeEyeViewController {
   constructor(
     private importDataThreeEyeViewService: ImportDataThreeEyeViewService,
+    private metricsService: MetricsService,
   ) {}
 
   @Get('/skills/options')
@@ -44,8 +46,12 @@ export class MetricsThreeEyeViewController {
     const skills = await this.importDataThreeEyeViewService.distinct(
       {
         filter: {
-          organisation: req.organisation._id,
-          ...(email && { email }),
+          email: {
+            $in: await this.metricsService.metricsEmails({
+              organisationId: req.organisation._id,
+              email,
+            }),
+          },
         },
       },
       'skill',

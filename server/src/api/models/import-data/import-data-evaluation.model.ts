@@ -34,17 +34,22 @@ export class ImportDataEvaluation extends Document {
   @Expose()
   @IsString()
   @prop({ type: String, required: true })
-  public metric: string;
-
-  @Expose()
-  @IsString()
-  @prop({ type: String, required: true })
   public skill: string;
 
   @Expose()
   @IsNumber()
   @prop({ type: Number, required: true })
-  public score: number;
+  public knowledge: number;
+
+  @Expose()
+  @IsNumber()
+  @prop({ type: Number, required: true })
+  public confidence: number;
+
+  @Expose()
+  @IsNumber()
+  @prop({ type: Number, required: true })
+  public application: number;
 }
 
 export const ImportDataEvaluationModel = getModelForClass(

@@ -6,7 +6,6 @@ import Container from 'typedi';
 import {
   Import,
   ImportAssessment,
-  ImportMetric,
   ImportModel,
   ImportType,
 } from './import.model';
@@ -46,11 +45,6 @@ export class ImportGoogleSheet extends Import {
   @IsString()
   @prop({ type: String, required: true })
   public skill: string;
-
-  @Expose()
-  @IsEnum(ImportMetric)
-  @prop({ type: String, enum: ImportMetric })
-  public metric?: ImportMetric;
 
   @Expose()
   @IsEnum(ImportAssessment)

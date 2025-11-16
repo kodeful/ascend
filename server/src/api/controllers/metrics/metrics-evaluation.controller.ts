@@ -11,6 +11,7 @@ import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { ImportMetric } from 'api/models/import/import.model';
 import { ImportDataEvaluationService } from 'api/services/import-data/import-data-evaluation.service';
+import { MetricsService } from 'api/services/metrics.service';
 
 // Response Types
 // Controller
@@ -19,6 +20,7 @@ import { ImportDataEvaluationService } from 'api/services/import-data/import-dat
 @OpenAPI({})
 export class MetricsEvaluationController {
   constructor(
+    private metricsService: MetricsService,
     private importDataEvaluationService: ImportDataEvaluationService,
   ) {}
 
@@ -27,14 +29,22 @@ export class MetricsEvaluationController {
   public async getByMetric(@Req() req, @QueryParam('email') email?: string) {
     const importDataEvaluation = await this.importDataEvaluationService.find({
       filter: {
-        ...(email && { email }),
+        email: {
+          $in: await this.metricsService.metricsEmails({
+            organisationId: req.organisation._id,
+            email,
+          }),
+        },
       },
-      select: ['timestamp', 'metric', 'score', 'email'],
+      select: [
+        'timestamp',
+        'metric',
+        'email',
+        'knowledge',
+        'confidence',
+        'application',
+      ],
       sort: { timestamp: -1 },
-    });
-
-    const previousMonthImportData = filter(importDataEvaluation, (item) => {
-      return dayjs(item.timestamp).isBefore(dayjs().startOf('month'));
     });
 
     const calculateMetrics = (importData) => {
@@ -50,7 +60,9 @@ export class MetricsEvaluationController {
           return;
         }
 
-        metrics[item.metric].push(item.score);
+        metrics[ImportMetric.KNOWLEDGE].push(item.knowledge);
+        metrics[ImportMetric.CONFIDENCE].push(item.confidence);
+        metrics[ImportMetric.APPLICATION].push(item.application);
         usedCombinations.push(combination);
       });
 
@@ -61,6 +73,9 @@ export class MetricsEvaluationController {
       ];
     };
 
+    const previousMonthImportData = filter(importDataEvaluation, (item) => {
+      return dayjs(item.timestamp).isBefore(dayjs().startOf('month'));
+    });
     const before = calculateMetrics(previousMonthImportData);
     const after = calculateMetrics(importDataEvaluation);
 

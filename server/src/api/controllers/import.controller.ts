@@ -56,17 +56,17 @@ export class ImportController {
 
   public async processImportDataEvaluation({
     importId,
-    metric,
     skill,
     rows,
   }: {
     importId: Ref<Import>;
-    metric: string;
     skill: string;
     rows: {
       timestamp: Date;
       email: string;
-      score: number;
+      knowledge: number;
+      confidence: number;
+      application: number;
     }[];
   }) {
     const importDataBulk = map(rows, (row) => ({
@@ -77,9 +77,10 @@ export class ImportController {
           email: row.email,
         },
         update: {
-          score: row.score,
-          metric,
           skill,
+          knowledge: row.knowledge,
+          confidence: row.confidence,
+          application: row.application,
         },
         upsert: true,
       },
@@ -97,13 +98,11 @@ export class ImportController {
 
   public async processImportDataThreeEyeView({
     importId,
-    metric,
     skill,
     assessment,
     rows,
   }: {
     importId: Ref<Import>;
-    metric: string;
     skill: string;
     assessment: ImportAssessment;
     rows: {
@@ -122,7 +121,6 @@ export class ImportController {
         update: {
           score: row.score,
           assessment,
-          metric,
           skill,
         },
         upsert: true,
@@ -300,7 +298,7 @@ export class ImportController {
   public async importGoogleSheet(
     @Req() req: any,
     @Body()
-    { spreadsheetLink, refetchInterval, metric, skill }: any,
+    { spreadsheetLink, refetchInterval }: any,
   ) {
     const spreadsheetId = spreadsheetLink.match(/\/d\/(.*?)\//)[1];
 
@@ -344,6 +342,22 @@ export class ImportController {
 
     const spreadsheetName = spreadsheetMetaResponse.data.properties?.title;
 
+    let importType: 'evaluation' | 'three-eye-view';
+    if (spreadsheetName.toLowerCase().startsWith('evaluation')) {
+      importType = 'evaluation';
+    } else {
+      importType = 'three-eye-view';
+    }
+
+    let skill;
+    if (importType === 'evaluation') {
+      skill = last(spreadsheetName.split(' - '))
+        .replace('(Responses)', '')
+        .trim();
+    } else {
+      skill = first(spreadsheetName.split(' - ')).trim();
+    }
+
     // CREATE IMPORT
     const { _id: importId } =
       await this.importService.importGoogleSheetService.create({
@@ -351,7 +365,6 @@ export class ImportController {
         sheetName: spreadsheetName,
         refetchInterval,
         lastRefetchTimestamp: dayjs().toDate(),
-        metric,
         skill,
       });
 

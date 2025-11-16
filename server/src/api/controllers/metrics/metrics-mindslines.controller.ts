@@ -10,6 +10,7 @@ import {
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
 import { ImportDataMindslinesService } from 'api/services/import-data/import-data-mindslines.service';
+import { MetricsService } from 'api/services/metrics.service';
 
 // Response Types
 // ?|> getCompletition
@@ -31,6 +32,7 @@ class getCompletitionResponse {
 export class MetricsMindslinesController {
   constructor(
     private importDataMindslinesService: ImportDataMindslinesService,
+    private metricsService: MetricsService,
   ) {}
 
   @Get('/completition')
@@ -41,7 +43,12 @@ export class MetricsMindslinesController {
   ) {
     const skills = await this.importDataMindslinesService.find({
       filter: {
-        ...(email && { email }),
+        email: {
+          $in: await this.metricsService.metricsEmails({
+            organisationId: req.organisation._id,
+            email,
+          }),
+        },
       },
       select: ['completedCount', 'inProgressCount', 'notStartedCount'],
     });
