@@ -21,6 +21,7 @@ import { Organisation } from './organisation.model';
 export enum UserRole {
   LEARNER = 'Learner',
   FACILITATOR = 'Facilitator',
+  ADMIN = 'Admin',
 }
 
 class UserWorkspace {

@@ -13,4 +13,5 @@ export type FilterUsersDataRole =
 export const FilterUsersDataRole = {
   Learner: "Learner",
   Facilitator: "Facilitator",
+  Admin: "Admin",
 } as const;

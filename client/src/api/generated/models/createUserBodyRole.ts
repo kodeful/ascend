@@ -13,4 +13,5 @@ export type CreateUserBodyRole =
 export const CreateUserBodyRole = {
   Learner: "Learner",
   Facilitator: "Facilitator",
+  Admin: "Admin",
 } as const;

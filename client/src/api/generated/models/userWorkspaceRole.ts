@@ -13,4 +13,5 @@ export type UserWorkspaceRole =
 export const UserWorkspaceRole = {
   Learner: "Learner",
   Facilitator: "Facilitator",
+  Admin: "Admin",
 } as const;

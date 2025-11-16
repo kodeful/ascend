@@ -23,7 +23,6 @@ export * from "./filterUsersResponse";
 export * from "./findROIResponse";
 export * from "./getCompletitionResponse";
 export * from "./getSkillsData";
-export * from "./import";
 export * from "./importControllerFilterImportsParams";
 export * from "./loginBody";
 export * from "./loginResponse";

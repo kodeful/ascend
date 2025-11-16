@@ -112,15 +112,8 @@ export function useImportControllerFilterImports<
 /**
  * @summary Import file
  */
-export const importControllerImportFile = (
-  importControllerImportFileBody?: unknown,
-) => {
-  return axiosInstance<unknown>({
-    url: `/import/file`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: importControllerImportFileBody,
-  });
+export const importControllerImportFile = () => {
+  return axiosInstance<unknown>({ url: `/import/file`, method: "POST" });
 };
 
 export const getImportControllerImportFileMutationOptions = <
@@ -130,24 +123,22 @@ export const getImportControllerImportFileMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof importControllerImportFile>>,
     TError,
-    { data: unknown },
+    void,
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof importControllerImportFile>>,
   TError,
-  { data: unknown },
+  void,
   TContext
 > => {
   const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof importControllerImportFile>>,
-    { data: unknown }
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return importControllerImportFile(data);
+    void
+  > = () => {
+    return importControllerImportFile();
   };
 
   return { mutationFn, ...mutationOptions };
@@ -156,7 +147,7 @@ export const getImportControllerImportFileMutationOptions = <
 export type ImportControllerImportFileMutationResult = NonNullable<
   Awaited<ReturnType<typeof importControllerImportFile>>
 >;
-export type ImportControllerImportFileMutationBody = unknown;
+
 export type ImportControllerImportFileMutationError = unknown;
 
 /**
@@ -169,13 +160,13 @@ export const useImportControllerImportFile = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof importControllerImportFile>>,
     TError,
-    { data: unknown },
+    void,
     TContext
   >;
 }): UseMutationResult<
   Awaited<ReturnType<typeof importControllerImportFile>>,
   TError,
-  { data: unknown },
+  void,
   TContext
 > => {
   const mutationOptions = getImportControllerImportFileMutationOptions(options);
