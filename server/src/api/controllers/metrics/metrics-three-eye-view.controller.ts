@@ -69,8 +69,13 @@ export class MetricsThreeEyeViewController {
   ) {
     const importData = await this.importDataThreeEyeViewService.find({
       filter: {
+        email: {
+          $in: await this.metricsService.metricsEmails({
+            organisationId: req.organisation._id,
+            email,
+          }),
+        },
         ...(skill && { skill }),
-        ...(email && { email }),
       },
       select: ['timestamp', 'metric', 'score', 'email', 'skill', 'assessment'],
       sort: { timestamp: -1 },
