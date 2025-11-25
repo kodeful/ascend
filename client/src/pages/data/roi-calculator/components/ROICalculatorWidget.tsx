@@ -13,6 +13,7 @@ import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 
 import { useROICalculatorControllerFindROI } from "api/generated/roi-calculator/roi-calculator";
+import { getInvestmentSuggestion } from "api/roi-calculator/roi-suggestions";
 import AsyncComponent from "components/AsyncComponent/AsyncComponent";
 import Counter from "components/Counter/Counter";
 import RefreshIcon from "components/icons/RefreshIcon";
@@ -71,6 +72,16 @@ const ROICalculatorWidget: FC<ROICalculatorWidgetProps> = ({ link }) => {
     ],
     [roiCalculatorResult],
   );
+
+  const suggestion = useMemo(() => {
+    if (!roiCalculatorResult) return null;
+    return getInvestmentSuggestion({
+      maxCompoundedROI: roiCalculatorResult.maxCompoundedROI,
+      maxExpectedROI: roiCalculatorResult.maxExpectedROI,
+      minCompoundedROI: roiCalculatorResult.minCompoundedROI,
+      minExpectedROI: roiCalculatorResult.minExpectedROI,
+    });
+  }, [roiCalculatorResult]);
 
   return (
     <Paper
@@ -163,16 +174,16 @@ const ROICalculatorWidget: FC<ROICalculatorWidgetProps> = ({ link }) => {
         ))}
       </Grid>
 
-      <Stack mt={2}>
-        <Typography fontSize={16} fontWeight={700} color="#60646C">
-          Suggestions
-        </Typography>
-        <Typography fontSize={13} color="#60648C" mt={1}>
-          The ROl for this investment, exceeds the target. Investing in this
-          Development Program for these First-Line Managers is expected to
-          exceed the desired value.
-        </Typography>
-      </Stack>
+      {suggestion && (
+        <Stack mt={2}>
+          <Typography fontSize={16} fontWeight={700} color="#60646C">
+            Suggestions
+          </Typography>
+          <Typography fontSize={13} color="#60648C" mt={1}>
+            {suggestion}
+          </Typography>
+        </Stack>
+      )}
     </Paper>
   );
 };
