@@ -1,5 +1,6 @@
 // src/api/controllers/report.controller.ts
 
+import { Ref } from '@typegoose/typegoose';
 import { Type, plainToInstance } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 import dayjs, { Dayjs } from 'dayjs';
@@ -10,6 +11,7 @@ import {
   Body,
   Get,
   JsonController,
+  Param,
   Post,
   QueryParam,
   QueryParams,
@@ -81,12 +83,11 @@ export class ReportController {
     });
   }
 
-  // ---------- Create report ----------
   @Post()
   @ResponseSchema(undefined)
   public async createReport(
     @Req() req: any,
-    @Body() { title, subtitle, type, rangeDate, horizontal }: any,
+    @Body() { title, subtitle, type, rangeDate, horizontal, learner }: any,
   ) {
     await this.reportService.create({
       organisation: req.organisation._id,
@@ -95,9 +96,16 @@ export class ReportController {
       type,
       rangeDate,
       horizontal,
+      learner,
     });
 
     return {};
+  }
+
+  @Get('/:reportId')
+  @ResponseSchema(undefined)
+  public async getReportById(@Param('reportId') reportId: Ref<Report>) {
+    return this.reportService.findOneById(reportId);
   }
 
   // ---------- Group (cohort) data ----------

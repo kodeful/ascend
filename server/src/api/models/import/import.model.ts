@@ -1,4 +1,5 @@
 import { getModelForClass, modelOptions } from '@typegoose/typegoose';
+import { IsEnum } from 'class-validator';
 import { Container } from 'typedi';
 
 import { DocumentWithTimestamps } from 'api/types/document.types';
@@ -28,6 +29,7 @@ export enum ImportAssessment {
   },
 })
 export class Import extends DocumentWithTimestamps {
+  @IsEnum(ImportType)
   public type: ImportType;
 }
 

@@ -32,6 +32,7 @@ const CreateReportPage = () => {
           title: values.title,
           subtitle: values.subtitle,
           type: values.reportType,
+          learner: values.learner,
           rangeDate: values.rangeDate,
           horizontal: values.horizontal,
         },

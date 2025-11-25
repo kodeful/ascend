@@ -8,6 +8,7 @@ import ROICalculatorPage from "pages/data/roi-calculator/ROICalculatorPage";
 import HomePage from "pages/home/HomePage";
 import CreateReportPage from "pages/report/create/CreateReportPage";
 import ReportPage from "pages/report/ReportPage";
+import SingleReportPage from "pages/report/single/SingleReportPage";
 // import ResetPasswordPage from "pages/reset-password/ResetPasswordPage";
 import SettingsAccountPage from "pages/settings/account/SettingsAccountPage";
 import SettingsConnectionsFilesPage from "pages/settings/connections/files/SettingsConnectionsFilesPage";
@@ -53,6 +54,12 @@ const App = () => {
           path="/report/create"
           shrinked
         />
+        <PrivateRoute
+          exact
+          component={SingleReportPage}
+          path="/report/:reportId"
+        />
+
         <PrivateRoute exact component={ChatAiPage} path="/chat-ai" />
         <PrivateRoute
           exact

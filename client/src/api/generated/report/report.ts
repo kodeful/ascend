@@ -186,6 +186,95 @@ export const useReportControllerCreateReport = <
   return useMutation(mutationOptions);
 };
 /**
+ * @summary Get report by id
+ */
+export const reportControllerGetReportById = (
+  reportId: unknown,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<unknown>({
+    url: `/report/${reportId}`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getReportControllerGetReportByIdQueryKey = (reportId: unknown) => {
+  return [`/report/${reportId}`] as const;
+};
+
+export const getReportControllerGetReportByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof reportControllerGetReportById>>,
+  TError = unknown,
+>(
+  reportId: unknown,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof reportControllerGetReportById>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getReportControllerGetReportByIdQueryKey(reportId);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof reportControllerGetReportById>>
+  > = ({ signal }) => reportControllerGetReportById(reportId, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!reportId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof reportControllerGetReportById>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ReportControllerGetReportByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof reportControllerGetReportById>>
+>;
+export type ReportControllerGetReportByIdQueryError = unknown;
+
+/**
+ * @summary Get report by id
+ */
+
+export function useReportControllerGetReportById<
+  TData = Awaited<ReturnType<typeof reportControllerGetReportById>>,
+  TError = unknown,
+>(
+  reportId: unknown,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof reportControllerGetReportById>>,
+      TError,
+      TData
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getReportControllerGetReportByIdQueryOptions(
+    reportId,
+    options,
+  );
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * @summary Get group data
  */
 export const reportControllerGetGroupData = (

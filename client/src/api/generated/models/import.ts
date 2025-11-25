@@ -5,23 +5,14 @@
  * Starter Template BE
  * OpenAPI spec version: 1.0.0
  */
-import type { ReportRangeDate } from "./reportRangeDate";
-import type { ReportType } from "./reportType";
+import type { ImportType } from "./importType";
 
-export interface Report {
+export interface Import {
   /** @pattern ^[0-9a-fA-F]{24}$ */
   _id: string;
   /** @pattern \d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d+Z? */
   createdAt: string;
-  horizontal: boolean;
-  /** @pattern ^[0-9a-fA-F]{24}$ */
-  learner: string;
-  /** @pattern ^[0-9a-fA-F]{24}$ */
-  organisation: string;
-  rangeDate: ReportRangeDate;
-  subtitle: string;
-  title: string;
-  type: ReportType;
+  type: ImportType;
   /** @pattern \d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d+Z? */
   updatedAt: string;
 }

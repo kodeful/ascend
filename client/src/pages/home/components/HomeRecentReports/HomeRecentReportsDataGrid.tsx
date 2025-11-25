@@ -3,6 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import FilePDFIMG from "assets/imgs/files/file-pdf.png";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useHistory } from "react-router-dom";
 
 import { useReportControllerFilterReports } from "api/generated/report/report";
 import DataGrid from "components/DataGrid/DataGrid";
@@ -10,6 +11,8 @@ import { useLanguageStore } from "components/stores/LanguageStore";
 import dayjs from "utils/dayjs";
 
 const HomeRecentReportsDataGrid = () => {
+  const history = useHistory();
+
   const { data: reports, isLoading } = useReportControllerFilterReports(
     {
       limit: -1,
@@ -108,6 +111,9 @@ const HomeRecentReportsDataGrid = () => {
         columns={columns}
         loading={isLoading}
         rows={reports?.data || []}
+        onRowClick={({ row }) => {
+          history.push(`/report/${row._id}`);
+        }}
       />
 
       <Typography

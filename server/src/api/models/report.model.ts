@@ -8,6 +8,7 @@ import { DocumentWithTimestamps } from 'api/types/document.types';
 import { transformMongoId } from 'utils/class-transformers/transformMongoId';
 
 import { Organisation } from './organisation.model';
+import { User } from './user.model';
 
 export enum ReportType {
   GROUP_REPORT = 'Group Report',
@@ -53,6 +54,12 @@ export class Report extends DocumentWithTimestamps {
   @IsEnum(ReportRangeDate)
   @prop({ type: String, enum: ReportRangeDate, required: true })
   public rangeDate: ReportRangeDate;
+
+  @Expose()
+  @IsMongoId()
+  @Transform(transformMongoId)
+  @prop({ type: SchemaTypes.ObjectId, ref: 'User' })
+  public learner?: Ref<User>;
 
   @Expose()
   @IsBoolean()
