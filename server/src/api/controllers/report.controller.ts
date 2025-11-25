@@ -111,18 +111,22 @@ export class ReportController {
     const { from, to } = this.getRangeData(rangeData);
 
     // Count learners in org
-    const learnersIncluded = await this.userService.count({
-      workspaces: {
-        $elemMatch: {
-          organisation: organisation._id,
-          role: UserRole.LEARNER,
+    const learnersIncluded = await this.userService.find({
+      filter: {
+        workspaces: {
+          $elemMatch: {
+            organisation: organisation._id,
+            role: UserRole.LEARNER,
+          },
         },
       },
+      select: ['email'],
     });
+    const emails = learnersIncluded.map((l) => l.email);
 
     // Pull evaluations within range
     const evalQuery: FilterQuery<ImportDataEvaluation> = {
-      // organisation: organisation._id,
+      email: { $in: emails.map((e) => new RegExp(`^${e}$`, 'i')) },
       timestamp: { $gte: from.toDate(), $lt: to.toDate() },
     } as any;
     const evalDocs = await ImportDataEvaluationModel.find(evalQuery).lean();
@@ -148,13 +152,15 @@ export class ReportController {
       if (!s || !e) continue;
       if (!bySkillLearner.has(s)) bySkillLearner.set(s, new Map());
       const map = bySkillLearner.get(s);
-      const slot = map.get(e) ?? {};
+
       const ts = +new Date(r.timestamp);
       const trio: Trio = {
-        knowledge: r.knowledge ?? 0,
-        application: r.application ?? 0,
-        confidence: r.confidence ?? 0,
+        knowledge: Number(r.knowledge ?? 0),
+        application: Number(r.application ?? 0),
+        confidence: Number(r.confidence ?? 0),
       };
+
+      const slot = map.get(e) ?? {};
       if (slot.firstTs == null || ts < slot.firstTs) {
         slot.first = trio;
         slot.firstTs = ts;
@@ -168,27 +174,28 @@ export class ReportController {
 
     const skillsOut = skills.map((s) => {
       const map = bySkillLearner.get(s) ?? new Map();
-      let before = 0,
-        latest = 0,
+      let beforeSum = 0,
+        latestSum = 0,
         nB = 0,
         nL = 0,
         improved = 0,
-        total = 0;
+        totalPairs = 0;
 
       for (const [, v] of map) {
         if (v.first) {
           const avgB =
             (v.first.knowledge + v.first.application + v.first.confidence) / 3;
-          before += avgB;
+          beforeSum += avgB;
           nB++;
         }
         if (v.last) {
           const avgL =
             (v.last.knowledge + v.last.application + v.last.confidence) / 3;
-          latest += avgL;
+          latestSum += avgL;
           nL++;
         }
         if (v.first && v.last) {
+          // FIX: divide the whole difference by 3, not just the RHS
           const d =
             (v.last.knowledge +
               v.last.application +
@@ -196,27 +203,27 @@ export class ReportController {
               (v.first.knowledge + v.first.application + v.first.confidence)) /
             3;
           if (d > 0) improved++;
-          total++;
+          totalPairs++;
         }
       }
 
-      const beforeAvg = nB ? before / nB : 0;
-      const latestAvg = nL ? latest / nL : beforeAvg;
+      const beforeAvg = nB ? beforeSum / nB : 0;
+      const latestAvg = nL ? latestSum / nL : beforeAvg;
       const delta = latestAvg - beforeAvg;
-      const improvedShare = total ? improved / total : 0;
+      const improvedShare = totalPairs ? improved / totalPairs : 0;
 
       return {
         skill: s,
         before: round(beforeAvg, 1),
         latest: round(latestAvg, 1),
         delta: round(delta, 1),
-        improvedShare: round(improvedShare, 2),
+        improvedShare: round(improvedShare, 2), // fraction 0..1 (format as % in UI if needed)
       };
     });
 
     // Three-eye view cohort averages in window
     const threeQuery: FilterQuery<ImportDataThreeEyeView> = {
-      // organisation: organisation._id,
+      email: { $in: emails.map((e) => new RegExp(`^${e}$`, 'i')) },
       timestamp: { $gte: from.toDate(), $lt: to.toDate() },
     } as any;
     const threeDocs = await ImportDataThreeEyeViewModel.find(threeQuery).lean();
@@ -229,7 +236,7 @@ export class ReportController {
     for (const r of threeDocs) {
       const key = r.assessment as keyof typeof threeAgg;
       if (!threeAgg[key]) continue;
-      threeAgg[key].sum += r.score ?? 0;
+      threeAgg[key].sum += Number(r.score ?? 0);
       threeAgg[key].n += 1;
     }
     const threeEye = {
@@ -263,7 +270,7 @@ export class ReportController {
       company: organisation.name,
       periodFrom: from?.format('YYYY-MM-DD'),
       periodTo: to?.format('YYYY-MM-DD'),
-      assessmentsIncluded: learnersIncluded,
+      assessmentsIncluded: learnersIncluded.length,
       skills: skillsOut,
       threeEye,
       insights,
@@ -294,21 +301,17 @@ export class ReportController {
     // Fetch all sources in parallel
     const [evalDocs, luminaDocs, mindDocs, threeDocs] = await Promise.all([
       ImportDataEvaluationModel.find({
-        // organisation: organisation._id,
         email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
         timestamp: { $gte: from.toDate(), $lt: to.toDate() },
       }).lean(),
       ImportDataLuminaModel.find({
-        // organisation: organisation._id,
         email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
         timestamp: { $gte: from.toDate(), $lt: to.toDate() },
       }).lean(),
       ImportDataMindslinesModel.find({
-        // organisation: organisation._id,
         email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
       }).lean(),
       ImportDataThreeEyeViewModel.find({
-        // organisation: organisation._id,
         email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
         timestamp: { $gte: from.toDate(), $lt: to.toDate() },
       }).lean(),
@@ -468,7 +471,6 @@ export class ReportController {
   }
 
   // -------------------- Helpers --------------------
-
   private escape(s: string) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
@@ -527,8 +529,10 @@ export class ReportController {
         )}%).`,
       );
     }
-    if (!insights.length)
+    if (!insights.length) {
       insights.push('ℹ️ Stable performance across the selected period.');
+    }
+
     return insights;
   }
 
@@ -593,8 +597,10 @@ export class ReportController {
       );
     }
 
-    if (!insights.length)
+    if (!insights.length) {
       insights.push('ℹ️ No strong changes detected in the selected period.');
+    }
+
     return insights;
   }
 
@@ -624,6 +630,7 @@ export class ReportController {
         to = dayjs().endOf('year');
         break;
     }
+
     return { from, to };
   }
 }

@@ -84,7 +84,7 @@ const IndividualOverallProgress: React.FC<Props> = ({
   const delta = latest.global - first.global;
   const pctImprovement = Math.max(
     0,
-    (delta / Math.max(1e-9, first.global)) * 100,
+    (delta / Math.max(100, first.global)) * 100,
   );
 
   return (
