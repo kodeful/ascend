@@ -1,7 +1,10 @@
+// src/api/controllers/report.controller.ts
+
 import { Type, plainToInstance } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { round } from 'lodash';
+import { FilterQuery } from 'mongoose';
 import {
   Authorized,
   Body,
@@ -14,28 +17,36 @@ import {
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
 
+import { ImportAssessment, ImportMetric } from 'api/models/import/import.model';
+import {
+  ImportDataEvaluation,
+  ImportDataEvaluationModel,
+} from 'api/models/import-data/import-data-evaluation.model';
+import { ImportDataLuminaModel } from 'api/models/import-data/import-data-lumina.model';
+import { ImportDataMindslinesModel } from 'api/models/import-data/import-data-mindslines.model';
+import {
+  ImportDataThreeEyeView,
+  ImportDataThreeEyeViewModel,
+} from 'api/models/import-data/import-data-three-eye-view.model';
 import { Report } from 'api/models/report.model';
 import { UserRole } from 'api/models/user.model';
-// import { ImportDataMindslinesService } from 'api/services/import-data-mindslines.service';
-// import { ImportDataService } from 'api/services/import-data-evaluation.service';
 import { ReportService } from 'api/services/report.service';
 import { UserService } from 'api/services/user.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { mongoId } from 'utils/mongoId';
 
-// Response Types
-// ?|> filterReports
+// -------------------- Response Types --------------------
 class filterReportsResponse {
   @ValidateNested({ each: true })
   @Type(() => Report)
-  data: Report[];
+  data!: Report[];
 
   @ValidateNested()
   @Type(() => FilterMeta)
-  meta: FilterMeta;
+  meta!: FilterMeta;
 }
 
-// Controller
+// -------------------- Controller --------------------
 @Authorized()
 @JsonController('/report')
 @OpenAPI({})
@@ -43,10 +54,9 @@ export class ReportController {
   constructor(
     private reportService: ReportService,
     private userService: UserService,
-    // private importDataService: ImportDataService,
-    // private importDataMindslinesService: ImportDataMindslinesService,
   ) {}
 
+  // ---------- List / filter reports ----------
   @Get()
   @ResponseSchema(filterReportsResponse)
   public async filterReports(
@@ -71,6 +81,7 @@ export class ReportController {
     });
   }
 
+  // ---------- Create report ----------
   @Post()
   @ResponseSchema(undefined)
   public async createReport(
@@ -89,15 +100,515 @@ export class ReportController {
     return {};
   }
 
-  private getRangeData(rangeData: string) {
-    let from, to;
+  // ---------- Group (cohort) data ----------
+  @Get('/data/group')
+  @ResponseSchema(undefined)
+  public async getGroupData(
+    @Req() req: any,
+    @QueryParam('rangeData') rangeData: string,
+  ) {
+    const organisation = req.organisation;
+    const { from, to } = this.getRangeData(rangeData);
+
+    // Count learners in org
+    const learnersIncluded = await this.userService.count({
+      workspaces: {
+        $elemMatch: {
+          organisation: organisation._id,
+          role: UserRole.LEARNER,
+        },
+      },
+    });
+
+    // Pull evaluations within range
+    const evalQuery: FilterQuery<ImportDataEvaluation> = {
+      // organisation: organisation._id,
+      timestamp: { $gte: from.toDate(), $lt: to.toDate() },
+    } as any;
+    const evalDocs = await ImportDataEvaluationModel.find(evalQuery).lean();
+
+    // Skills present
+    const skillSet = new Set<string>();
+    for (const r of evalDocs) if (r?.skill) skillSet.add(r.skill);
+    const skills = Array.from(skillSet).sort((a, b) => a.localeCompare(b));
+
+    // Per skill, compute per-learner earliest/latest, then average across learners
+    type Trio = { knowledge: number; application: number; confidence: number };
+    const bySkillLearner = new Map<
+      string,
+      Map<
+        string,
+        { first?: Trio; last?: Trio; firstTs?: number; lastTs?: number }
+      >
+    >();
+
+    for (const r of evalDocs) {
+      const s = r.skill;
+      const e = r.email?.toLowerCase() ?? '';
+      if (!s || !e) continue;
+      if (!bySkillLearner.has(s)) bySkillLearner.set(s, new Map());
+      const map = bySkillLearner.get(s);
+      const slot = map.get(e) ?? {};
+      const ts = +new Date(r.timestamp);
+      const trio: Trio = {
+        knowledge: r.knowledge ?? 0,
+        application: r.application ?? 0,
+        confidence: r.confidence ?? 0,
+      };
+      if (slot.firstTs == null || ts < slot.firstTs) {
+        slot.first = trio;
+        slot.firstTs = ts;
+      }
+      if (slot.lastTs == null || ts > slot.lastTs) {
+        slot.last = trio;
+        slot.lastTs = ts;
+      }
+      map.set(e, slot);
+    }
+
+    const skillsOut = skills.map((s) => {
+      const map = bySkillLearner.get(s) ?? new Map();
+      let before = 0,
+        latest = 0,
+        nB = 0,
+        nL = 0,
+        improved = 0,
+        total = 0;
+
+      for (const [, v] of map) {
+        if (v.first) {
+          const avgB =
+            (v.first.knowledge + v.first.application + v.first.confidence) / 3;
+          before += avgB;
+          nB++;
+        }
+        if (v.last) {
+          const avgL =
+            (v.last.knowledge + v.last.application + v.last.confidence) / 3;
+          latest += avgL;
+          nL++;
+        }
+        if (v.first && v.last) {
+          const d =
+            (v.last.knowledge +
+              v.last.application +
+              v.last.confidence -
+              (v.first.knowledge + v.first.application + v.first.confidence)) /
+            3;
+          if (d > 0) improved++;
+          total++;
+        }
+      }
+
+      const beforeAvg = nB ? before / nB : 0;
+      const latestAvg = nL ? latest / nL : beforeAvg;
+      const delta = latestAvg - beforeAvg;
+      const improvedShare = total ? improved / total : 0;
+
+      return {
+        skill: s,
+        before: round(beforeAvg, 1),
+        latest: round(latestAvg, 1),
+        delta: round(delta, 1),
+        improvedShare: round(improvedShare, 2),
+      };
+    });
+
+    // Three-eye view cohort averages in window
+    const threeQuery: FilterQuery<ImportDataThreeEyeView> = {
+      // organisation: organisation._id,
+      timestamp: { $gte: from.toDate(), $lt: to.toDate() },
+    } as any;
+    const threeDocs = await ImportDataThreeEyeViewModel.find(threeQuery).lean();
+
+    const threeAgg = {
+      [ImportAssessment.SELF_EVALUATION]: { sum: 0, n: 0 },
+      [ImportAssessment.PEER_EVALUATION]: { sum: 0, n: 0 },
+      [ImportAssessment.FACILITATOR_EVALUATION]: { sum: 0, n: 0 },
+    };
+    for (const r of threeDocs) {
+      const key = r.assessment as keyof typeof threeAgg;
+      if (!threeAgg[key]) continue;
+      threeAgg[key].sum += r.score ?? 0;
+      threeAgg[key].n += 1;
+    }
+    const threeEye = {
+      self: threeAgg[ImportAssessment.SELF_EVALUATION].n
+        ? round(
+            threeAgg[ImportAssessment.SELF_EVALUATION].sum /
+              threeAgg[ImportAssessment.SELF_EVALUATION].n,
+            1,
+          )
+        : null,
+      peer: threeAgg[ImportAssessment.PEER_EVALUATION].n
+        ? round(
+            threeAgg[ImportAssessment.PEER_EVALUATION].sum /
+              threeAgg[ImportAssessment.PEER_EVALUATION].n,
+            1,
+          )
+        : null,
+      facilitator: threeAgg[ImportAssessment.FACILITATOR_EVALUATION].n
+        ? round(
+            threeAgg[ImportAssessment.FACILITATOR_EVALUATION].sum /
+              threeAgg[ImportAssessment.FACILITATOR_EVALUATION].n,
+            1,
+          )
+        : null,
+    };
+
+    const insights = this.buildCohortInsights(skillsOut, threeEye);
+
+    return {
+      cohortName: 'Cohort',
+      company: organisation.name,
+      periodFrom: from?.format('YYYY-MM-DD'),
+      periodTo: to?.format('YYYY-MM-DD'),
+      assessmentsIncluded: learnersIncluded,
+      skills: skillsOut,
+      threeEye,
+      insights,
+    };
+  }
+
+  // ---------- Individual data ----------
+  @Get('/data/individual')
+  @ResponseSchema(undefined)
+  public async getIndividualData(
+    @Req() req: any,
+    @QueryParam('learner') learner: string,
+    @QueryParam('rangeData') rangeData: string,
+  ) {
+    const organisation = req.organisation;
+    const { from, to } = this.getRangeData(rangeData);
+    const learnerEmail = await this.resolveLearnerEmail(learner);
+
+    // Dates array [from, to)
+    const dates: string[] = [];
+    let cursor = from.clone().startOf('day');
+    const toStart = to.clone().startOf('day');
+    while (cursor.isBefore(toStart, 'day')) {
+      dates.push(cursor.format('YYYY-MM-DD'));
+      cursor = cursor.add(1, 'day');
+    }
+
+    // Fetch all sources in parallel
+    const [evalDocs, luminaDocs, mindDocs, threeDocs] = await Promise.all([
+      ImportDataEvaluationModel.find({
+        // organisation: organisation._id,
+        email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
+        timestamp: { $gte: from.toDate(), $lt: to.toDate() },
+      }).lean(),
+      ImportDataLuminaModel.find({
+        // organisation: organisation._id,
+        email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
+        timestamp: { $gte: from.toDate(), $lt: to.toDate() },
+      }).lean(),
+      ImportDataMindslinesModel.find({
+        // organisation: organisation._id,
+        email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
+      }).lean(),
+      ImportDataThreeEyeViewModel.find({
+        // organisation: organisation._id,
+        email: new RegExp(`^${this.escape(learnerEmail)}$`, 'i'),
+        timestamp: { $gte: from.toDate(), $lt: to.toDate() },
+      }).lean(),
+    ]);
+
+    // Skills set from evaluations + lumina keys
+    const skillSet = new Set<string>();
+    for (const r of evalDocs) if (r?.skill) skillSet.add(r.skill);
+    for (const l of luminaDocs)
+      Object.keys(l.skills ?? {}).forEach((k) => skillSet.add(k));
+    const skills = Array.from(skillSet).sort((a, b) => a.localeCompare(b));
+
+    // Aggregate per-day K/C/A
+    const byDay = new Map<
+      string,
+      { n: number; k: number; c: number; a: number }
+    >();
+    for (const r of evalDocs) {
+      const d = dayjs(r.timestamp).format('YYYY-MM-DD');
+      const cur = byDay.get(d) ?? { n: 0, k: 0, c: 0, a: 0 };
+      cur.n += 1;
+      cur.k += r.knowledge ?? 0;
+      cur.c += r.confidence ?? 0;
+      cur.a += r.application ?? 0;
+      byDay.set(d, cur);
+    }
+
+    const globalTimelineRaw = dates.map((d) => {
+      const agg = byDay.get(d);
+      if (!agg || !agg.n)
+        return {
+          label: d,
+          global: null as number | null,
+          confidence: null as number | null,
+        };
+      const kAvg = agg.k / agg.n;
+      const cAvg = agg.c / agg.n;
+      const aAvg = agg.a / agg.n;
+      const g = (kAvg + cAvg + aAvg) / 3;
+      return { label: d, global: round(g, 1), confidence: round(cAvg, 1) };
+    });
+
+    // forward-fill for smoother charting
+    let lastG: number | null = null,
+      lastC: number | null = null;
+    const globalTimeline = globalTimelineRaw.map((row) => {
+      if (row.global == null && lastG != null) row.global = lastG;
+      if (row.confidence == null && lastC != null) row.confidence = lastC;
+      lastG = row.global;
+      lastC = row.confidence;
+      return row;
+    });
+
+    // Per-skill begin/end across window (earliest vs latest)
+    evalDocs.sort((a, b) => +new Date(a.timestamp) - +new Date(b.timestamp));
+    const firstLastBySkill = new Map<
+      string,
+      { first?: ImportDataEvaluation; last?: ImportDataEvaluation }
+    >();
+    for (const s of skills) {
+      const rows = evalDocs.filter((r) => r.skill === s);
+      if (rows.length) {
+        firstLastBySkill.set(s, {
+          first: rows[0],
+          last: rows[rows.length - 1],
+        });
+      }
+    }
+
+    const skillsOutput = skills.map((s) => {
+      const pair = firstLastBySkill.get(s) ?? {};
+      const kb = pair.first?.knowledge ?? null;
+      const ka = pair.last?.knowledge ?? kb ?? null;
+      const ab = pair.first?.application ?? null;
+      const aa = pair.last?.application ?? ab ?? null;
+      const cb = pair.first?.confidence ?? null;
+      const ca = pair.last?.confidence ?? cb ?? null;
+
+      return {
+        skill: s,
+        aspects: {
+          [ImportMetric.KNOWLEDGE]: {
+            begin: kb == null ? null : round(kb),
+            end: ka == null ? null : round(ka),
+          },
+          [ImportMetric.APPLICATION]: {
+            begin: ab == null ? null : round(ab),
+            end: aa == null ? null : round(aa),
+          },
+          [ImportMetric.CONFIDENCE]: {
+            begin: cb == null ? null : round(cb),
+            end: ca == null ? null : round(ca),
+          },
+        },
+      };
+    });
+
+    // Three-eye view (individual)
+    const threeAgg = {
+      [ImportAssessment.SELF_EVALUATION]: { sum: 0, n: 0 },
+      [ImportAssessment.PEER_EVALUATION]: { sum: 0, n: 0 },
+      [ImportAssessment.FACILITATOR_EVALUATION]: { sum: 0, n: 0 },
+    };
+    for (const r of threeDocs) {
+      const key = r.assessment as keyof typeof threeAgg;
+      if (!threeAgg[key]) continue;
+      threeAgg[key].sum += r.score ?? 0;
+      threeAgg[key].n += 1;
+    }
+    const threeEye = {
+      self: threeAgg[ImportAssessment.SELF_EVALUATION].n
+        ? round(
+            threeAgg[ImportAssessment.SELF_EVALUATION].sum /
+              threeAgg[ImportAssessment.SELF_EVALUATION].n,
+            1,
+          )
+        : null,
+      peer: threeAgg[ImportAssessment.PEER_EVALUATION].n
+        ? round(
+            threeAgg[ImportAssessment.PEER_EVALUATION].sum /
+              threeAgg[ImportAssessment.PEER_EVALUATION].n,
+            1,
+          )
+        : null,
+      facilitator: threeAgg[ImportAssessment.FACILITATOR_EVALUATION].n
+        ? round(
+            threeAgg[ImportAssessment.FACILITATOR_EVALUATION].sum /
+              threeAgg[ImportAssessment.FACILITATOR_EVALUATION].n,
+            1,
+          )
+        : null,
+    };
+
+    // Mindslines summary
+    const mindslines = mindDocs.reduce(
+      (acc, r) => {
+        acc.completed += r.completedCount ?? 0;
+        acc.inProgress += r.inProgressCount ?? 0;
+        acc.notStarted += r.notStartedCount ?? 0;
+        return acc;
+      },
+      { completed: 0, inProgress: 0, notStarted: 0 },
+    );
+
+    const insights = this.buildIndividualInsights(globalTimeline, skillsOutput);
+
+    return {
+      company: organisation.name,
+      learner: learnerEmail,
+      dates,
+      globalTimeline,
+      skills: skillsOutput,
+      threeEye,
+      mindslines,
+      insights,
+    };
+  }
+
+  // -------------------- Helpers --------------------
+
+  private escape(s: string) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  private async resolveLearnerEmail(learner: string): Promise<string> {
+    if (learner?.includes('@')) return learner.trim();
+    try {
+      const user = await this.userService.findOneById(mongoId(learner));
+      if (user?.email) return user.email;
+    } catch {
+      // ignore
+    }
+    return learner;
+  }
+
+  private buildCohortInsights(
+    skills: Array<{
+      skill: string;
+      before: number;
+      latest: number;
+      delta: number;
+      improvedShare: number;
+    }>,
+    threeEye: {
+      self: number | null;
+      peer: number | null;
+      facilitator: number | null;
+    },
+  ): string[] {
+    const insights: string[] = [];
+    const top = [...skills].sort((a, b) => b.delta - a.delta)[0];
+    if (top && top.delta >= 0.5) {
+      insights.push(
+        `📈 Largest skill gain in ${top.skill} (+${round(top.delta, 1)}).`,
+      );
+    }
+    const align =
+      threeEye.self != null && threeEye.peer != null
+        ? Math.abs(threeEye.self - threeEye.peer)
+        : null;
+    if (align != null && align <= 0.6) {
+      insights.push(
+        '🤝 Peer and self-evaluations are closely aligned, suggesting shared perception of progress.',
+      );
+    }
+    const avgImproved = skills.length
+      ? round(
+          skills.reduce((s, r) => s + r.improvedShare, 0) / skills.length,
+          2,
+        )
+      : 0;
+    if (avgImproved >= 0.6) {
+      insights.push(
+        `🌱 Majority of learners improved across skills (~${round(
+          avgImproved * 100,
+        )}%).`,
+      );
+    }
+    if (!insights.length)
+      insights.push('ℹ️ Stable performance across the selected period.');
+    return insights;
+  }
+
+  private buildIndividualInsights(
+    globalTimeline: Array<{
+      label: string;
+      global: number | null;
+      confidence: number | null;
+    }>,
+    skillsOutput: Array<{
+      skill: string;
+      aspects: {
+        Knowledge: { begin: number | null; end: number | null };
+        Application: { begin: number | null; end: number | null };
+        Confidence: { begin: number | null; end: number | null };
+      };
+    }>,
+  ): string[] {
+    const insights: string[] = [];
+
+    const first = globalTimeline.find((r) => r.global != null)?.global ?? null;
+    const last =
+      [...globalTimeline].reverse().find((r) => r.global != null)?.global ??
+      null;
+    if (first != null && last != null) {
+      const delta = round(last - first, 1);
+      if (Math.abs(delta) >= 0.5) {
+        insights.push(
+          delta > 0
+            ? `🚀 Global score improved by ${delta} over the selected period.`
+            : `⚠️ Global score decreased by ${Math.abs(
+                delta,
+              )} over the selected period.`,
+        );
+      }
+    }
+
+    const movers: Array<{
+      skill: string;
+      m: keyof typeof ImportMetric;
+      d: number;
+    }> = [];
+    for (const s of skillsOutput) {
+      for (const key of ['Knowledge', 'Application', 'Confidence'] as const) {
+        const begin = s.aspects[key].begin;
+        const end = s.aspects[key].end;
+        if (begin != null && end != null)
+          movers.push({
+            skill: s.skill,
+            m: key as any,
+            d: round(end - begin, 1),
+          });
+      }
+    }
+    movers.sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+    const top2 = movers.slice(0, 2).filter((x) => Math.abs(x.d) >= 0.5);
+    for (const t of top2) {
+      insights.push(
+        t.d >= 0
+          ? `📈 ${t.m} improved in ${t.skill} (+${t.d}).`
+          : `📉 ${t.m} decreased in ${t.skill} (${t.d}).`,
+      );
+    }
+
+    if (!insights.length)
+      insights.push('ℹ️ No strong changes detected in the selected period.');
+    return insights;
+  }
+
+  // Keep this version compatible with your original signature that returns Dayjs
+  private getRangeData(rangeData: string): { from: Dayjs; to: Dayjs } {
+    let from: Dayjs = dayjs().subtract(1, 'month').startOf('day');
+    let to: Dayjs = dayjs().endOf('day');
     switch (rangeData) {
       case 'Last Week':
-        from = dayjs().subtract(1, 'week');
+        from = dayjs().subtract(1, 'week').startOf('week');
         to = dayjs().endOf('week');
         break;
       case 'Last Month':
-        from = dayjs().subtract(1, 'month');
+        from = dayjs().subtract(1, 'month').startOf('month');
         to = dayjs().endOf('month');
         break;
       case 'Last 3 Months':
@@ -113,138 +624,6 @@ export class ReportController {
         to = dayjs().endOf('year');
         break;
     }
-
     return { from, to };
-  }
-
-  @Get('/data/group')
-  @ResponseSchema(undefined)
-  public async getGroupData(
-    @Req() req: any,
-    @QueryParam('rangeData') rangeData: string,
-  ) {
-    const organisation = req.organisation;
-    const { from, to } = this.getRangeData(rangeData);
-
-    const learnersIncluded = await this.userService.count({
-      workspaces: {
-        $elemMatch: {
-          organisation: organisation._id,
-          role: UserRole.LEARNER,
-        },
-      },
-    });
-
-    const SKILLS = [
-      'Self-Awareness',
-      'Critical Thinking',
-      'Strategic Thinking',
-      'Communication',
-      'Decision-Making',
-      'Adaptability',
-    ];
-
-    return {
-      cohortName: 'Emerging Leaders – Spring',
-      company: organisation.name,
-      periodFrom: from?.format('YYYY-MM-DD'),
-      periodTo: to?.format('YYYY-MM-DD'),
-      assessmentsIncluded: learnersIncluded,
-      skills: SKILLS.map((s, i) => {
-        const before = 7 + (i % 3);
-        const latest = before + (i % 2 === 0 ? 2.1 : 0.6);
-        const delta = latest - before;
-        const improvedShare = i % 2 === 0 ? 0.78 : 0.56;
-        return { skill: s, before, latest, delta, improvedShare };
-      }),
-      threeEye: { self: 11.1, peer: 10.6, facilitator: 10.9 },
-      insights: [
-        '📈 The cohort showed a 23% surge in Communication scores, suggesting rapid adoption of collaborative habits.',
-        '🤝 Peer evaluations rose faster than self-evaluations, hinting at growing external recognition of applied skills.',
-        '🧠 Critical Thinking improvements clustered after mid-program simulations — immersive scenarios appear highly effective.',
-        '⚡ Momentum peaked in month 3, with slight plateauing thereafter — consider introducing stretch challenges to sustain growth.',
-        '🌱 Adaptability gains were consistent but modest — targeted role-rotation could accelerate development.',
-      ],
-    };
-  }
-
-  @Get('/data/individual')
-  @ResponseSchema(undefined)
-  public async getIndividualData(
-    @Req() req: any,
-    @QueryParam('learner') learner: string,
-    @QueryParam('rangeData') rangeData: string,
-  ) {
-    const organisation = req.organisation;
-    const { from, to } = this.getRangeData(rangeData);
-    // const user = await this.userService.findOneById(mongoId(learner));
-
-    const dates = [];
-    let curr = from.clone();
-    while (curr.isBefore(to, 'day')) {
-      dates.push(curr.format('YYYY-MM-DD'));
-      curr = curr.add(1, 'day');
-    }
-
-    // import data nad minslines
-    // const [importData, importMindslinesData] = await Promise.all([
-    //   this.importDataService.find({
-    //     filter: {
-    //       organisation: organisation._id,
-    //       email: user.email,
-    //     },
-    //     select: ['skill'],
-    //   }),
-    //   this.importDataMindslinesService.find({
-    //     filter: {
-    //       organisation: organisation._id,
-    //       email: user.email,
-    //     },
-    //     select: ['skill'],
-    //   }),
-    // ]);
-    // console.log(importData, importMindslinesData);
-    // const skills = uniq(map(importData, 'skill'));
-    const skills = [];
-
-    return {
-      company: organisation.name,
-      dates,
-      globalTimeline: dates.map((d, i) => {
-        const baseGlobal = 8.5 + i * 0.5 + Math.random() * 0.4 - 0.2;
-        const baseConfidence = 8.0 + i * 0.45 + Math.random() * 0.4 - 0.2;
-
-        return {
-          label: d,
-          global: round(baseGlobal, 1),
-          confidence: round(baseConfidence, 1),
-        };
-      }),
-      skills: skills.map((s, i) => {
-        const kb = 2.9 + (i % 3) * 0.3; // before knowledge
-        const ka = kb + (i % 2 === 0 ? 0.9 : 0.4); // after knowledge
-        const ab = 2.7 + ((i + 1) % 3) * 0.3; // before application
-        const aa = ab + (i % 2 === 0 ? 0.9 : 0.3);
-        const cb = 2.6 + ((i + 2) % 3) * 0.3; // before confidence
-        const ca = cb + (i % 2 === 0 ? 1.2 : 0.5);
-
-        return {
-          skill: s,
-          aspects: {
-            Knowledge: { begin: round(kb), end: round(ka) },
-            Application: { begin: round(ab), end: round(aa) },
-            Confidence: { begin: round(cb), end: round(ca) },
-          },
-        };
-      }),
-      threeEye: { self: 11.5, peer: 10.8, facilitator: 11.1 },
-      insights: [
-        '🚀 Significant jump in Global Score (+2.7) between A1 and A3 — strong upward momentum maintained.',
-        '💡 Confidence gains outpaced skill application, suggesting readiness to take on higher-stakes projects.',
-        '📚 Application scores improved steadily, especially in Strategic Thinking (+1.1) — evidence of better decision structuring.',
-        '🔄 Slight dip in Adaptability mid-cycle recovered by final assessment — potential resilience growth.',
-        '🤝 Peer feedback alignment with self-assessment increased, indicating greater self-awareness.',
-      ],
-    };
   }
 }
