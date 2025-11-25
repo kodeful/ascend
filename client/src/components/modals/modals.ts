@@ -1,6 +1,7 @@
 import type { FC } from "react";
 
 import LogoutModal from "./AuthModals/LogoutModal";
+import ImportDisconnectModal from "./ImportModals/ImportDisconnectModal";
 import ImportFileModal from "./ImportModals/ImportFileModal";
 import AddOrganizationModal from "./OrganizationModals/AddOrganizationModal";
 import AddUserModal from "./UserModals/AddUserModal";
@@ -24,6 +25,10 @@ export const defaultModals: {
   {
     key: "import-file",
     Component: ImportFileModal,
+  },
+  {
+    key: "import-disconnect",
+    Component: ImportDisconnectModal,
   },
   // Organization
   {

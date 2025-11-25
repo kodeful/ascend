@@ -377,3 +377,73 @@ export const useImportControllerImportLumina = <
 
   return useMutation(mutationOptions);
 };
+/**
+ * @summary Disconnect import
+ */
+export const importControllerDisconnectImport = (importId: unknown) => {
+  return axiosInstance<unknown>({
+    url: `/import/disconnect/${importId}`,
+    method: "POST",
+  });
+};
+
+export const getImportControllerDisconnectImportMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerDisconnectImport>>,
+    TError,
+    { importId: unknown },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importControllerDisconnectImport>>,
+  TError,
+  { importId: unknown },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importControllerDisconnectImport>>,
+    { importId: unknown }
+  > = (props) => {
+    const { importId } = props ?? {};
+
+    return importControllerDisconnectImport(importId);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportControllerDisconnectImportMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importControllerDisconnectImport>>
+>;
+
+export type ImportControllerDisconnectImportMutationError = unknown;
+
+/**
+ * @summary Disconnect import
+ */
+export const useImportControllerDisconnectImport = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importControllerDisconnectImport>>,
+    TError,
+    { importId: unknown },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importControllerDisconnectImport>>,
+  TError,
+  { importId: unknown },
+  TContext
+> => {
+  const mutationOptions =
+    getImportControllerDisconnectImportMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};

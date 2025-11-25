@@ -11,6 +11,7 @@ import {
   Body,
   Get,
   JsonController,
+  Param,
   Post,
   QueryParams,
   Req,
@@ -495,6 +496,29 @@ export class ImportController {
       importId,
       rows: normalizedRows,
     });
+
+    return {};
+  }
+
+  @Post('/disconnect/:importId')
+  @ResponseSchema(undefined)
+  public async disconnectImport(@Param('importId') importId: Ref<Import>) {
+    await this.importService.delete(importId);
+
+    await Promise.all([
+      this.importDataEvaluationService.deleteMany({
+        import: importId,
+      }),
+      this.importDataThreeEyeViewService.deleteMany({
+        import: importId,
+      }),
+      this.importDataMindslinesService.deleteMany({
+        import: importId,
+      }),
+      this.importDataLuminaService.deleteMany({
+        import: importId,
+      }),
+    ]);
 
     return {};
   }
