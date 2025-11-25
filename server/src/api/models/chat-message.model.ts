@@ -22,7 +22,7 @@ import { User } from './user.model';
 
   const receivedMessage = this.message;
   openAIReply({
-    organisationId: this.organisation,
+    // organisationId: this.organisation,
     receivedMessage: receivedMessage,
   }).then(async (message) => {
     await ChatMessageModel.create({

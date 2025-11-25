@@ -198,7 +198,7 @@ export class ImportGoogleSheetCron {
   // Import Google Sheet - Every 15 minutes
   @Cron('import-google-sheet-15-minutes', '*/15 * * * *', {
     timeZone: 'America/New_York',
-    runOnInit: true,
+    runOnInit: false,
   })
   public async importGoogleSheet15Minutes() {
     console.log('import-google-sheet-15-minutes');
@@ -210,7 +210,7 @@ export class ImportGoogleSheetCron {
   // Import Google Sheet - Every hour
   @Cron('import-google-sheet-every-hour', '0 * * * *', {
     timeZone: 'America/New_York',
-    runOnInit: true,
+    runOnInit: false,
   })
   public async importGoogleSheetEveryHour() {
     console.log('import-google-sheet-every-hour');
@@ -220,7 +220,7 @@ export class ImportGoogleSheetCron {
   // Import Google Sheet - Every day
   @Cron('import-google-sheet-every-day', '0 0 * * *', {
     timeZone: 'America/New_York',
-    runOnInit: true,
+    runOnInit: false,
   })
   public async importGoogleSheetEveryDay() {
     console.log('import-google-sheet-every-day');

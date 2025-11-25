@@ -75,6 +75,9 @@ const SingleChatMessages = () => {
                     margin: 0,
                     padding: 0,
                   },
+                  "& ul li": {
+                    marginBottom: 1.5,
+                  },
                 }}
               />
             </Box>
@@ -90,7 +93,6 @@ const SingleChatMessages = () => {
             <Stack
               position="absolute"
               bottom={0}
-              // left={-45}
               left={0}
               width={35}
               height={35}
@@ -108,6 +110,7 @@ const SingleChatMessages = () => {
               sx={{
                 borderRadius: "15px",
                 borderBottomLeftRadius: "0px",
+                marginLeft: "45px",
               }}
               p={2}
             >

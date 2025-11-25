@@ -1,140 +1,24 @@
+// openai.service.ts
 import { Ref } from '@typegoose/typegoose';
-import { first } from 'lodash';
-import { attempt } from 'lodash';
 import OpenAI from 'openai';
 import type {
   ChatCompletionMessageParam,
-  ChatCompletionTool,
   ChatCompletionToolMessageParam,
 } from 'openai/resources/chat/completions';
-import { Service } from 'typedi';
 
 import { Organisation } from 'api/models/organisation.model';
 import { env } from 'env';
+import { safeJson } from 'utils/safeJson';
 
-/**
- * Utility: safe JSON parse
- * Replaced with _.attempt from lodash for error handling
- */
-function safeJson<T = any>(raw: string | null | undefined, fallback: T): T {
-  if (!raw) return fallback;
-  const result = attempt(() => JSON.parse(raw) as T);
-  return result instanceof Error ? fallback : result;
-}
+import { ascendTools } from './openai.tools';
+import { executeAscendToolCall } from './openai.tools-executor';
 
+// ---------- System prompt ----------
 /**
- * Define tool (function) schemas for OpenAI tool calls.
- * We keep them minimal and stable — no external deps required.
- */
-const tools: ChatCompletionTool[] = [
-  {
-    type: 'function',
-    function: {
-      name: 'getImportData',
-      description:
-        'Fetch import data rows for the organisation. Supports filtering and limiting.',
-      parameters: {
-        type: 'object',
-        properties: {
-          email: {
-            type: 'string',
-            description:
-              'Filter by user email (regex match). Example: "alice@example.com".',
-          },
-          skill: {
-            type: 'string',
-            description: 'Filter by skill name (regex match).',
-          },
-          metric: {
-            type: 'string',
-            description:
-              'Filter by metric type (e.g., "knowledge", "confidence", "application").',
-          },
-          fromTs: {
-            type: 'string',
-            description:
-              'ISO timestamp lower bound (inclusive) for createdAt/timestamp filtering.',
-          },
-          toTs: {
-            type: 'string',
-            description:
-              'ISO timestamp upper bound (exclusive) for createdAt/timestamp filtering.',
-          },
-          limit: {
-            type: 'integer',
-            minimum: 1,
-            maximum: 500,
-            description: 'Maximum number of records to return. Default 100.',
-          },
-          sort: {
-            type: 'string',
-            enum: ['asc', 'desc'],
-            description:
-              'Sort by timestamp ascending or descending. Default "desc".',
-          },
-          fields: {
-            type: 'array',
-            items: { type: 'string' },
-            description:
-              'Optional projection fields to include. Example: ["email","skill","metric","score","timestamp"].',
-          },
-        },
-      },
-    },
-  },
-  {
-    type: 'function',
-    function: {
-      name: 'getAggregateMetrics',
-      description:
-        'Return aggregate analytics (avg/min/max/count) grouped by skill and/or metric for the organisation.',
-      parameters: {
-        type: 'object',
-        properties: {
-          groupBy: {
-            type: 'array',
-            items: { type: 'string', enum: ['skill', 'metric', 'email'] },
-            description:
-              'Which fields to group by. Example: ["skill","metric"]. Default ["skill","metric"].',
-          },
-          email: {
-            type: 'string',
-            description:
-              'Optional filter by email before aggregation (regex match).',
-          },
-          skill: {
-            type: 'string',
-            description: 'Optional filter by skill before aggregation.',
-          },
-          metric: {
-            type: 'string',
-            description: 'Optional filter by metric before aggregation.',
-          },
-          fromTs: {
-            type: 'string',
-            description:
-              'ISO timestamp lower bound (inclusive) for filtering prior to aggregation.',
-          },
-          toTs: {
-            type: 'string',
-            description:
-              'ISO timestamp upper bound (exclusive) for filtering prior to aggregation.',
-          },
-          limit: {
-            type: 'integer',
-            minimum: 1,
-            maximum: 1000,
-            description: 'Max groups to return. Default 200.',
-          },
-        },
-      },
-    },
-  },
-];
-
-/**
- * System prompt keeps the platform description and instructions,
- * but NO organisation data dump — the model must call tools to fetch.
+ * This prompt mirrors your earlier contract:
+ * - Model must prefer tool calls to fetch data
+ * - Reply must be short, in HTML
+ * - Output must be JSON with a "message" property containing the HTML
  */
 const SYSTEM_PROMPT = `
 You're a helpful assistant that can answer questions and help with analytics for platform Ascend.
@@ -214,6 +98,11 @@ General recommendations for balancing the three areas
 • Mentoring and practical learning.
 • Apply theory in low-risk projects to build confidence and skills.
 
+
+NOTES
+- If specific learner is not mentioned, use the tools to fetch data for all learners.
+- If specific learner is mentioned, use the tools to fetch data for that learner by email.
+
 MESSAGE INSTRUCTIONS
 - Message must be in HTML, not markdown or plain text.
 - Keep the message short and concise.
@@ -221,207 +110,48 @@ MESSAGE INSTRUCTIONS
 - The output should be a JSON object with a property "message", like: {"message":"<p>Your reply message goes here</p>"}
 `;
 
-type ToolArgs = Record<string, unknown>;
-
-/**
- * Executes a single tool call based on name + JSON arguments.
- * Returns a ChatCompletion "tool" message ready to be appended to the conversation.
- */
-async function executeToolCall(
-  organisationId: Ref<Organisation>,
-  toolCallId: string,
-  functionName: string,
-  rawArgs: string | null | undefined,
-): Promise<ChatCompletionToolMessageParam> {
-  const args = safeJson<ToolArgs>(rawArgs, {});
-  switch (functionName) {
-    case 'getImportData': {
-      const {
-        email,
-        skill,
-        metric,
-        fromTs,
-        toTs,
-        limit = 100,
-        sort = 'desc',
-        fields,
-      } = args as {
-        email?: string;
-        skill?: string;
-        metric?: string;
-        fromTs?: string;
-        toTs?: string;
-        limit?: number;
-        sort?: 'asc' | 'desc';
-        fields?: string[];
-      };
-      console.log(limit, sort);
-
-      const query: Record<string, any> = { organisation: organisationId };
-      if (email) query.email = { $regex: email, $options: 'i' };
-      if (skill) query.skill = { $regex: skill, $options: 'i' };
-      if (metric) query.metric = metric;
-
-      // Support either "timestamp" on the doc or "createdAt" if present.
-      const timeField = 'timestamp' as const;
-      if (fromTs || toTs) {
-        query[timeField] = {};
-        if (fromTs) query[timeField]['$gte'] = new Date(fromTs as string);
-        if (toTs) query[timeField]['$lt'] = new Date(toTs as string);
-      }
-
-      const projection =
-        Array.isArray(fields) && fields.length
-          ? Object.fromEntries(fields.map((f) => [f, 1]))
-          : undefined;
-      console.log(projection);
-
-      // const data = (await ImportDataModel.find(query, projection)
-      //   .sort({ [timeField]: sort === 'asc' ? 1 : -1 })
-      //   .limit(Math.min(Math.max(limit || 100, 1), 500))
-      //   .lean()) as ImportData[];
-      const data = [];
-
-      return {
-        role: 'tool',
-        tool_call_id: toolCallId,
-        content: JSON.stringify(
-          data.map((d) => ({
-            email: (d as any).email,
-            skill: (d as any).skill,
-            metric: (d as any).metric,
-            score: (d as any).score,
-            timestamp: (d as any).timestamp ?? (d as any).createdAt,
-            assessment: (d as any).assessment,
-          })),
-        ),
-      };
-    }
-
-    case 'getAggregateMetrics': {
-      const {
-        groupBy = ['skill', 'metric'],
-        email,
-        skill,
-        metric,
-        fromTs,
-        toTs,
-        limit = 200,
-      } = args as {
-        groupBy?: ('skill' | 'metric' | 'email')[];
-        email?: string;
-        skill?: string;
-        metric?: string;
-        fromTs?: string;
-        toTs?: string;
-        limit?: number;
-      };
-
-      const match: Record<string, any> = { organisation: organisationId };
-      if (email) match.email = { $regex: email, $options: 'i' };
-      if (skill) match.skill = { $regex: skill, $options: 'i' };
-      if (metric) match.metric = metric;
-
-      if (fromTs || toTs) {
-        match.timestamp = {};
-        if (fromTs) match.timestamp['$gte'] = new Date(fromTs);
-        if (toTs) match.timestamp['$lt'] = new Date(toTs);
-      }
-
-      const groupId: Record<string, `$${string}`> = {};
-      for (const key of groupBy || []) {
-        groupId[key] = `$${key}`;
-      }
-
-      const pipeline: any[] = [
-        { $match: match },
-        {
-          $group: {
-            _id: groupId,
-            count: { $sum: 1 },
-            avgScore: { $avg: '$score' },
-            minScore: { $min: '$score' },
-            maxScore: { $max: '$score' },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            group: '$_id',
-            count: 1,
-            avgScore: { $round: ['$avgScore', 2] },
-            minScore: 1,
-            maxScore: 1,
-          },
-        },
-        { $sort: { 'group.skill': 1, 'group.metric': 1, 'group.email': 1 } },
-        { $limit: Math.min(Math.max(limit || 200, 1), 1000) },
-      ];
-      console.log(pipeline);
-
-      // const results = await ImportDataModel.aggregate(pipeline);
-      const results = [];
-      return {
-        role: 'tool',
-        tool_call_id: toolCallId,
-        content: JSON.stringify(results),
-      };
-    }
-
-    default:
-      return {
-        role: 'tool',
-        tool_call_id: toolCallId,
-        content: JSON.stringify({ error: `Unknown tool: ${functionName}` }),
-      };
-  }
-}
-
-/**
- * Main entry: chat with tool use.
- * Returns only the "message" string as before, complying with your JSON contract.
- */
+// ---------- Public API ----------
 export const openAIReply = async ({
-  organisationId,
   receivedMessage,
+  model = 'gpt-4o-mini',
 }: {
-  organisationId: Ref<Organisation>;
   receivedMessage: string;
-}) => {
+  model?: string;
+}): Promise<string> => {
   const client = new OpenAI({ apiKey: env.openai.apiKey });
 
-  // Build message history
   const messages: ChatCompletionMessageParam[] = [
     { role: 'system', content: SYSTEM_PROMPT },
     { role: 'user', content: receivedMessage },
   ];
 
-  // Loop: allow the model to call tools multiple times if it needs to
-  // (hard cap to prevent infinite loops).
+  // Allow the model a few back-and-forths with tools.
   for (let step = 0; step < 4; step++) {
     const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model,
       messages,
-      tools,
+      tools: ascendTools, // <-- only the new tools
       tool_choice: 'auto',
       response_format: { type: 'json_object' },
     });
 
-    const choice = first(completion.choices);
+    const choice = completion.choices[0];
     const msg = choice.message;
 
-    // If the model asked to call tools, execute them and continue the loop.
+    // Tool calls?
     if (msg.tool_calls && msg.tool_calls.length) {
       for (const tc of msg.tool_calls) {
-        const toolResponse = await executeToolCall(
-          organisationId,
-          tc.id,
-          // @ts-expect-error
-          tc.function.name,
-          // @ts-expect-error
-          tc.function.arguments,
-        );
+        // Execute our tool (function) and append the tool result
+        const toolResponse: ChatCompletionToolMessageParam =
+          await executeAscendToolCall(
+            tc.id,
+            // @ts-expect-error: SDK typing nests the function call here
+            tc.function.name,
+            // @ts-expect-error
+            tc.function.arguments,
+          );
 
+        // Append assistant "I am calling a tool" message + the tool's response
         messages.push({
           role: 'assistant',
           content: null,
@@ -429,34 +159,43 @@ export const openAIReply = async ({
         } as any);
         messages.push(toolResponse);
       }
-      // Continue the loop so the model can use the tool outputs.
+      // Let the loop continue so the model can see tool outputs
       continue;
     }
 
-    // No tool call: expect final JSON content with { "message": "..." }
+    // Final content expected to be JSON with { message: "<html/>" }
     const content = msg.content ?? '';
     const parsed = safeJson<{ message?: string }>(content, {});
     if (parsed.message) return parsed.message;
 
-    // If the model failed to return proper JSON, degrade gracefully.
+    // Fallback if model didn't return proper JSON
     const fallback =
       typeof content === 'string' && content.trim().length
         ? content.trim()
-        : 'Sorry, I could not generate a response.';
+        : '<p>Sorry, I could not generate a response.</p>';
     return fallback;
   }
 
-  // Safety fallback if too many steps
-  return 'Sorry, I could not complete the request.';
+  // Safety fallback if tool loop exhausted
+  return '<p>Sorry, I could not complete a response.</p>';
 };
 
-@Service()
+// ---------- Optional DI-friendly wrapper ----------
 export class OpenAIService {
   client: OpenAI;
 
   constructor() {
-    this.client = new OpenAI({
-      apiKey: env.openai.apiKey,
-    });
+    this.client = new OpenAI({ apiKey: env.openai.apiKey });
+  }
+
+  /**
+   * Thin wrapper if you prefer to call via a service instance.
+   */
+  async reply(params: {
+    organisationId: Ref<Organisation>;
+    receivedMessage: string;
+    model?: string;
+  }) {
+    return openAIReply(params);
   }
 }
