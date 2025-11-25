@@ -1,11 +1,13 @@
 import React, { useMemo } from "react";
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { ChevronRight } from "@mui/icons-material";
+import { Box, ButtonBase, Link, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import GoogleSheetsIMG from "assets/imgs/connections/google-sheets.png";
 import dayjs from "dayjs";
 
 import { useImportControllerFilterImports } from "api/generated/import/import";
 import DataGrid from "components/DataGrid/DataGrid";
+import { openModal } from "components/modals/ModalsStore";
 
 const ImportsGoogleSheetDataGrid = () => {
   const { data: imports, isLoading } = useImportControllerFilterImports(
@@ -73,47 +75,44 @@ const ImportsGoogleSheetDataGrid = () => {
         flex: 1,
       },
       {
-        field: "metric",
-        headerName: "Metric",
-        flex: 1,
-      },
-      {
         field: "skill",
         headerName: "Skill",
         flex: 1,
       },
-      //   {
-      //     field: "actions",
-      //     headerName: "",
-      //     width: 100,
-      //     align: "right",
-      //     renderCell: ({ row }) => (
-      //       <ButtonBase
-      //         sx={{
-      //           border: "1px solid #CBD5E1",
-      //           padding: "5px 6px 5px 12px",
-      //           borderRadius: "20px",
-      //           backgroundColor: "#FFFFFF",
-      //           mt: -0.4,
-      //         }}
-      //         onClick={() => {
-      //           openModal("user-edit", {
-      //             user: row,
-      //           });
-      //         }}
-      //       >
-      //         <Typography fontSize={12} fontWeight={600} color="#535851">
-      //           Edit
-      //         </Typography>
-      //         <ChevronRight
-      //           sx={{
-      //             fontSize: 16,
-      //             color: "#94a3b8",
-      //           }}
-      //         />
-      //       </ButtonBase>
-      //     ),
-      //   },
+      {
+        field: "actions",
+        headerName: "",
+        width: 150,
+        align: "right",
+        renderCell: ({ row }) => {
+          return (
+            <ButtonBase
+              sx={{
+                border: "1px solid #CBD5E1",
+                padding: "5px 6px 5px 12px",
+                borderRadius: "20px",
+                backgroundColor: "#FFFFFF",
+                mt: -0.4,
+              }}
+              onClick={() => {
+                openModal("import-disconnect", {
+                  import: row,
+                });
+              }}
+            >
+              <Typography fontSize={12} fontWeight={600} color="#535851">
+                Disconnect
+              </Typography>
+              <ChevronRight
+                sx={{
+                  fontSize: 16,
+                  color: "#94a3b8",
+                }}
+              />
+            </ButtonBase>
+          );
+        },
+      },
     ],
     [],
   );

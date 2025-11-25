@@ -1,10 +1,12 @@
 import React, { useMemo } from "react";
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { ChevronRight } from "@mui/icons-material";
+import { Box, ButtonBase, Link, Stack, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import LuminaIMG from "assets/imgs/connections/lumina.png";
 
 import { useImportControllerFilterImports } from "api/generated/import/import";
 import DataGrid from "components/DataGrid/DataGrid";
+import { openModal } from "components/modals/ModalsStore";
 
 const ImportsLuminaDataGrid = () => {
   const { data: imports, isLoading } = useImportControllerFilterImports(
@@ -50,6 +52,40 @@ const ImportsLuminaDataGrid = () => {
                 {value}
               </Link>
             </Stack>
+          );
+        },
+      },
+      {
+        field: "actions",
+        headerName: "",
+        width: 150,
+        align: "right",
+        renderCell: ({ row }) => {
+          return (
+            <ButtonBase
+              sx={{
+                border: "1px solid #CBD5E1",
+                padding: "5px 6px 5px 12px",
+                borderRadius: "20px",
+                backgroundColor: "#FFFFFF",
+                mt: -0.4,
+              }}
+              onClick={() => {
+                openModal("import-disconnect", {
+                  import: row,
+                });
+              }}
+            >
+              <Typography fontSize={12} fontWeight={600} color="#535851">
+                Disconnect
+              </Typography>
+              <ChevronRight
+                sx={{
+                  fontSize: 16,
+                  color: "#94a3b8",
+                }}
+              />
+            </ButtonBase>
           );
         },
       },
