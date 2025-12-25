@@ -35,6 +35,7 @@ export * from "./metricsThreeEyeViewControllerGetMetricsSkillsOptionsParams";
 export * from "./metricsThreeEyeViewControllerGetMetricsStatisticsBySkillParams";
 export * from "./organisation";
 export * from "./organisationControllerCreateOrganisationBody";
+export * from "./organisationControllerUpdateOrganisationBody";
 export * from "./rOICalculator";
 export * from "./rOICalculatorFields";
 export * from "./rOICalculatorResult";

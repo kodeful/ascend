@@ -1,3 +1,4 @@
+import { Ref } from '@typegoose/typegoose';
 import { filter, map } from 'lodash';
 import {
   Authorized,
@@ -5,7 +6,9 @@ import {
   CurrentUser,
   Get,
   JsonController,
+  Param,
   Post,
+  Put,
   Req,
 } from 'routing-controllers';
 import { OpenAPI, ResponseSchema } from 'routing-controllers-openapi';
@@ -58,22 +61,39 @@ export class OrganisationController {
   })
   public async createOrganisation(
     @CurrentUser() user: User,
-    @BodyParam('name') name: string,
+    @BodyParam('name', { required: true }) name: string,
+    @BodyParam('industry', { required: false }) industry?: string,
   ) {
     const { _id } = await this.organisationService.create({
       name,
+      industry,
     });
 
     await this.userService.updateOneById(user._id, {
       $push: {
         workspaces: {
           organisation: _id,
-          role: UserRole.FACILITATOR,
+          role: UserRole.ADMIN,
           verified: true,
         },
       },
     });
 
     return _id.toString();
+  }
+
+  @Put('/:organisationId')
+  @ResponseSchema(Organisation)
+  public async updateOrganisation(
+    @Param('organisationId') organisationId: Ref<Organisation>,
+    @BodyParam('name', { required: true }) name: string,
+    @BodyParam('industry', { required: false }) industry?: string,
+  ) {
+    await this.organisationService.updateOneById(organisationId, {
+      name,
+      industry,
+    });
+
+    return {};
   }
 }

@@ -7,5 +7,6 @@
  */
 
 export type OrganisationControllerCreateOrganisationBody = {
-  name?: string;
+  industry?: string;
+  name: string;
 };

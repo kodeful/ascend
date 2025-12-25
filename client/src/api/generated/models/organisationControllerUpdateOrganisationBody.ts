@@ -6,9 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface Organisation {
-  /** @pattern ^[0-9a-fA-F]{24}$ */
-  _id: string;
-  industry: string;
+export type OrganisationControllerUpdateOrganisationBody = {
+  industry?: string;
   name: string;
-}
+};

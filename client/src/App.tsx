@@ -17,6 +17,7 @@ import SettingsConnectionsLuminaPage from "pages/settings/connections/lumina/Set
 import SettingsConnectionsMindslinesPage from "pages/settings/connections/mindslines/SettingsConnectionsMindslinesPage";
 import SettingsConnectionsPage from "pages/settings/connections/SettingsConnectionsPage";
 import SettingsGroupSettingsPage from "pages/settings/group-settings/SettingsGroupSettingsPage";
+import SettingsOrganizationPage from "pages/settings/organization/SettingsOrganizationPage";
 import SignInPage from "pages/sign-in/SignInPage";
 import { Redirect, Switch } from "react-router-dom";
 
@@ -71,6 +72,12 @@ const App = () => {
           exact
           component={SettingsAccountPage}
           path="/settings/account"
+          shrinked
+        />
+        <PrivateRoute
+          exact
+          component={SettingsOrganizationPage}
+          path="/settings/organization"
           shrinked
         />
         <PrivateRoute

@@ -1,15 +1,24 @@
 import React from "react";
+import BusinessIcon from "@mui/icons-material/Business";
+import GroupIcon from "@mui/icons-material/Group";
 import { Divider, MenuList, Stack } from "@mui/material";
 
 import AccountIcon from "components/icons/AccountIcon";
 import AscendIcon from "components/icons/AscendIcon";
 import ConnectionIcon from "components/icons/ConnectionIcon";
+// import OrganizationIcon from "components/icons/OrganizationIcon";
 // import NotificationIcon from "components/icons/NotificationIcon";
 import SupportIcon from "components/icons/SupportIcon";
 import type { SidebarMenuListChild } from "components/layouts/DefaultLayout/Sidebar/SidebarMenu/SidebarMenu";
 import SidebarMenuItem from "components/layouts/DefaultLayout/Sidebar/SidebarMenu/SidebarMenuItem";
 
 const sidebarMenuList: SidebarMenuListChild = [
+  {
+    id: "group-settings",
+    icon: <BusinessIcon />,
+    text: "Organization",
+    link: "/settings/organization",
+  },
   {
     id: "account",
     icon: <AccountIcon />,
@@ -18,8 +27,8 @@ const sidebarMenuList: SidebarMenuListChild = [
   },
   {
     id: "group-settings",
-    icon: <AccountIcon />,
-    text: "Group Settings",
+    icon: <GroupIcon />,
+    text: "Group",
     link: "/settings/group-settings",
   },
   {

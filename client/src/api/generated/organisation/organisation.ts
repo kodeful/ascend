@@ -21,6 +21,7 @@ import { axiosInstance } from "../../axios-instance";
 import type {
   Organisation,
   OrganisationControllerCreateOrganisationBody,
+  OrganisationControllerUpdateOrganisationBody,
 } from ".././models";
 
 /**
@@ -246,6 +247,98 @@ export const useOrganisationControllerCreateOrganisation = <
 > => {
   const mutationOptions =
     getOrganisationControllerCreateOrganisationMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+/**
+ * @summary Update organisation
+ */
+export const organisationControllerUpdateOrganisation = (
+  organisationId: unknown,
+  organisationControllerUpdateOrganisationBody: OrganisationControllerUpdateOrganisationBody,
+) => {
+  return axiosInstance<Organisation>({
+    url: `/organisation/${organisationId}`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: organisationControllerUpdateOrganisationBody,
+  });
+};
+
+export const getOrganisationControllerUpdateOrganisationMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof organisationControllerUpdateOrganisation>>,
+    TError,
+    {
+      organisationId: unknown;
+      data: OrganisationControllerUpdateOrganisationBody;
+    },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof organisationControllerUpdateOrganisation>>,
+  TError,
+  {
+    organisationId: unknown;
+    data: OrganisationControllerUpdateOrganisationBody;
+  },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof organisationControllerUpdateOrganisation>>,
+    {
+      organisationId: unknown;
+      data: OrganisationControllerUpdateOrganisationBody;
+    }
+  > = (props) => {
+    const { organisationId, data } = props ?? {};
+
+    return organisationControllerUpdateOrganisation(organisationId, data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type OrganisationControllerUpdateOrganisationMutationResult =
+  NonNullable<
+    Awaited<ReturnType<typeof organisationControllerUpdateOrganisation>>
+  >;
+export type OrganisationControllerUpdateOrganisationMutationBody =
+  OrganisationControllerUpdateOrganisationBody;
+export type OrganisationControllerUpdateOrganisationMutationError = unknown;
+
+/**
+ * @summary Update organisation
+ */
+export const useOrganisationControllerUpdateOrganisation = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof organisationControllerUpdateOrganisation>>,
+    TError,
+    {
+      organisationId: unknown;
+      data: OrganisationControllerUpdateOrganisationBody;
+    },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof organisationControllerUpdateOrganisation>>,
+  TError,
+  {
+    organisationId: unknown;
+    data: OrganisationControllerUpdateOrganisationBody;
+  },
+  TContext
+> => {
+  const mutationOptions =
+    getOrganisationControllerUpdateOrganisationMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
