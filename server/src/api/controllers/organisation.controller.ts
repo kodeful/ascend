@@ -1,8 +1,11 @@
+import { PickType } from '@nestjs/swagger';
 import { Ref } from '@typegoose/typegoose';
+import { Exclude } from 'class-transformer';
+import { IsOptional } from 'class-validator';
 import { filter, map } from 'lodash';
 import {
   Authorized,
-  BodyParam,
+  Body,
   CurrentUser,
   Get,
   JsonController,
@@ -19,6 +22,28 @@ import { OrganisationService } from 'api/services/organisation.service';
 import { UserService } from 'api/services/user.service';
 
 // Response Types
+// ?|> createOrganisation
+class createOrganisationBody extends PickType(Organisation, [
+  'name',
+  'industry',
+  'region',
+]) {
+  @Exclude()
+  @IsOptional()
+  protected _: null;
+}
+
+// ?|> updateOrganisation
+class updateOrganisationBody extends PickType(Organisation, [
+  'name',
+  'industry',
+  'region',
+]) {
+  @Exclude()
+  @IsOptional()
+  protected _: null;
+}
+
 // Controller
 @Authorized()
 @JsonController('/organisation')
@@ -61,12 +86,12 @@ export class OrganisationController {
   })
   public async createOrganisation(
     @CurrentUser() user: User,
-    @BodyParam('name', { required: true }) name: string,
-    @BodyParam('industry', { required: false }) industry?: string,
+    @Body() { name, industry, region }: createOrganisationBody,
   ) {
     const { _id } = await this.organisationService.create({
       name,
       industry,
+      region,
     });
 
     await this.userService.updateOneById(user._id, {
@@ -86,12 +111,12 @@ export class OrganisationController {
   @ResponseSchema(Organisation)
   public async updateOrganisation(
     @Param('organisationId') organisationId: Ref<Organisation>,
-    @BodyParam('name', { required: true }) name: string,
-    @BodyParam('industry', { required: false }) industry?: string,
+    @Body() { name, industry, region }: updateOrganisationBody,
   ) {
     await this.organisationService.updateOneById(organisationId, {
       name,
       industry,
+      region,
     });
 
     return {};

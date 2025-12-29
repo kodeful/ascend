@@ -23,6 +23,7 @@
 	"dependencies": {
 		"@faker-js/faker": "^8.4.1",
 		"@nestjs/swagger": "^7.3.1",
+		"@openai/agents": "^0.3.7",
 		"@typegoose/typegoose": "^11.7.1",
 		"bcryptjs": "^2.4.3",
 		"class-transformer": "^0.5.1",
@@ -57,7 +58,8 @@
 		"socket.io": "^4.7.5",
 		"swagger-jsdoc": "^6.2.8",
 		"typedi": "^0.8.0",
-		"winston": "^3.13.0"
+		"winston": "^3.13.0",
+		"zod": "^4.2.1"
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.24.5",

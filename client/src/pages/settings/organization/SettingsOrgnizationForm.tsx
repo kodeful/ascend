@@ -6,6 +6,9 @@ import { Form, FormikProvider, useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
 
 import { useOrganisationControllerUpdateOrganisation } from "api/generated/organisation/organisation";
+import FormikAutocomplete, {
+  valueOptions,
+} from "components/forms/FormikAutocomplete";
 import FormikTextField from "components/forms/FormikTextField";
 import { useMeStore } from "components/stores/MeStore";
 
@@ -49,6 +52,33 @@ const SettingsOrgnizationForm = () => {
         <Stack direction="column" spacing={1}>
           <FormikTextField name="name" label="Name" />
           <FormikTextField name="industry" label="Industry" />
+          <FormikAutocomplete
+            name="region"
+            label="Region"
+            options={valueOptions([
+              "Northern Africa",
+              "Sub-Saharan Africa",
+              "Eastern Asia",
+              "South-Eastern Asia",
+              "Southern Asia",
+              "Central Asia",
+              "Western Asia",
+              "Australia and New Zealand",
+              "Melanesia",
+              "Micronesia",
+              "Polynesia",
+              "Eastern Europe",
+              "Northern Europe",
+              "Southern Europe",
+              "Western Europe",
+              "Northern America",
+              "Central America",
+              "South America",
+              "Caribbean",
+              "Middle East",
+              "Other",
+            ])}
+          />
 
           <Box textAlign="right" pt={1}>
             <LoadingButton

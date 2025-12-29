@@ -100,7 +100,6 @@ export class OpenAIService {
   constructor() {
     this.client = new OpenAI({ apiKey: env.openai.apiKey });
   }
-
   async reply(params: {
     organisationId: Ref<Organisation>;
     receivedMessage: string;

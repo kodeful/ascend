@@ -15,6 +15,11 @@ export class Organisation extends Document {
   @IsString()
   @prop({ type: String })
   public industry?: string;
+
+  @Expose()
+  @IsString()
+  @prop({ type: String })
+  public region?: string;
 }
 
 export const OrganisationModel = getModelForClass(Organisation);
