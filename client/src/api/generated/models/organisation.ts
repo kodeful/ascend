@@ -9,6 +9,7 @@
 export interface Organisation {
   /** @pattern ^[0-9a-fA-F]{24}$ */
   _id: string;
-  industry: string;
+  industry?: string;
   name: string;
+  region?: string;
 }

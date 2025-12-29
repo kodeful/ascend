@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type OrganisationControllerUpdateOrganisationBody = {
+export interface UpdateOrganisationBody {
   industry?: string;
   name: string;
-};
+  region?: string;
+}

@@ -1,6 +1,6 @@
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { Container } from 'typedi';
 
 import { Document } from 'api/types/document.types';
@@ -12,11 +12,13 @@ export class Organisation extends Document {
   public name: string;
 
   @Expose()
+  @IsOptional()
   @IsString()
   @prop({ type: String })
   public industry?: string;
 
   @Expose()
+  @IsOptional()
   @IsString()
   @prop({ type: String })
   public region?: string;

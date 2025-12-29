@@ -20,6 +20,7 @@ const SettingsOrgnizationForm = () => {
     initialValues: {
       name: organisation?.name || "",
       industry: organisation?.industry || "",
+      region: organisation?.region || "",
     },
     onSubmit: async (values) => {
       await updateOrganisation({
@@ -27,6 +28,7 @@ const SettingsOrgnizationForm = () => {
         data: {
           name: values.name,
           industry: values.industry,
+          region: values.region,
         },
       });
     },
