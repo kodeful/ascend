@@ -33,6 +33,7 @@ import {
 import { Report } from 'api/models/report.model';
 import { UserRole } from 'api/models/user.model';
 import { ReportService } from 'api/services/report.service';
+import { openAIReply } from 'api/services/third-party/openai.service';
 import { UserService } from 'api/services/user.service';
 import { FilterMeta, FilterQueryParams } from 'api/types/filter.types';
 import { mongoId } from 'utils/mongoId';
@@ -271,7 +272,7 @@ export class ReportController {
         : null,
     };
 
-    const insights = this.buildCohortInsights(skillsOut, threeEye);
+    const insights = await this.getCohortInsightsFromAI(skillsOut, threeEye);
 
     return {
       cohortName: 'Cohort',
@@ -492,6 +493,50 @@ export class ReportController {
       // ignore
     }
     return learner;
+  }
+
+  private async getCohortInsightsFromAI(
+    skills: Array<{
+      skill: string;
+      before: number;
+      latest: number;
+      delta: number;
+      improvedShare: number;
+    }>,
+    threeEye: {
+      self: number | null;
+      peer: number | null;
+      facilitator: number | null;
+    },
+  ): Promise<string[]> {
+    const message = `Generate AI insights for this cohort. Return a JSON object with a property "message" containing HTML (1–3 <p>...</p> paragraphs, one insight per paragraph). Do not include scores or numbers in the insight text.
+
+Cohort data:
+${JSON.stringify({ skills, threeEye })}`;
+
+    try {
+      const raw = await openAIReply({
+        receivedMessage: message,
+        prompt: 'report',
+      });
+      // openAIReply returns the "message" value when AI responds with {"message":"<p>...</p><p>...</p>"}
+      const insights = this.splitHtmlMessageIntoInsights(raw);
+      if (insights.length > 0) return insights;
+    } catch (error) {
+      console.error('Error getting cohort insights from AI:', error);
+      // fallback to rule-based insights
+    }
+    return this.buildCohortInsights(skills, threeEye);
+  }
+
+  /** Splits an HTML message (e.g. "<p>a</p><p>b</p>") into an array of insight strings. */
+  private splitHtmlMessageIntoInsights(html: string): string[] {
+    if (!html || typeof html !== 'string') return [];
+    const parts = html.match(/<p>[\s\S]*?<\/p>/gi);
+    if (!parts?.length) return [];
+    return parts
+      .map((block) => block.replace(/^<p>|<\/p>$/gi, '').trim())
+      .filter(Boolean);
   }
 
   private buildCohortInsights(

@@ -9,15 +9,19 @@ import { safeJson } from 'utils/safeJson';
 
 import { executeAscendToolCall } from './openai.tools-executor';
 
-const ASCEND_PROMPT_ID =
-  'pmpt_694d775b28ac81969173e1e82c4ea066010eeaa25b1f3ecc';
+const ASCEND_PROMPT_IDS = {
+  chat: 'pmpt_694d775b28ac81969173e1e82c4ea066010eeaa25b1f3ecc',
+  report: 'pmpt_697b4f6ddbd88194ad39ec780ddeaef30cddc2c520570fe1',
+};
 
 export const openAIReply = async ({
   receivedMessage,
   model = 'gpt-5.2',
+  prompt = 'chat',
 }: {
   receivedMessage: string;
   model?: string;
+  prompt?: 'chat' | 'report';
 }): Promise<string> => {
   const client = new OpenAI({ apiKey: env.openai.apiKey });
 
@@ -36,7 +40,7 @@ export const openAIReply = async ({
     const response = await client.responses.create({
       model,
       prompt: {
-        id: ASCEND_PROMPT_ID,
+        id: ASCEND_PROMPT_IDS[prompt],
       },
       input,
     });
@@ -71,7 +75,7 @@ export const openAIReply = async ({
   const finalResponse = await client.responses.create({
     model,
     prompt: {
-      id: ASCEND_PROMPT_ID,
+      id: ASCEND_PROMPT_IDS[prompt],
     },
     input,
     tool_choice: 'none',
